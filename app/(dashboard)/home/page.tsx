@@ -32,7 +32,7 @@ export default function Home() {
       variants={STAGGER_CONTAINER}
       initial="initial"
       animate="animate"
-      className="flex flex-col items-center justify-center flex-1 max-w-2xl mx-auto w-full p-6 gap-10"
+      className="flex flex-col items-center justify-center flex-1 max-w-2xl mx-auto w-full p-6 md:p-12 gap-6 md:gap-12"
     >
       <motion.div 
         variants={FADE_IN_UP}
@@ -40,12 +40,12 @@ export default function Home() {
       >
         <motion.div
           variants={SCALE_IN}
-          className="inline-flex p-4 rounded-full bg-primary/10 mb-6"
+          className="inline-flex p-4 rounded-full bg-primary/10 mb-8"
         >
           <Sparkles className="w-12 h-12 text-primary" />
         </motion.div>
         
-        <h1 className="text-4xl md:text-6xl font-light text-text-primary mb-4 tracking-tight">
+        <h1 className="text-4xl md:text-6xl font-light text-text-primary mb-6 tracking-tight">
           What's on your mind?
         </h1>
         <p className="text-xl text-text-secondary font-light leading-relaxed">
