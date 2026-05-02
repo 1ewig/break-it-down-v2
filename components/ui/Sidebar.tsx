@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Home, ListTodo, Settings, Heart } from 'lucide-react';
+import { Menu, X, Home, ListTodo, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TRANSITION_SMOOTH } from '@/lib/animations';
+import { useUIStore } from '@/store/useUIStore';
 
 const links = [
   { href: '/home', label: 'Home', icon: Home },
@@ -15,14 +15,14 @@ const links = [
 ];
 
 export function Sidebar({ children }: { children: React.ReactNode }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isSidebarOpen, setSidebarOpen } = useUIStore();
   const pathname = usePathname();
 
   return (
     <div className="flex min-h-screen w-full flex-col md:flex-row">
       <div className="md:hidden flex items-center p-4 border-b border-text-secondary/5 relative min-h-[64px]">
         <button 
-          onClick={() => setIsOpen(true)} 
+          onClick={() => setSidebarOpen(true)} 
           className="p-2 text-text-secondary hover:text-text-primary transition-colors z-10"
         >
           <Menu className="h-6 w-6" />
@@ -36,13 +36,13 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
       </div>
 
       <AnimatePresence>
-        {isOpen && (
+        {isSidebarOpen && (
           <>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setIsOpen(false)}
+              onClick={() => setSidebarOpen(false)}
               className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden"
             />
             <motion.aside
@@ -55,12 +55,12 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
               <div className="flex items-center justify-between mb-8">
                 <Link 
                   href="/home" 
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => setSidebarOpen(false)}
                   className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity"
                 >
                   <span className="font-bold text-lg tracking-tight">Break It Down</span>
                 </Link>
-                <button onClick={() => setIsOpen(false)} className="text-text-secondary hover:text-text-primary p-2 -mr-2">
+                <button onClick={() => setSidebarOpen(false)} className="text-text-secondary hover:text-text-primary p-2 -mr-2">
                   <X className="h-5 w-5" />
                 </button>
               </div>
@@ -71,7 +71,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
                     <Link
                       key={link.href}
                       href={link.href}
-                      onClick={() => setIsOpen(false)}
+                      onClick={() => setSidebarOpen(false)}
                       className={cn(
                         "flex items-center gap-3 px-4 py-3 rounded-2xl transition-colors",
                         isActive ? "bg-primary/10 text-primary font-medium" : "text-text-secondary hover:bg-background hover:text-text-primary"

@@ -25,9 +25,9 @@ This document outlines the roadmap for migrating the **Break It Down** state man
 
 ### Phase 2: Global UI Store (Zustand)
 **File: `store/useUIStore.ts`**
-- [ ] Migrate `Sidebar` state (remove local `useState`).
-- [ ] Implement `persist` middleware for user preferences.
-- [ ] Add state for "Active AI Generation" to show global progress.
+- [x] Migrate `Sidebar` state (remove local `useState`).
+- [x] Implement `persist` middleware for user preferences.
+- [x] Add state for "Active AI Generation" to show global progress.
 
 ### Phase 3: Server State Hooks (TanStack Query)
 **File: `hooks/queries/useTasksQuery.ts`**
