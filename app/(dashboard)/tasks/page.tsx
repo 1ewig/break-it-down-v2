@@ -2,14 +2,21 @@
 
 import { motion } from 'motion/react';
 
-import { useTasks } from '@/hooks/useTasks';
+import { useTasksQuery } from '@/hooks/queries/useTasksQuery';
 import { TaskCard } from '@/components/tasks/TaskCard';
 import Link from 'next/link';
-import { Heart } from 'lucide-react';
 import { STAGGER_CONTAINER, FADE_IN_UP, SCALE_IN } from '@/lib/animations';
 
 export default function TasksPage() {
-  const { tasks } = useTasks();
+  const { data: tasks = [], isLoading } = useTasksQuery();
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <p className="text-text-secondary/50 animate-pulse">Loading gentle steps...</p>
+      </div>
+    );
+  }
 
   return (
     <motion.div 

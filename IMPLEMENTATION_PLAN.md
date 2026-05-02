@@ -40,10 +40,10 @@ This document outlines the roadmap for migrating the **Break It Down** state man
 - [x] `useBreakdownStep`: Mutation for recursive breakdowns.
 
 ### Phase 4: Component Integration
-- [ ] **Sidebar**: Connect to `useUIStore`.
-- [ ] **Home Page**: Connect to `useCreateTask` mutation.
-- [ ] **Task List**: Use the query hook; implement "Skeleton" loading states for a better feel.
-- [ ] **Step Item**: Connect to `useUpdateStep` for instant feedback.
+- [x] **Sidebar**: Connect to `useUIStore`.
+- [x] **Home Page**: Connect to `useCreateTask` mutation.
+- [x] **Task List**: Use the query hook; implement "Skeleton" loading states for a better feel.
+- [x] **Step Item**: Connect to `useUpdateStep` for instant feedback.
 
 ---
 

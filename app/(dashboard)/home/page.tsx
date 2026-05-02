@@ -4,20 +4,21 @@ import { useState } from 'react';
 import { Sparkles, ArrowRight, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
-import { useTasks } from '@/hooks/useTasks';
+import { useTaskMutations } from '@/hooks/mutations/useTaskMutations';
+import { useUIStore } from '@/store/useUIStore';
 import { FADE_IN_UP, SCALE_IN, FADE_IN, STAGGER_CONTAINER } from '@/lib/animations';
 
 export default function Home() {
   const [taskTitle, setTaskTitle] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const { isAiGenerating, setAiGenerating } = useUIStore();
   const router = useRouter();
-  const { addLocalTask } = useTasks();
+  const { addLocalTask } = useTaskMutations();
 
   const handleBreakdown = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (!taskTitle.trim() || isLoading) return;
+    if (!taskTitle.trim() || isAiGenerating) return;
 
-    setIsLoading(true);
+    setAiGenerating(true);
     try {
       const response = await fetch('/api/tasks/create', {
         method: 'POST',
@@ -45,7 +46,7 @@ export default function Home() {
         created_at: new Date().toISOString()
       }));
 
-      addLocalTask({
+      await addLocalTask.mutateAsync({
         id: taskId,
         user_id: 'anonymous',
         title: data.title || taskTitle,
@@ -62,7 +63,7 @@ export default function Home() {
       console.error(error);
       alert('Something went wrong. Let\'s try again gently.');
     } finally {
-      setIsLoading(false);
+      setAiGenerating(false);
     }
   };
 
@@ -104,16 +105,16 @@ export default function Home() {
           value={taskTitle}
           onChange={(e) => setTaskTitle(e.target.value)}
           placeholder="e.g., Clean the entire house, Start a business..."
-          disabled={isLoading}
+          disabled={isAiGenerating}
           className="w-full bg-surface border-2 border-transparent focus:border-primary/20 rounded-3xl px-8 py-6 text-lg md:text-xl outline-none transition-all shadow-sm focus:shadow-2xl focus:shadow-primary/5 placeholder:opacity-30 pr-20"
         />
         
         <button
           type="submit"
-          disabled={!taskTitle.trim() || isLoading}
+          disabled={!taskTitle.trim() || isAiGenerating}
           className="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-white p-4 rounded-2xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100 shadow-lg shadow-primary/20 flex items-center justify-center"
         >
-          {isLoading ? (
+          {isAiGenerating ? (
             <Loader2 className="w-6 h-6 animate-spin" />
           ) : (
             <ArrowRight className="w-6 h-6" />

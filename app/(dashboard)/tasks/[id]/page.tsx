@@ -1,20 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import { useTasks } from '@/hooks/useTasks';
+import { useTasksQuery } from '@/hooks/queries/useTasksQuery';
+import { useTaskMutations } from '@/hooks/mutations/useTaskMutations';
 import { useParams, useRouter } from 'next/navigation';
 import { StepItem } from '@/components/tasks/StepItem';
-import { ArrowLeft, Loader2, Sparkles } from 'lucide-react';
-import Link from 'next/link';
+import { Loader2, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 import { ProgressBar } from '@/components/ui/ProgressBar';
-import { Step } from '@/types';
-import { STAGGER_CONTAINER, FADE_IN_UP, SCALE_IN, FADE_IN } from '@/lib/animations';
+import { STAGGER_CONTAINER, FADE_IN_UP, SCALE_IN } from '@/lib/animations';
 
 export default function TaskDetailPage() {
   const params = useParams();
-  const router = useRouter();
-  const { tasks, updateStepCompletion, breakdownTask } = useTasks();
+  const { data: tasks = [] } = useTasksQuery();
+  const { updateStepCompletion, breakdownTask } = useTaskMutations();
   
   const id = params?.id as string;
   const task = tasks.find(t => t.id === id);
@@ -32,7 +31,7 @@ export default function TaskDetailPage() {
   const handleBreakdown = async (stepId: string, stepTitle: string) => {
     setBreakingDownId(stepId);
     try {
-      await breakdownTask(task.id, stepId, stepTitle);
+      await breakdownTask.mutateAsync({ taskId: task.id, stepId, stepTitle });
     } catch (error) {
       console.error(error);
     } finally {
@@ -50,7 +49,7 @@ export default function TaskDetailPage() {
         <StepItem
           key={step.id}
           step={step}
-          onToggle={(checked) => updateStepCompletion(task.id, step.id, checked)}
+          onToggle={(checked) => updateStepCompletion.mutate({ taskId: task.id, stepId: step.id, isCompleted: checked })}
           onBreakdown={() => handleBreakdown(step.id, step.title)}
           isBreakingDown={isBreakingDown}
         >
