@@ -11,7 +11,7 @@ import { ChatMessage } from '@/components/chat/ChatMessage';
 import { ChatInput } from '@/components/chat/ChatInput';
 
 export default function Home() {
-  const { messages, status, sendMessage, input, setInput, handleSubmit } = useChat();
+  const { messages, status, sendMessage } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { addLocalTask, tasks } = useTasks();
 
@@ -110,14 +110,7 @@ export default function Home() {
       </div>
 
       <ChatInput 
-        onSend={(msg) => {
-          setInput(msg);
-          // Small timeout to let state update if needed, though handleSubmit usually uses event
-          setTimeout(() => {
-             const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
-             handleSubmit(fakeEvent);
-          }, 0);
-        }}
+        onSend={(msg) => sendMessage({ role: 'user', content: msg } as any)}
         isLoading={isLoading}
       />
 

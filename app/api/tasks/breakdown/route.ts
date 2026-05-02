@@ -1,4 +1,4 @@
-import { google } from '@ai-sdk/google';
+import { groq } from '@ai-sdk/groq';
 import { generateObject } from 'ai';
 import { z } from 'zod';
 import { supabase, hasSupabaseConfig } from '@/lib/supabase/client';
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   const { stepId, stepTitle, taskId } = await req.json();
 
   const { object } = await generateObject({
-    model: google('gemini-3.1-pro-preview'),
+    model: groq('llama-3.3-70b-versatile'),
     system: TASK_BREAKDOWN_PROMPT,
     prompt: `Break down this step into smaller pieces: "${stepTitle}"`,
     schema: z.object({

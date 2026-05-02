@@ -1,4 +1,4 @@
-import { google } from '@ai-sdk/google';
+import { groq } from '@ai-sdk/groq';
 import { streamText, tool } from 'ai';
 import { z } from 'zod';
 import { supabase, hasSupabaseConfig } from '@/lib/supabase/client';
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
   `;
 
   const result = streamText({
-    model: google('gemini-3.1-pro-preview'),
+    model: groq('llama-3.3-70b-versatile'),
     system: systemMessage,
     messages,
     tools: {
