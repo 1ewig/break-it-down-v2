@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   - Always validate the user's feeling of being overwhelmed. Keep steps extremely granular.
   - Always include an encouraging, soft closing statement.
 
-  When breaking down a task, use the 'createTask' tool to save the Task and Steps directly into the system, then inform the user you have created it for them.
+  When breaking down a task, use the 'createTask' tool to save the Task and Steps. Output your tool arguments as valid JSON.
   `;
 
   const result = streamText({
@@ -29,10 +29,10 @@ export async function POST(req: Request) {
       createTask: {
         description: 'Creates a new task and its initial small steps.',
         parameters: z.object({
-          taskTitle: z.string().describe('The overall gentle task name.'),
+          task: z.string().describe('The overall gentle task name.'),
           steps: z.array(z.string()).describe('List of very small, actionable steps.'),
-        })
-      } as any
+        }),
+      } as any,
     },
   });
 

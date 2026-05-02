@@ -9,7 +9,7 @@ export function useChatTaskSync(messages: any[], tasks: TaskWithSteps[], addLoca
     if (toolInvocations) {
       toolInvocations.forEach((tool: any) => {
         if (tool.toolName === 'createTask' && tool.args) {
-          const { taskTitle, steps } = tool.args;
+          const { task, steps } = tool.args;
           const taskId = tool.toolCallId || 'temp-id'; 
           
           if (!tasks.find(t => t.id === taskId)) {
@@ -26,7 +26,7 @@ export function useChatTaskSync(messages: any[], tasks: TaskWithSteps[], addLoca
             addLocalTask({
               id: taskId,
               user_id: 'anonymous',
-              title: taskTitle,
+              title: task,
               is_completed: false,
               progress_percentage: 0,
               created_at: new Date().toISOString(),
