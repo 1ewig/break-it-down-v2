@@ -1,7 +1,41 @@
+# Dependencies
 node_modules/
-.next/
-coverage/
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Next.js
+/.next/
+/out/
+
+# Production
+/build
+
+# Misc
 .DS_Store
-*.log
-.env*
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Local Env Files
+.env*.local
+.env
+.env.test
+.env.production
+.env.development
+.env.local
+
+# Exceptions for example envs
 !.env.example
+
+# Vercel
+.vercel
+
+# Turbo
+.turbo
