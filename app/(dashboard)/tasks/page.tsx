@@ -20,11 +20,12 @@ export default function TasksPage() {
     >
       <motion.div 
         variants={FADE_IN_UP}
-        className="pl-2"
+        className="text-center"
       >
         <h1 className="text-3xl font-light text-text-primary mb-2">My Tasks</h1>
         <p className="text-text-secondary text-sm">One gentle step at a time.</p>
       </motion.div>
+
 
 
       {tasks.length === 0 ? (

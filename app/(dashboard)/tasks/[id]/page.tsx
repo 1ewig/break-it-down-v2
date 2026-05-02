@@ -69,52 +69,40 @@ export default function TaskDetailPage() {
       animate="animate"
       className="flex flex-col h-full max-w-2xl mx-auto w-full p-6 md:p-12 gap-10"
     >
-      {/* Navigation */}
-      <motion.div variants={FADE_IN_UP}>
-        <Link href="/tasks" className="flex items-center gap-2 text-text-secondary/60 hover:text-primary transition-all w-max group">
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-xs uppercase tracking-widest font-medium">My Tasks</span>
-        </Link>
-      </motion.div>
 
       {/* Header Section */}
-      <motion.div variants={FADE_IN_UP} className="flex flex-col">
-        <div className="flex items-center gap-2 mb-4">
-           <span className="text-[10px] uppercase tracking-[0.2em] text-text-secondary/50 bg-surface-raised border border-text-secondary/10 px-3 py-1 rounded-full">Task Overview</span>
-           <div className="w-1 h-1 rounded-full bg-primary/40" />
-        </div>
+      <motion.div variants={FADE_IN_UP} className="flex flex-col text-center items-center gap-6">
 
         <motion.h1 
           layout 
-          className="text-4xl md:text-5xl font-light text-text-primary mb-6 tracking-tight leading-tight italic"
-          style={{ fontFamily: 'var(--font-serif), serif' }}
+          className="text-4xl md:text-5xl font-light text-text-primary tracking-tight leading-tight"
         >
           {task.title}
         </motion.h1>
+
         
         {task.affirmation && (
           <motion.div 
             variants={SCALE_IN}
-            className="bg-primary/5 border border-primary/10 rounded-3xl p-6 relative overflow-hidden"
+            className="bg-primary/5 border border-primary/10 rounded-3xl p-6 relative overflow-hidden w-full"
           >
             <div className="absolute top-0 left-4 text-7xl text-primary/10 font-serif leading-none select-none">"</div>
-            <p className="text-primary italic text-lg leading-relaxed relative z-10 pl-4">
+            <p className="text-primary font-light text-lg leading-relaxed relative z-10 pl-4">
               {task.affirmation}
             </p>
           </motion.div>
         )}
         
         {/* Progress Section */}
-        <div className="">
+        <div className="w-full">
           <div className="flex justify-between items-baseline mb-4">
             <span className="text-text-secondary/50 text-[11px] uppercase tracking-widest font-bold">Progress</span>
             <div className="flex items-center gap-3">
                <span className="text-text-secondary/40 text-xs">{task.steps.filter(s => s.is_completed).length} of {task.steps.length} completed</span>
-               <span className="text-primary font-medium text-sm">{task.progress_percentage}%</span>
             </div>
           </div>
           <ProgressBar percentage={task.progress_percentage} />
-          <p className="text-center text-[11px] text-text-secondary/30 mt-4 italic">Take a deep breath. You are doing enough.</p>
+          <p className="text-center text-[11px] text-text-secondary/30 mt-4">Take a deep breath. You are doing enough.</p>
         </div>
       </motion.div>
 

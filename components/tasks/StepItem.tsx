@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { GentleCheckbox } from '@/components/ui/GentleCheckbox';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, Loader2, ChevronDown, Clock, Package, Info, Check, FastForward } from 'lucide-react';
+import { Sparkles, Loader2, ChevronDown, Clock, Package, Info, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { FADE_IN_UP, ACCORDION_ANIMATION, SPRING_GENTLE } from '@/lib/animations';
 
@@ -15,6 +15,13 @@ interface StepItemProps {
 
 export function StepItem({ step, onToggle, onBreakdown, isBreakingDown, children }: StepItemProps) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleToggle = (checked: boolean) => {
+    onToggle(checked);
+    if (checked) {
+      setIsOpen(false);
+    }
+  };
 
   return (
     <motion.div
@@ -36,7 +43,7 @@ export function StepItem({ step, onToggle, onBreakdown, isBreakingDown, children
           <div onClick={(e) => e.stopPropagation()}>
             <GentleCheckbox 
               checked={step.is_completed} 
-              onChange={onToggle}
+              onChange={handleToggle}
               className="mt-1"
             />
           </div>
@@ -48,7 +55,7 @@ export function StepItem({ step, onToggle, onBreakdown, isBreakingDown, children
             )}>
               {step.title}
             </h3>
-            {step.subtitle && !step.is_completed && (
+            {step.subtitle && (
               <p className="text-text-secondary/70 text-sm mt-1">{step.subtitle}</p>
             )}
           </div>
@@ -126,31 +133,20 @@ export function StepItem({ step, onToggle, onBreakdown, isBreakingDown, children
                       className="flex items-center justify-center gap-2 py-3 bg-surface border border-text-secondary/10 hover:border-primary/30 rounded-2xl text-sm text-text-primary transition-all disabled:opacity-50"
                     >
                       {isBreakingDown ? <Loader2 className="w-4 h-4 animate-spin text-primary" /> : <Sparkles className="w-4 h-4 text-primary" />}
-                      <span>{isBreakingDown ? 'Breaking...' : 'Break down further'}</span>
+                      <span>{isBreakingDown ? 'Breaking...' : 'Break it down'}</span>
                     </button>
 
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        onToggle(true);
-                        setIsOpen(false);
+                        handleToggle(true);
                       }}
                       className="flex items-center justify-center gap-2 py-3 bg-primary text-white rounded-2xl text-sm font-medium transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-primary/20"
                     >
                       <Check className="w-4 h-4" />
-                      <span>Mark as done</span>
+                      <span>Mark done</span>
                     </button>
 
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsOpen(false);
-                      }}
-                      className="col-span-2 flex items-center justify-center gap-2 py-3 bg-transparent border border-text-secondary/5 hover:bg-text-secondary/5 rounded-2xl text-xs text-text-secondary/60 transition-all"
-                    >
-                      <FastForward className="w-3.5 h-3.5" />
-                      <span>Skip for now — come back later</span>
-                    </button>
                   </div>
                 )}
               </div>
