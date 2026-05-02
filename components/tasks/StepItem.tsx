@@ -3,6 +3,7 @@ import { GentleCheckbox } from '@/components/ui/GentleCheckbox';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Loader2, ChevronDown, Clock, Package, Info, Check, FastForward } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { FADE_IN_UP, ACCORDION_ANIMATION, SPRING_GENTLE } from '@/lib/animations';
 
 interface StepItemProps {
   step: any;
@@ -18,12 +19,13 @@ export function StepItem({ step, onToggle, onBreakdown, isBreakingDown, children
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      variants={FADE_IN_UP}
+      initial="initial"
+      animate="animate"
       className="flex flex-col gap-2"
     >
       <div className={cn(
-        "flex flex-col bg-surface rounded-3xl border transition-all duration-300",
+        "flex flex-col bg-surface rounded-3xl border",
         step.is_completed ? "opacity-50 border-transparent" : "border-text-secondary/10 shadow-sm",
         isOpen && !step.is_completed && "border-primary/20 bg-surface-raised"
       )}>
@@ -54,6 +56,7 @@ export function StepItem({ step, onToggle, onBreakdown, isBreakingDown, children
           {!step.is_completed && (
             <motion.div
               animate={{ rotate: isOpen ? 180 : 0 }}
+              transition={SPRING_GENTLE}
               className="text-text-secondary/40 mt-1"
             >
               <ChevronDown className="w-5 h-5" />
@@ -64,9 +67,10 @@ export function StepItem({ step, onToggle, onBreakdown, isBreakingDown, children
         <AnimatePresence>
           {isOpen && !step.is_completed && (
             <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
+              variants={ACCORDION_ANIMATION}
+              initial="initial"
+              animate="animate"
+              exit="exit"
               className="overflow-hidden"
             >
               <div className="px-5 pb-6 flex flex-col gap-5 border-t border-text-secondary/5 pt-5">

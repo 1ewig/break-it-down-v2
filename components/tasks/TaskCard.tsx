@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { motion } from 'motion/react';
 import { CheckCircle2, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { SPRING_GENTLE } from '@/lib/animations';
 
 interface TaskCardProps {
   task: TaskWithSteps;
@@ -17,13 +18,16 @@ export function TaskCard({ task }: TaskCardProps) {
       <motion.div
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.99 }}
+        transition={SPRING_GENTLE}
         className={cn(
-          "p-6 rounded-3xl transition-all group relative overflow-hidden",
+          "p-6 rounded-3xl group relative overflow-hidden will-change-transform",
           isDone 
             ? "bg-primary/5 border border-primary/20 shadow-lg shadow-primary/5" 
             : "bg-surface border border-text-secondary/5 shadow-sm hover:shadow-md"
         )}
       >
+
+
         {isDone && (
           <div className="absolute top-0 right-0 p-2 opacity-10">
             <Trophy className="w-20 h-20 text-primary rotate-12" />

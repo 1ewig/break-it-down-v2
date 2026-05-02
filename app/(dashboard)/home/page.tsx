@@ -5,6 +5,7 @@ import { Sparkles, ArrowRight, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import { useTasks } from '@/hooks/useTasks';
+import { FADE_IN_UP, SCALE_IN, FADE_IN, STAGGER_CONTAINER } from '@/lib/animations';
 
 export default function Home() {
   const [taskTitle, setTaskTitle] = useState('');
@@ -65,17 +66,21 @@ export default function Home() {
     }
   };
 
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] max-w-2xl mx-auto w-full p-6">
+    <motion.div 
+      variants={STAGGER_CONTAINER}
+      initial="initial"
+      animate="animate"
+      className="flex flex-col items-center justify-center flex-1 max-w-2xl mx-auto w-full p-6"
+    >
+
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        variants={FADE_IN_UP}
         className="text-center mb-12"
       >
         <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2 }}
+          variants={SCALE_IN}
           className="inline-flex p-4 rounded-full bg-primary/10 mb-6"
         >
           <Sparkles className="w-12 h-12 text-primary" />
@@ -92,9 +97,7 @@ export default function Home() {
 
       <motion.form 
         onSubmit={handleBreakdown}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
+        variants={FADE_IN_UP}
         className="w-full relative"
       >
         <input
@@ -120,13 +123,13 @@ export default function Home() {
       </motion.form>
 
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
+        variants={FADE_IN_UP}
         className="mt-8 flex items-center gap-2 text-text-secondary/40 text-sm italic"
       >
         Powered by Groq & Llama 3.3 • Gentle AI
       </motion.div>
-    </div>
+    </motion.div>
+
   );
 }
+

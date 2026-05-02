@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { motion } from 'motion/react';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Step } from '@/types';
+import { STAGGER_CONTAINER, FADE_IN_UP, SCALE_IN, FADE_IN } from '@/lib/animations';
 
 export default function TaskDetailPage() {
   const params = useParams();
@@ -62,15 +63,22 @@ export default function TaskDetailPage() {
   const topLevelSteps = buildStepTree(null);
 
   return (
-    <div className="flex flex-col h-full max-w-2xl mx-auto w-full p-6 md:p-12">
+    <motion.div 
+      variants={STAGGER_CONTAINER}
+      initial="initial"
+      animate="animate"
+      className="flex flex-col h-full max-w-2xl mx-auto w-full p-6 md:p-12"
+    >
       {/* Navigation */}
-      <Link href="/tasks" className="flex items-center gap-2 text-text-secondary/60 hover:text-primary transition-all mb-8 w-max group">
-        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-        <span className="text-xs uppercase tracking-widest font-medium">My Tasks</span>
-      </Link>
+      <motion.div variants={FADE_IN_UP}>
+        <Link href="/tasks" className="flex items-center gap-2 text-text-secondary/60 hover:text-primary transition-all mb-8 w-max group">
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          <span className="text-xs uppercase tracking-widest font-medium">My Tasks</span>
+        </Link>
+      </motion.div>
 
       {/* Header Section */}
-      <div className="flex flex-col">
+      <motion.div variants={FADE_IN_UP} className="flex flex-col">
         <div className="flex items-center gap-2 mb-4">
            <span className="text-[10px] uppercase tracking-[0.2em] text-text-secondary/50 bg-surface-raised border border-text-secondary/10 px-3 py-1 rounded-full">Task Overview</span>
            <div className="w-1 h-1 rounded-full bg-primary/40" />
@@ -86,8 +94,7 @@ export default function TaskDetailPage() {
         
         {task.affirmation && (
           <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
+            variants={SCALE_IN}
             className="bg-primary/5 border border-primary/10 rounded-3xl p-6 mb-8 relative overflow-hidden"
           >
             <div className="absolute top-0 left-4 text-7xl text-primary/10 font-serif leading-none select-none">"</div>
@@ -109,30 +116,34 @@ export default function TaskDetailPage() {
           <ProgressBar percentage={task.progress_percentage} />
           <p className="text-center text-[11px] text-text-secondary/30 mt-4 italic">Take a deep breath. You are doing enough.</p>
         </div>
-      </div>
+      </motion.div>
 
       {/* Steps List */}
-      <div className="flex flex-col gap-3 pb-12">
+      <motion.div 
+        variants={STAGGER_CONTAINER}
+        className="flex flex-col gap-3 pb-12"
+      >
          {topLevelSteps}
-      </div>
+      </motion.div>
 
       {/* Closing Reassurance */}
       {task.closing_tip && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
+          variants={FADE_IN_UP}
           className="mt-4 mb-32 p-8 bg-surface-raised border border-text-secondary/5 rounded-[40px] text-center"
         >
-          <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <motion.div 
+            variants={SCALE_IN}
+            className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6"
+          >
              <Sparkles className="w-6 h-6 text-primary" />
-          </div>
+          </motion.div>
           <h3 className="text-text-primary font-medium mb-3">You've got this</h3>
           <p className="text-text-secondary/80 text-sm leading-relaxed italic">
             {task.closing_tip}
           </p>
         </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }
