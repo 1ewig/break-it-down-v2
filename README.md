@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="./public/assets/banner.png" alt="Break It Down Banner" width="100%" />
+</div>
+
 # Break It Down 🌿
 
 A "Gentle AI" task management system designed to reduce cognitive load through recursive AI-powered task decomposition and minimalist motion design.
