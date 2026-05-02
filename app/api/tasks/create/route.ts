@@ -2,6 +2,7 @@ import { groq } from '@ai-sdk/groq';
 import { generateText } from 'ai';
 import { TASK_BREAKDOWN_PROMPT } from '@/lib/ai/prompts';
 
+export const runtime = 'edge';
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
