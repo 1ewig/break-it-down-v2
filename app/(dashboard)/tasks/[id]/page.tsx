@@ -67,11 +67,11 @@ export default function TaskDetailPage() {
       variants={STAGGER_CONTAINER}
       initial="initial"
       animate="animate"
-      className="flex flex-col h-full max-w-2xl mx-auto w-full p-6 md:p-12"
+      className="flex flex-col h-full max-w-2xl mx-auto w-full p-6 md:p-12 gap-10"
     >
       {/* Navigation */}
       <motion.div variants={FADE_IN_UP}>
-        <Link href="/tasks" className="flex items-center gap-2 text-text-secondary/60 hover:text-primary transition-all mb-8 w-max group">
+        <Link href="/tasks" className="flex items-center gap-2 text-text-secondary/60 hover:text-primary transition-all w-max group">
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           <span className="text-xs uppercase tracking-widest font-medium">My Tasks</span>
         </Link>
@@ -95,7 +95,7 @@ export default function TaskDetailPage() {
         {task.affirmation && (
           <motion.div 
             variants={SCALE_IN}
-            className="bg-primary/5 border border-primary/10 rounded-3xl p-6 mb-8 relative overflow-hidden"
+            className="bg-primary/5 border border-primary/10 rounded-3xl p-6 relative overflow-hidden"
           >
             <div className="absolute top-0 left-4 text-7xl text-primary/10 font-serif leading-none select-none">"</div>
             <p className="text-primary italic text-lg leading-relaxed relative z-10 pl-4">
@@ -105,7 +105,7 @@ export default function TaskDetailPage() {
         )}
         
         {/* Progress Section */}
-        <div className="mb-12">
+        <div className="">
           <div className="flex justify-between items-baseline mb-4">
             <span className="text-text-secondary/50 text-[11px] uppercase tracking-widest font-bold">Progress</span>
             <div className="flex items-center gap-3">
@@ -121,7 +121,7 @@ export default function TaskDetailPage() {
       {/* Steps List */}
       <motion.div 
         variants={STAGGER_CONTAINER}
-        className="flex flex-col gap-3 pb-12"
+        className="flex flex-col gap-4"
       >
          {topLevelSteps}
       </motion.div>
@@ -130,7 +130,7 @@ export default function TaskDetailPage() {
       {task.closing_tip && (
         <motion.div
           variants={FADE_IN_UP}
-          className="mt-4 mb-32 p-8 bg-surface-raised border border-text-secondary/5 rounded-[40px] text-center"
+          className="mb-32 p-8 bg-surface-raised border border-text-secondary/5 rounded-[40px] text-center"
         >
           <motion.div 
             variants={SCALE_IN}

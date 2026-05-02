@@ -16,15 +16,16 @@ export default function TasksPage() {
       variants={STAGGER_CONTAINER}
       initial="initial"
       animate="animate"
-      className="flex flex-col h-full max-w-3xl mx-auto w-full p-4 md:p-8"
+      className="flex flex-col h-full max-w-3xl mx-auto w-full p-4 md:p-8 gap-10"
     >
       <motion.div 
         variants={FADE_IN_UP}
-        className="mb-8 pl-2"
+        className="pl-2"
       >
         <h1 className="text-3xl font-light text-text-primary mb-2">My Tasks</h1>
         <p className="text-text-secondary text-sm">One gentle step at a time.</p>
       </motion.div>
+
 
       {tasks.length === 0 ? (
         <motion.div 
