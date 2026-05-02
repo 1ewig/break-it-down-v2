@@ -25,7 +25,8 @@ export async function POST(req: Request) {
             "note": "Instruction",
             "why": "Psychology"
           }
-        ]
+        ],
+        "closing_tip": "Final reassurance"
       }
       Do NOT use markdown code blocks.`,
       prompt: `I am feeling overwhelmed. Please break down this task into tiny, gentle steps: "${taskTitle}"`,

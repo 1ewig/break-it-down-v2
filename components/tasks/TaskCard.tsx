@@ -2,34 +2,68 @@ import { TaskWithSteps } from '@/types';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import Link from 'next/link';
 import { motion } from 'motion/react';
+import { CheckCircle2, Trophy } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface TaskCardProps {
   task: TaskWithSteps;
 }
 
 export function TaskCard({ task }: TaskCardProps) {
+  const isDone = task.progress_percentage === 100;
+
   return (
     <Link href={`/tasks/${task.id}`}>
       <motion.div
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.99 }}
-        className="p-6 bg-surface border border-text-secondary/5 rounded-3xl shadow-sm hover:shadow-md transition-all group"
+        className={cn(
+          "p-6 rounded-3xl transition-all group relative overflow-hidden",
+          isDone 
+            ? "bg-primary/5 border border-primary/20 shadow-lg shadow-primary/5" 
+            : "bg-surface border border-text-secondary/5 shadow-sm hover:shadow-md"
+        )}
       >
-        <div className="flex justify-between items-start mb-4">
-          <h3 className="text-lg font-light text-text-primary group-hover:text-primary transition-colors">
-            {task.title}
-          </h3>
-          <span className="text-xs text-text-secondary bg-text-secondary/5 px-2 py-1 rounded-full">
-            {task.steps.length} steps
+        {isDone && (
+          <div className="absolute top-0 right-0 p-2 opacity-10">
+            <Trophy className="w-20 h-20 text-primary rotate-12" />
+          </div>
+        )}
+
+        <div className="flex justify-between items-start mb-4 relative z-10">
+          <div className="flex flex-col gap-1">
+            <h3 className={cn(
+              "text-lg font-light transition-colors",
+              isDone ? "text-primary italic" : "text-text-primary group-hover:text-primary"
+            )}>
+              {task.title}
+            </h3>
+            {isDone && (
+              <span className="text-[10px] uppercase tracking-widest text-primary font-bold flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3" />
+                Gentle Victory
+              </span>
+            )}
+          </div>
+          <span className={cn(
+            "text-xs px-3 py-1 rounded-full",
+            isDone ? "bg-primary/20 text-primary" : "text-text-secondary bg-text-secondary/5"
+          )}>
+            {task.steps.length} {task.steps.length === 1 ? 'step' : 'steps'}
           </span>
         </div>
         
-        <div className="space-y-2">
-          <div className="flex justify-between text-[11px] text-text-secondary uppercase tracking-wider">
-            <span>Progress</span>
-            <span>{task.progress_percentage}%</span>
+        <div className="space-y-2 relative z-10">
+          <div className="flex justify-between text-[11px] uppercase tracking-wider">
+            <span className={isDone ? "text-primary/60" : "text-text-secondary"}>Progress</span>
+            <span className={cn("font-medium", isDone ? "text-primary" : "text-text-secondary")}>
+              {isDone ? 'Completed' : `${task.progress_percentage}%`}
+            </span>
           </div>
-          <ProgressBar percentage={task.progress_percentage} className="h-2" />
+          <ProgressBar 
+            percentage={task.progress_percentage} 
+            className={cn("h-2", isDone && "from-primary to-primary")} 
+          />
         </div>
       </motion.div>
     </Link>

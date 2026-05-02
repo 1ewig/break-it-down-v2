@@ -49,6 +49,7 @@ export default function Home() {
         user_id: 'anonymous',
         title: data.title || taskTitle,
         affirmation: data.affirmation,
+        closing_tip: data.closing_tip,
         is_completed: false,
         progress_percentage: 0,
         created_at: new Date().toISOString(),

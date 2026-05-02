@@ -11,6 +11,7 @@ export type Task = {
   user_id: string;
   title: string;
   affirmation?: string;
+  closing_tip?: string;
   is_completed: boolean;
   progress_percentage: number;
   created_at: string;

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useTasks } from '@/hooks/useTasks';
 import { useParams, useRouter } from 'next/navigation';
 import { StepItem } from '@/components/tasks/StepItem';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { ProgressBar } from '@/components/ui/ProgressBar';
@@ -112,9 +112,27 @@ export default function TaskDetailPage() {
       </div>
 
       {/* Steps List */}
-      <div className="flex flex-col gap-3 pb-32">
+      <div className="flex flex-col gap-3 pb-12">
          {topLevelSteps}
       </div>
+
+      {/* Closing Reassurance */}
+      {task.closing_tip && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="mt-4 mb-32 p-8 bg-surface-raised border border-text-secondary/5 rounded-[40px] text-center"
+        >
+          <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+             <Sparkles className="w-6 h-6 text-primary" />
+          </div>
+          <h3 className="text-text-primary font-medium mb-3">You've got this</h3>
+          <p className="text-text-secondary/80 text-sm leading-relaxed italic">
+            {task.closing_tip}
+          </p>
+        </motion.div>
+      )}
     </div>
   );
 }
