@@ -130,7 +130,6 @@ export function useTaskMutations() {
   return {
     updateStepCompletion,
     breakdownTask,
-    addLocalTask,
     createTask
   };
 }
