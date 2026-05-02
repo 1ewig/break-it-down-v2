@@ -16,7 +16,7 @@ export default function TasksPage() {
       variants={STAGGER_CONTAINER}
       initial="initial"
       animate="animate"
-      className="flex flex-col h-full max-w-3xl mx-auto w-full p-4 md:p-8 gap-10"
+      className="flex flex-col h-full max-w-3xl mx-auto w-full p-4 md:p-8 gap-4 md:gap-8"
     >
       <motion.div 
         variants={FADE_IN_UP}
@@ -33,9 +33,6 @@ export default function TasksPage() {
           variants={FADE_IN_UP}
           className="flex flex-col items-center justify-center p-12 text-center bg-surface/30 rounded-3xl border border-surface/50"
         >
-          <motion.div variants={SCALE_IN}>
-            <Heart className="w-12 h-12 text-primary/50 mb-4" />
-          </motion.div>
           <h2 className="text-xl font-light text-text-primary mb-2">No tasks yet</h2>
           <p className="text-text-secondary text-sm mb-6 max-w-xs">
             Whenever you're ready, let's break something down together.

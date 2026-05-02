@@ -14,7 +14,7 @@ export default function SettingsPage() {
       variants={STAGGER_CONTAINER}
       initial="initial"
       animate="animate"
-      className="flex flex-col h-full max-w-3xl mx-auto w-full p-4 md:p-8 gap-10"
+      className="flex flex-col h-full max-w-3xl mx-auto w-full p-4 md:p-8 gap-4 md:gap-8"
     >
       <motion.div 
         variants={FADE_IN_UP}

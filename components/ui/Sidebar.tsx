@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, Home, ListTodo, Settings, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { TRANSITION_SMOOTH } from '@/lib/animations';
 
 const links = [
   { href: '/home', label: 'Home', icon: Home },
@@ -19,14 +20,19 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-screen w-full flex-col md:flex-row">
-      <div className="md:hidden flex items-center p-4 border-b border-surface">
-        <button onClick={() => setIsOpen(true)} className="p-2 -ml-2 text-text-secondary hover:text-text-primary transition-colors">
+      <div className="md:hidden flex items-center p-4 border-b border-text-secondary/5 relative min-h-[64px]">
+        <button 
+          onClick={() => setIsOpen(true)} 
+          className="p-2 text-text-secondary hover:text-text-primary transition-colors z-10"
+        >
           <Menu className="h-6 w-6" />
         </button>
-        <div className="ml-2 flex items-center gap-2 text-primary">
-          <Heart className="h-5 w-5" />
-          <span className="font-bold text-lg">Break It Down</span>
-        </div>
+        <Link 
+          href="/home" 
+          className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 text-primary hover:opacity-80 transition-opacity"
+        >
+          <span className="font-bold text-lg tracking-tight">Break It Down</span>
+        </Link>
       </div>
 
       <AnimatePresence>
@@ -43,14 +49,17 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
-              transition={{ type: 'spring', damping: 20, stiffness: 200 }}
+              transition={TRANSITION_SMOOTH}
               className="fixed inset-y-0 left-0 z-50 w-64 bg-surface p-6 flex flex-col md:hidden shadow-xl"
             >
               <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-2 text-primary">
-                  <Heart className="h-5 w-5" />
-                  <span className="font-bold text-lg">Break It Down</span>
-                </div>
+                <Link 
+                  href="/home" 
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity"
+                >
+                  <span className="font-bold text-lg tracking-tight">Break It Down</span>
+                </Link>
                 <button onClick={() => setIsOpen(false)} className="text-text-secondary hover:text-text-primary p-2 -mr-2">
                   <X className="h-5 w-5" />
                 </button>
@@ -80,11 +89,10 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
       </AnimatePresence>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-64 bg-surface p-6 sticky top-0 h-screen border-r border-[#2C2C35]">
-        <div className="flex items-center gap-2 text-primary mb-10 pl-4">
-          <Heart className="h-6 w-6" />
+      <aside className="hidden md:flex flex-col w-64 bg-surface p-6 sticky top-0 h-screen border-r border-text-secondary/5">
+        <Link href="/home" className="flex items-center gap-2 text-primary mb-10 pl-4 hover:opacity-80 transition-opacity">
           <span className="font-bold text-xl tracking-tight">Break It Down</span>
-        </div>
+        </Link>
         <nav className="flex flex-col gap-2 flex-grow">
           {links.map((link) => {
             const isActive = pathname.startsWith(link.href);
@@ -108,7 +116,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
 
-      <main className="flex-1 flex flex-col min-h-0 relative">
+      <main className="flex-1 flex flex-col min-h-0 relative overflow-y-auto">
         {children}
       </main>
     </div>

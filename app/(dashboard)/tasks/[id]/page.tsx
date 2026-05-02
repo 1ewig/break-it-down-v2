@@ -67,7 +67,7 @@ export default function TaskDetailPage() {
       variants={STAGGER_CONTAINER}
       initial="initial"
       animate="animate"
-      className="flex flex-col h-full max-w-2xl mx-auto w-full p-6 md:p-12 gap-10"
+      className="flex flex-col h-full max-w-2xl mx-auto w-full p-6 md:p-12 gap-6 md:gap-12"
     >
 
       {/* Header Section */}
@@ -118,7 +118,7 @@ export default function TaskDetailPage() {
       {task.closing_tip && (
         <motion.div
           variants={FADE_IN_UP}
-          className="mb-32 p-8 bg-surface-raised border border-text-secondary/5 rounded-[40px] text-center"
+          className="p-8 bg-surface-raised border border-text-secondary/5 rounded-[40px] text-center"
         >
           <motion.div 
             variants={SCALE_IN}
@@ -127,7 +127,7 @@ export default function TaskDetailPage() {
              <Sparkles className="w-6 h-6 text-primary" />
           </motion.div>
           <h3 className="text-text-primary font-medium mb-3">You've got this</h3>
-          <p className="text-text-secondary/80 text-sm leading-relaxed italic">
+          <p className="text-text-secondary/80 text-sm leading-relaxed">
             {task.closing_tip}
           </p>
         </motion.div>

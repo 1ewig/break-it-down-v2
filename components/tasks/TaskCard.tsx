@@ -35,7 +35,7 @@ export function TaskCard({ task }: TaskCardProps) {
         )}
 
         <div className="flex justify-between items-start mb-4 relative z-10">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 pr-4">
             <h3 className={cn(
               "text-lg font-light transition-colors",
               isDone ? "text-primary italic" : "text-text-primary group-hover:text-primary"
@@ -50,7 +50,7 @@ export function TaskCard({ task }: TaskCardProps) {
             )}
           </div>
           <span className={cn(
-            "text-xs px-3 py-1 rounded-full",
+            "text-xs px-3 py-1 rounded-full shrink-0 whitespace-nowrap",
             isDone ? "bg-primary/20 text-primary" : "text-text-secondary bg-text-secondary/5"
           )}>
             {task.steps.length} {task.steps.length === 1 ? 'step' : 'steps'}
