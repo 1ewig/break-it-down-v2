@@ -18,9 +18,10 @@ This document outlines the roadmap for migrating the **Break It Down** state man
 ## 📅 Roadmap
 
 ### Phase 1: Infrastructure & Providers
-- [ ] Install dependencies.
-- [ ] Create `providers/QueryProvider.tsx` and wrap the root layout.
-- [ ] Initialize `QueryClient` with a focus on "Gentle" revalidation (lower frequency to maintain calm UX).
+- [x] Install dependencies.
+- [x] Create `providers/QueryProvider.tsx` and wrap the root layout.
+- [x] Initialize `QueryClient` with a focus on "Gentle" revalidation (lower frequency to maintain calm UX).
+
 
 ### Phase 2: Global UI Store (Zustand)
 **File: `store/useUIStore.ts`**
