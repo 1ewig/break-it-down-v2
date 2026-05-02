@@ -49,7 +49,7 @@ export default function Home() {
           What's on your mind?
         </h1>
         <p className="text-xl text-text-secondary font-light leading-relaxed">
-          Type that big, overwhelming task. 
+          Type that big, overwhelming task. <br />
           <span className="block mt-1 opacity-60">We'll break it into tiny, gentle steps for you.</span>
         </p>
       </motion.div>
