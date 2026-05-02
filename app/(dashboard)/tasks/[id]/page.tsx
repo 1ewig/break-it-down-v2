@@ -17,7 +17,6 @@ export default function TaskDetailPage() {
   
   const id = params?.id as string;
   const task = tasks.find(t => t.id === id);
-  const [breakingDownId, setBreakingDownId] = useState<string | null>(null);
 
   if (!task) {
     return (
@@ -28,21 +27,14 @@ export default function TaskDetailPage() {
     );
   }
 
-  const handleBreakdown = async (stepId: string, stepTitle: string) => {
-    setBreakingDownId(stepId);
-    try {
-      await breakdownTask.mutateAsync({ taskId: task.id, stepId, stepTitle });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setBreakingDownId(null);
-    }
+  const handleBreakdown = (stepId: string, stepTitle: string) => {
+    breakdownTask.mutate({ taskId: task.id, stepId, stepTitle });
   };
 
   const buildStepTree = (parentId: string | null): React.ReactNode[] => {
     const children = task.steps.filter(s => s.parent_step_id === parentId);
     return children.map((step) => {
-      const isBreakingDown = breakingDownId === step.id;
+      const isBreakingDown = breakdownTask.isPending && breakdownTask.variables?.stepId === step.id;
       const childElements = buildStepTree(step.id);
       
       return (

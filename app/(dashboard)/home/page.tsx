@@ -10,60 +10,19 @@ import { FADE_IN_UP, SCALE_IN, FADE_IN, STAGGER_CONTAINER } from '@/lib/animatio
 
 export default function Home() {
   const [taskTitle, setTaskTitle] = useState('');
-  const { isAiGenerating, setAiGenerating } = useUIStore();
+  const { createTask } = useTaskMutations();
   const router = useRouter();
-  const { addLocalTask } = useTaskMutations();
 
   const handleBreakdown = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (!taskTitle.trim() || isAiGenerating) return;
+    if (!taskTitle.trim() || createTask.isPending) return;
 
-    setAiGenerating(true);
     try {
-      const response = await fetch('/api/tasks/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ taskTitle }),
-      });
-
-      if (!response.ok) throw new Error('Failed to breakdown task');
-
-      const data = await response.json();
-      
-      const taskId = `task-${Date.now()}`;
-      const stepsData = data.steps.map((step: any, idx: number) => ({
-        id: `${taskId}-s-${idx}`,
-        task_id: taskId,
-        parent_step_id: null,
-        title: step.title,
-        subtitle: step.subtitle,
-        time_estimate: step.time_estimate,
-        materials: step.materials,
-        note: step.note,
-        why: step.why,
-        is_completed: false,
-        order_index: idx,
-        created_at: new Date().toISOString()
-      }));
-
-      await addLocalTask.mutateAsync({
-        id: taskId,
-        user_id: 'anonymous',
-        title: data.title || taskTitle,
-        affirmation: data.affirmation,
-        closing_tip: data.closing_tip,
-        is_completed: false,
-        progress_percentage: 0,
-        created_at: new Date().toISOString(),
-        steps: stepsData
-      });
-
-      router.push(`/tasks/${taskId}`);
+      const newTask = await createTask.mutateAsync(taskTitle);
+      router.push(`/tasks/${newTask.id}`);
     } catch (error) {
       console.error(error);
       alert('Something went wrong. Let\'s try again gently.');
-    } finally {
-      setAiGenerating(false);
     }
   };
 
@@ -105,16 +64,16 @@ export default function Home() {
           value={taskTitle}
           onChange={(e) => setTaskTitle(e.target.value)}
           placeholder="e.g., Clean the entire house, Start a business..."
-          disabled={isAiGenerating}
+          disabled={createTask.isPending}
           className="w-full bg-surface border-2 border-transparent focus:border-primary/20 rounded-3xl px-8 py-6 text-lg md:text-xl outline-none transition-all shadow-sm focus:shadow-2xl focus:shadow-primary/5 placeholder:opacity-30 pr-20"
         />
         
         <button
           type="submit"
-          disabled={!taskTitle.trim() || isAiGenerating}
+          disabled={!taskTitle.trim() || createTask.isPending}
           className="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-white p-4 rounded-2xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100 shadow-lg shadow-primary/20 flex items-center justify-center"
         >
-          {isAiGenerating ? (
+          {createTask.isPending ? (
             <Loader2 className="w-6 h-6 animate-spin" />
           ) : (
             <ArrowRight className="w-6 h-6" />

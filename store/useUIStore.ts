@@ -7,10 +7,6 @@ interface UIState {
   setSidebarOpen: (isOpen: boolean) => void;
   toggleSidebar: () => void;
 
-  // AI Generation state (Global progress indication)
-  isAiGenerating: boolean;
-  setAiGenerating: (isGenerating: boolean) => void;
-
   // Persisted Preferences
   isGentleMode: boolean;
   toggleGentleMode: () => void;
@@ -22,9 +18,6 @@ export const useUIStore = create<UIState>()(
       isSidebarOpen: false,
       setSidebarOpen: (isOpen) => set({ isSidebarOpen: isOpen }),
       toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
-
-      isAiGenerating: false,
-      setAiGenerating: (isGenerating) => set({ isAiGenerating: isGenerating }),
 
       isGentleMode: true,
       toggleGentleMode: () => set((state) => ({ isGentleMode: !state.isGentleMode })),

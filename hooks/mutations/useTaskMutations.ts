@@ -71,11 +71,56 @@ export function useTaskMutations() {
     }
   });
 
-  const addLocalTask = useMutation({
-    mutationFn: async (task: TaskWithSteps) => task,
-    onSuccess: (task) => {
+  const createTask = useMutation({
+    mutationFn: async (taskTitle: string) => {
+      const response = await fetch('/api/tasks/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ taskTitle }),
+      });
+
+      if (!response.ok) throw new Error('Failed to create task');
+
+      const data = await response.json();
+      
+      const taskId = `task-${Date.now()}`;
+      const stepsData = data.steps.map((step: any, idx: number) => ({
+        id: `${taskId}-s-${idx}`,
+        task_id: taskId,
+        parent_step_id: null,
+        title: step.title,
+        subtitle: step.subtitle,
+        time_estimate: step.time_estimate,
+        materials: step.materials,
+        note: step.note,
+        why: step.why,
+        is_completed: false,
+        order_index: idx,
+        created_at: new Date().toISOString()
+      }));
+
+      const newTask: TaskWithSteps = {
+        id: taskId,
+        user_id: 'anonymous',
+        title: data.title || taskTitle,
+        affirmation: data.affirmation,
+        closing_tip: data.closing_tip,
+        is_completed: false,
+        progress_percentage: 0,
+        created_at: new Date().toISOString(),
+        steps: stepsData
+      };
+
+      if (hasSupabaseConfig && supabase) {
+        // Ideally we'd persist to Supabase here, but the app primarily uses localStorage for new tasks initially
+        // If we want to persist immediately, we would do it here.
+      }
+
+      return newTask;
+    },
+    onSuccess: (newTask) => {
       queryClient.setQueryData<TaskWithSteps[]>(['tasks'], (old) => {
-        const newTasks = [task, ...(old || [])];
+        const newTasks = [newTask, ...(old || [])];
         saveLocalTasks(newTasks);
         return newTasks;
       });
@@ -85,6 +130,7 @@ export function useTaskMutations() {
   return {
     updateStepCompletion,
     breakdownTask,
-    addLocalTask
+    addLocalTask,
+    createTask
   };
 }
