@@ -31,13 +31,13 @@ This document outlines the roadmap for migrating the **Break It Down** state man
 
 ### Phase 3: Server State Hooks (TanStack Query)
 **File: `hooks/queries/useTasksQuery.ts`**
-- [ ] Implement `useTasks` query to fetch from Supabase.
-- [ ] Setup `staleTime` and `cacheTime` for persistent local data.
+- [x] Implement `useTasks` query to fetch from Supabase.
+- [x] Setup `staleTime` and `cacheTime` for persistent local data.
 
 **File: `hooks/mutations/useTaskMutations.ts`**
-- [ ] `useCreateTask`: Mutation for AI generation.
-- [ ] `useUpdateStep`: Mutation for completion with Optimistic Updates.
-- [ ] `useBreakdownStep`: Mutation for recursive breakdowns.
+- [x] `useCreateTask`: Mutation for AI generation.
+- [x] `useUpdateStep`: Mutation for completion with Optimistic Updates.
+- [x] `useBreakdownStep`: Mutation for recursive breakdowns.
 
 ### Phase 4: Component Integration
 - [ ] **Sidebar**: Connect to `useUIStore`.
