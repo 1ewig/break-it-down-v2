@@ -1,9 +1,8 @@
 'use client';
 
 import { useTasks } from '@/hooks/useTasks';
+import { TaskCard } from '@/components/tasks/TaskCard';
 import Link from 'next/link';
-import { motion } from 'motion/react';
-import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Heart } from 'lucide-react';
 
 export default function TasksPage() {
@@ -30,24 +29,7 @@ export default function TasksPage() {
       ) : (
         <div className="grid gap-4">
           {tasks.map((task) => (
-            <Link key={task.id} href={`/tasks/${task.id}`}>
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                whileHover={{ scale: 1.01 }}
-                className="bg-surface p-6 rounded-3xl border border-text-secondary/5 hover:border-primary/20 transition-all cursor-pointer"
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-lg text-text-primary font-medium">{task.title}</h3>
-                  <span className="text-primary/80 font-mono text-sm">{task.progress_percentage}%</span>
-                </div>
-                <ProgressBar percentage={task.progress_percentage} />
-                <div className="mt-4 text-xs text-text-secondary/70 flex justify-between">
-                  <span>{task.steps.filter(s => s.is_completed).length} of {task.steps.length} steps complete</span>
-                  {task.is_completed && <span className="text-primary">All done! 🎉</span>}
-                </div>
-              </motion.div>
-            </Link>
+            <TaskCard key={task.id} task={task} />
           ))}
         </div>
       )}

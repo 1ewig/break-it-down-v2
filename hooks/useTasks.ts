@@ -86,11 +86,30 @@ export function useTasks() {
     }
   };
 
+  const breakdownTask = async (taskId: string, stepId: string, stepTitle: string) => {
+    try {
+      const res = await fetch('/api/tasks/breakdown', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stepId, stepTitle, taskId })
+      });
+      const data = await res.json();
+      if (data.steps) {
+        addSubSteps(taskId, stepId, data.steps);
+      }
+      return data.steps;
+    } catch (error) {
+      console.error('Failed to break down task step', error);
+      throw error;
+    }
+  };
+
   return {
     tasks,
     isLoading,
     addLocalTask,
     updateStepCompletion,
-    addSubSteps
+    addSubSteps,
+    breakdownTask
   };
 }

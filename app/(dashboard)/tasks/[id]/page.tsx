@@ -3,17 +3,17 @@
 import { useState } from 'react';
 import { useTasks } from '@/hooks/useTasks';
 import { useParams, useRouter } from 'next/navigation';
-import { Sparkles, ArrowLeft, Loader2 } from 'lucide-react';
+import { StepItem } from '@/components/tasks/StepItem';
+import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { ProgressBar } from '@/components/ui/ProgressBar';
-import { GentleCheckbox } from '@/components/ui/GentleCheckbox';
 import { Step } from '@/types';
 
 export default function TaskDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { tasks, updateStepCompletion, addSubSteps } = useTasks();
+  const { tasks, updateStepCompletion, breakdownTask } = useTasks();
   
   const id = params?.id as string;
   const task = tasks.find(t => t.id === id);
@@ -30,15 +30,7 @@ export default function TaskDetailPage() {
   const handleBreakdown = async (stepId: string, stepTitle: string) => {
     setBreakingDownId(stepId);
     try {
-      const res = await fetch('/api/tasks/breakdown', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ stepId, stepTitle, taskId: task.id })
-      });
-      const data = await res.json();
-      if (data.steps) {
-        addSubSteps(task.id, stepId, data.steps);
-      }
+      await breakdownTask(task.id, stepId, stepTitle);
     } catch (error) {
       console.error(error);
     } finally {
@@ -54,48 +46,15 @@ export default function TaskDetailPage() {
       const childElements = buildStepTree(step.id);
       
       return (
-        <motion.div
+        <StepItem
           key={step.id}
-          layout
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col gap-3 mt-4"
+          step={step}
+          onToggle={(checked) => updateStepCompletion(task.id, step.id, checked)}
+          onBreakdown={() => handleBreakdown(step.id, step.title)}
+          isBreakingDown={isBreakingDown}
         >
-          <div className="flex items-start gap-4 p-4 bg-surface rounded-2xl border border-text-secondary/5 shadow-sm group">
-            <GentleCheckbox 
-              checked={step.is_completed} 
-              onChange={(checked) => updateStepCompletion(task.id, step.id, checked)}
-              className="mt-1"
-            />
-            <div className="flex-1">
-              <p className={`text-[15px] transition-all duration-300 ${step.is_completed ? 'text-text-secondary line-through opacity-50' : 'text-text-primary'}`}>
-                {step.title}
-              </p>
-              
-              <AnimatePresence>
-                {!step.is_completed && childElements.length === 0 && (
-                  <motion.button
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    onClick={() => handleBreakdown(step.id, step.title)}
-                    disabled={isBreakingDown}
-                    className="mt-2 flex items-center gap-1.5 text-xs text-secondary hover:text-primary transition-colors disabled:opacity-50"
-                  >
-                    {isBreakingDown ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
-                    <span>{isBreakingDown ? 'Breaking it down gently...' : 'Break down further'}</span>
-                  </motion.button>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-          
-          {childElements.length > 0 && (
-            <div className="ml-6 pl-4 border-l-2 border-surface flex flex-col pt-1">
-              {childElements}
-            </div>
-          )}
-        </motion.div>
+          {childElements.length > 0 ? childElements : null}
+        </StepItem>
       );
     });
   };
