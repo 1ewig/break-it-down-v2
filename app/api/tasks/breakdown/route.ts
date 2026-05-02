@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   try {
     const { text } = await (generateText as any)({
       model: groq('llama-3.3-70b-versatile'),
-      system: TASK_BREAKDOWN_PROMPT + "\nYou MUST respond in raw JSON format. Do NOT use markdown code blocks (```).",
+      system: TASK_BREAKDOWN_PROMPT,
       prompt: `Break down this step into smaller pieces: "${stepTitle}"`,
       responseFormat: { type: 'json_object' },
     });
@@ -21,15 +21,21 @@ export async function POST(req: Request) {
     const cleanText = text.replace(/```json\n?|```/g, '').trim();
     const object = JSON.parse(cleanText);
     
-    const subSteps = object.steps.map((subTitle: string, idx: number) => ({
+    const subSteps = object.steps.map((step: any, idx: number) => ({
       id: `${stepId}-sub-${idx}`,
       task_id: taskId,
       parent_step_id: stepId,
-      title: subTitle,
+      title: step.title,
+      subtitle: step.subtitle,
+      time_estimate: step.time_estimate,
+      materials: step.materials,
+      note: step.note,
+      why: step.why,
       is_completed: false,
       order_index: idx,
       created_at: new Date().toISOString()
     }));
+
 
     if (hasSupabaseConfig && supabase) {
       await supabase.from('steps').insert(subSteps);
