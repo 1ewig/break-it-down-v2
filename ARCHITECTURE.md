@@ -6,12 +6,13 @@ A "Gentle AI" task management system designed to reduce cognitive load through r
 "Break It Down" is not a standard productivity tool. It is built for users facing executive dysfunction or burnout. 
 - **The Goal**: Turn a "big scary task" into tiny, non-threatening steps.
 - **The Vibe**: Calming, low-pressure, and visually soft.
+- **AI Orchestration**: Groq (Llama 3.3) for all task and step breakdowns.
 - **The Interaction**: Infinite breakdown. Any step can be broken down into further steps.
 
 ## 🛠 Technical Stack
 - **Frontend**: Next.js 15 (App Router), TypeScript, Tailwind CSS.
 - **Animations**: Framer Motion (`motion/react`) using a centralized spring physics system.
-- **AI**: Gemini 2.0 (High-level creation) & Groq/Llama (Recursive breakdown).
+- **AI**: Groq/Llama for all task decomposition and affirmations.
 - **Storage**: Dual-layer sync:
     - **Supabase**: PostgreSQL persistence (Tasks & Steps tables).
     - **localStorage**: Immediate persistence and offline-first fallback.
@@ -22,8 +23,8 @@ A "Gentle AI" task management system designed to reduce cognitive load through r
 - `/(dashboard)/home`: The entry point. A focused AI input that accepts a "scary task" and generates the initial breakdown.
 - `/(dashboard)/tasks`: The dashboard view showing all active tasks in a grid.
 - `/(dashboard)/tasks/[id]`: The breakdown view. This is the heart of the app where users interact with steps and trigger further AI breakdowns.
-- `/api/tasks/create`: Handles the initial AI generation of a task, its affirmation, and the first 3-5 steps.
-- `/api/tasks/breakdown`: Handles recursive breakdowns. Takes a specific `Step` and generates 3 sub-steps for it.
+- `/api/tasks/create`: Handles the initial AI generation of a task using Groq.
+- `/api/tasks/breakdown`: Handles recursive breakdowns using Groq.
 
 ### `/components` (UI & Logic)
 - `/tasks/StepItem.tsx`: The most complex component. Handles its own expanded state, completion logic, and triggers recursive breakdowns.

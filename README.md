@@ -7,7 +7,7 @@
 A "Gentle AI" task management system designed to reduce cognitive load through recursive AI-powered task decomposition and minimalist motion design.
 
 ## ✨ Key Features
-- **Gentle AI Breakdown**: Uses Gemini 2.0 and Groq to turn overwhelming goals into tiny, non-threatening steps.
+- **Gentle AI Breakdown**: Uses Groq to turn overwhelming goals into tiny, non-threatening steps.
 - **Infinite Recursion**: Any step can be broken down further into even tinier sub-steps.
 - **Calming Motion Design**: Built with a custom spring-based animation system for a soft, weighted UI feel.
 - **Smart Persistence**: Dual-layer sync with Supabase and localStorage for an instant, offline-first experience.
@@ -26,7 +26,6 @@ For a deep dive into the project's structure, AI prompts, and design philosophy,
    ```
 2. **Set up Environment Variables:**
    Copy `.env.example` to `.env.local` and add your keys for:
-   - `GEMINI_API_KEY`
    - `GROQ_API_KEY`
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`

@@ -10,10 +10,8 @@
     "clean": "next clean"
   },
   "dependencies": {
-    "@ai-sdk/google": "^3.0.67",
     "@ai-sdk/groq": "^3.0.38",
     "@ai-sdk/react": "^3.0.176",
-    "@google/genai": "^1.17.0",
     "@hookform/resolvers": "^5.2.1",
     "@supabase/supabase-js": "^2.105.1",
     "ai": "^6.0.174",
