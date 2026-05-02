@@ -1,8 +1,6 @@
 import { groq } from '@ai-sdk/groq';
-import { generateObject } from 'ai';
-import { z } from 'zod';
+import { generateText } from 'ai';
 import { supabase, hasSupabaseConfig } from '@/lib/supabase/client';
-import { v4 as uuidv4 } from 'uuid';
 
 import { TASK_BREAKDOWN_PROMPT } from '@/lib/ai/prompts';
 
@@ -11,32 +9,35 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
   const { stepId, stepTitle, taskId } = await req.json();
 
-  const { object } = await generateObject({
-    model: groq('llama-3.3-70b-versatile'),
-    system: TASK_BREAKDOWN_PROMPT,
-    prompt: `Break down this step into smaller pieces: "${stepTitle}"`,
-    schema: z.object({
-      microSteps: z.array(z.string()).describe('List of very small, actionable micro-steps.')
-    })
-  });
+  try {
+    const { text } = await (generateText as any)({
+      model: groq('llama-3.3-70b-versatile'),
+      system: TASK_BREAKDOWN_PROMPT + "\nYou MUST respond in raw JSON format. Do NOT use markdown code blocks (```).",
+      prompt: `Break down this step into smaller pieces: "${stepTitle}"`,
+      responseFormat: { type: 'json_object' },
+    });
 
-  const stepsData = object.microSteps.map((title, idx) => ({
-    id: uuidv4(),
-    task_id: taskId,
-    parent_step_id: stepId,
-    title,
-    is_completed: false,
-    order_index: idx,
-    created_at: new Date().toISOString()
-  }));
+    // Strip markdown code blocks if they exist
+    const cleanText = text.replace(/```json\n?|```/g, '').trim();
+    const object = JSON.parse(cleanText);
+    
+    const subSteps = object.steps.map((subTitle: string, idx: number) => ({
+      id: `${stepId}-sub-${idx}`,
+      task_id: taskId,
+      parent_step_id: stepId,
+      title: subTitle,
+      is_completed: false,
+      order_index: idx,
+      created_at: new Date().toISOString()
+    }));
 
-  if (hasSupabaseConfig && supabase) {
-    try {
-      await supabase.from('steps').insert(stepsData);
-    } catch(err) {
-      console.error(err);
+    if (hasSupabaseConfig && supabase) {
+      await supabase.from('steps').insert(subSteps);
     }
-  }
 
-  return Response.json({ steps: stepsData });
+    return Response.json({ subSteps });
+  } catch (error) {
+    console.error('Error breaking down step:', error);
+    return Response.json({ error: 'Failed to break down step' }, { status: 500 });
+  }
 }
