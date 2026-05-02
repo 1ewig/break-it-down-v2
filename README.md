@@ -2,19 +2,39 @@
 <img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
-# Run and deploy your AI Studio app
+# Break It Down 🌿
 
-This contains everything you need to run your app locally.
+A "Gentle AI" task management system designed to reduce cognitive load through recursive AI-powered task decomposition and minimalist motion design.
 
-View your app in AI Studio: https://ai.studio/apps/723ed798-f9ce-4faf-8d99-d353453d9523
+## ✨ Key Features
+- **Gentle AI Breakdown**: Uses Gemini 2.0 and Groq to turn overwhelming goals into tiny, non-threatening steps.
+- **Infinite Recursion**: Any step can be broken down further into even tinier sub-steps.
+- **Calming Motion Design**: Built with a custom spring-based animation system for a soft, weighted UI feel.
+- **Smart Persistence**: Dual-layer sync with Supabase and localStorage for an instant, offline-first experience.
 
-## Run Locally
+## 📖 Documentation
+For a deep dive into the project's structure, AI prompts, and design philosophy, see:
+👉 **[ARCHITECTURE.md](./ARCHITECTURE.md)**
 
-**Prerequisites:**  Node.js
+## 🚀 Getting Started
 
+**Prerequisites:** Node.js
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+2. **Set up Environment Variables:**
+   Copy `.env.example` to `.env.local` and add your keys for:
+   - `GEMINI_API_KEY`
+   - `GROQ_API_KEY`
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+3. **Run the app:**
+   ```bash
+   npm run dev
+   ```
+
+---
+Built with care for a calmer productivity experience.
