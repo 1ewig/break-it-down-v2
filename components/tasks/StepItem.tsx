@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { GentleCheckbox } from '@/components/ui/GentleCheckbox';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, Loader2, ChevronDown, Clock, Package, Info } from 'lucide-react';
+import { Sparkles, Loader2, ChevronDown, Clock, Package, Info, Check, FastForward } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface StepItemProps {
@@ -110,19 +110,44 @@ export function StepItem({ step, onToggle, onBreakdown, isBreakingDown, children
                   </div>
                 )}
 
-                {/* Action */}
+                {/* Actions Grid */}
                 {!children && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onBreakdown();
-                    }}
-                    disabled={isBreakingDown}
-                    className="flex items-center justify-center gap-2 w-full py-3 bg-surface border border-text-secondary/10 hover:border-primary/30 rounded-2xl text-sm text-text-primary transition-all disabled:opacity-50"
-                  >
-                    {isBreakingDown ? <Loader2 className="w-4 h-4 animate-spin text-primary" /> : <Sparkles className="w-4 h-4 text-primary" />}
-                    <span>{isBreakingDown ? 'Breaking it down gently...' : 'Break this down further'}</span>
-                  </button>
+                  <div className="grid grid-cols-2 gap-3 mt-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onBreakdown();
+                      }}
+                      disabled={isBreakingDown}
+                      className="flex items-center justify-center gap-2 py-3 bg-surface border border-text-secondary/10 hover:border-primary/30 rounded-2xl text-sm text-text-primary transition-all disabled:opacity-50"
+                    >
+                      {isBreakingDown ? <Loader2 className="w-4 h-4 animate-spin text-primary" /> : <Sparkles className="w-4 h-4 text-primary" />}
+                      <span>{isBreakingDown ? 'Breaking...' : 'Break down further'}</span>
+                    </button>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggle(true);
+                        setIsOpen(false);
+                      }}
+                      className="flex items-center justify-center gap-2 py-3 bg-primary text-white rounded-2xl text-sm font-medium transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-primary/20"
+                    >
+                      <Check className="w-4 h-4" />
+                      <span>Mark as done</span>
+                    </button>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsOpen(false);
+                      }}
+                      className="col-span-2 flex items-center justify-center gap-2 py-3 bg-transparent border border-text-secondary/5 hover:bg-text-secondary/5 rounded-2xl text-xs text-text-secondary/60 transition-all"
+                    >
+                      <FastForward className="w-3.5 h-3.5" />
+                      <span>Skip for now — come back later</span>
+                    </button>
+                  </div>
                 )}
               </div>
             </motion.div>

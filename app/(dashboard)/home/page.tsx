@@ -102,7 +102,7 @@ export default function Home() {
           onChange={(e) => setTaskTitle(e.target.value)}
           placeholder="e.g., Clean the entire house, Start a business..."
           disabled={isLoading}
-          className="w-full bg-surface border-2 border-surface-hover focus:border-primary/30 rounded-3xl px-8 py-6 text-lg md:text-xl outline-none transition-all shadow-sm focus:shadow-xl placeholder:opacity-30 pr-20"
+          className="w-full bg-surface border-2 border-transparent focus:border-primary/20 rounded-3xl px-8 py-6 text-lg md:text-xl outline-none transition-all shadow-sm focus:shadow-2xl focus:shadow-primary/5 placeholder:opacity-30 pr-20"
         />
         
         <button
