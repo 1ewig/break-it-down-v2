@@ -76,15 +76,6 @@ This project serves as a showcase for modern full-stack engineering patterns and
    ```
 
 ---
-
-## 🤝 Let's Connect
-
-This project demonstrates my ability to build highly specialized, AI-driven applications with a focus on **User Psychology**, **Performance**, and **Clean Code Architecture**.
-
-- **LinkedIn**: [Your Profile]
-- **Portfolio**: [Your Link]
-
----
 <div align="center">
   Built with care to make the impossible feel manageable.
 </div>
