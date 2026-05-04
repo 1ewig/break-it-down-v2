@@ -39,6 +39,3 @@ yarn-error.log*
 
 # Turbo
 .turbo
-
-# Local Documentation / Analysis
-/docs/

@@ -47,13 +47,17 @@ This project serves as a showcase for modern full-stack engineering patterns and
 ```text
 ├── app/                  # Next.js 15 App Router (Route Groups & Server Components)
 ├── components/           # Atomic UI Design System
-│   ├── tasks/            # Complex business logic components (StepItem, TaskCard)
-│   └── ui/               # Reusable primitive components
+├── docs/                 # Technical documentation & Architecture
 ├── store/                # Zustand global state (UI preferences & local persistence)
 ├── hooks/                # Specialized TanStack Query hooks for server state
 ├── lib/                  # Core utilities (AI prompts, Animation system, DB config)
 └── types/                # Strict TypeScript interface definitions
 ```
+
+## 📖 Documentation
+For a deep dive into the engineering patterns, AI prompts, and design philosophy:
+- **[Architecture & AI Handover](./docs/ARCHITECTURE.md)**
+- **[Implementation Plan](./docs/IMPLEMENTATION_PLAN.md)**
 
 ## 🚀 Getting Started
 
