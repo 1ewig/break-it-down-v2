@@ -348,7 +348,6 @@ export async function createTaskWithStepsFromAI(
 
   const newTask: Task = {
     id: taskId,
-    user_id: 'anonymous',
     title: aiData.title || taskTitle,
     affirmation: aiData.affirmation,
     closing_tip: aiData.closing_tip,
