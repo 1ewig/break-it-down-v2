@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Sparkles, ChevronDown, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 import { FADE_UP, STAGGER_CONTAINER } from '@/lib/motion';
 
 const TYPING_PHRASES = [
@@ -135,13 +136,15 @@ export default function HeroSection() {
               <span className="inline-block w-px h-5 bg-white/50 animate-pulse ml-0.5 align-middle" />
             </p>
           </div>
-          <motion.button
-            whileHover={{ scale: 1.06 }}
-            whileTap={{ scale: 0.94 }}
-            className="flex items-center justify-center w-[48px] h-[48px] rounded-xl bg-emerald text-white shadow-[0_4px_20px_rgba(74,160,115,0.4)] flex-shrink-0"
-          >
-            <ArrowRight size={20} />
-          </motion.button>
+          <Link href="/home">
+            <motion.button
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.94 }}
+              className="flex items-center justify-center w-[48px] h-[48px] rounded-xl bg-emerald text-white shadow-[0_4px_20px_rgba(74,160,115,0.4)] flex-shrink-0"
+            >
+              <ArrowRight size={20} />
+            </motion.button>
+          </Link>
         </motion.div>
 
         {/* Powered By Label */}

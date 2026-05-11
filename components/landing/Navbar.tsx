@@ -47,13 +47,15 @@ export default function Navbar() {
             <motion.span whileHover={{ scale: 1.02 }} className="inline-block">For Who</motion.span>
           </Link>
 
-          <motion.button
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            className="bg-emerald text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-[#5BB585] transition-colors"
-          >
-            Get Started Free
-          </motion.button>
+          <Link href="/home">
+            <motion.div
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+              className="bg-emerald text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-[#5BB585] transition-colors cursor-pointer"
+            >
+              Get Started Free
+            </motion.div>
+          </Link>
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -94,9 +96,9 @@ export default function Navbar() {
           <Link href="#for-who" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-white/80 hover:text-white">
             For Who
           </Link>
-          <button className="bg-emerald text-white font-semibold text-base py-3 rounded-xl mt-4">
+          <Link href="/home" className="bg-emerald text-white font-semibold text-base py-3 rounded-xl mt-4 text-center">
             Get Started Free
-          </button>
+          </Link>
         </div>
       </motion.div>
     </>

@@ -88,13 +88,15 @@ export default function CtaSection() {
           transition={{ ...SPRING_GENTLE, delay: 0.3 }}
           className="flex flex-col items-center gap-6"
         >
-          <motion.button
-            whileHover={{ scale: 1.05, boxShadow: '0 12px 60px rgba(74,160,115,0.5)' }}
-            whileTap={{ scale: 0.97 }}
-            className="bg-emerald text-white font-bold text-lg px-10 py-4 rounded-2xl shadow-[0_8px_40px_rgba(74,160,115,0.35)] flex items-center justify-center hover:bg-[#5BB585] transition-colors"
-          >
-            Break Down My First Task <ArrowRight size={20} className="inline-block ml-2" />
-          </motion.button>
+          <Link href="/home">
+            <motion.div
+              whileHover={{ scale: 1.05, boxShadow: '0 12px 60px rgba(74,160,115,0.5)' }}
+              whileTap={{ scale: 0.97 }}
+              className="bg-emerald text-white font-bold text-lg px-10 py-4 rounded-2xl shadow-[0_8px_40px_rgba(74,160,115,0.35)] flex items-center justify-center hover:bg-[#5BB585] transition-colors cursor-pointer"
+            >
+              Break Down My First Task <ArrowRight size={20} className="inline-block ml-2" />
+            </motion.div>
+          </Link>
           
           <Link href="#how-it-works" className="text-white/35 hover:text-white/65 font-medium text-sm transition-colors">
             See how it works ↓
