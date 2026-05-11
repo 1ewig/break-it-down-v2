@@ -1,3 +1,5 @@
+'use client';
+
 import { TaskWithSteps } from '@/types';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import Link from 'next/link';
