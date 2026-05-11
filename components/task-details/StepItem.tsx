@@ -6,9 +6,10 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Loader2, ChevronDown, Clock, Package, Info, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { FADE_IN_UP, ACCORDION_ANIMATION, SPRING_GENTLE } from '@/lib/animations';
+import { Step } from '@/types';
 
 interface StepItemProps {
-  step: any;
+  step: Step;
   children?: React.ReactNode;
   onToggleComplete: (taskId: string, stepId: string, isCompleted: boolean) => void;
   onBreakdown: (taskId: string, stepId: string, stepTitle: string) => void;

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { getTasksWithSteps } from '@/lib/db/indexedDB';
+import { getTasksWithSteps, getTaskWithSteps } from '@/lib/db/indexedDB';
+import { TaskWithSteps } from '@/types';
 
 export function useTasksQuery() {
   return useQuery({
@@ -7,5 +8,15 @@ export function useTasksQuery() {
     queryFn: async () => {
       return getTasksWithSteps();
     },
+  });
+}
+
+export function useTaskQuery(taskId: string) {
+  return useQuery({
+    queryKey: ['task', taskId],
+    queryFn: async () => {
+      return getTaskWithSteps(taskId);
+    },
+    enabled: !!taskId,
   });
 }

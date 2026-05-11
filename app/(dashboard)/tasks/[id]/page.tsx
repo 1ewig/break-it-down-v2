@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useTasksQuery } from '@/hooks/useTasksQuery';
+import { useTaskQuery } from '@/hooks/useTasksQuery';
 import { useTaskMutations } from '@/hooks/useTaskMutations';
 import { TaskDetailsHeader } from '@/components/task-details/TaskDetailsHeader';
 import { TaskDetailsSteps } from '@/components/task-details/TaskDetailsSteps';
@@ -14,11 +14,10 @@ import { STAGGER_CONTAINER } from '@/lib/animations';
 export default function TaskDetailPage() {
   const params = useParams();
   const id = params?.id as string;
-  
-  const { data: tasks = [], isLoading } = useTasksQuery();
+
+  const { data: task, isLoading } = useTaskQuery(id);
   const { updateStepCompletion, breakdownTask } = useTaskMutations();
-  
-  const task = tasks.find(t => t.id === id);
+
   const breakingStepId = breakdownTask.isPending ? breakdownTask.variables?.stepId ?? null : null;
 
   if (isLoading) {
