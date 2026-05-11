@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useTasksQuery } from '@/hooks/queries/useTasksQuery';
+import { useTasksQuery } from '@/hooks/useTasksQuery';
 import { TaskDetailsHeader } from '@/components/task-details/TaskDetailsHeader';
 import { TaskDetailsSteps } from '@/components/task-details/TaskDetailsSteps';
 import { TaskDetailsClosingTip } from '@/components/task-details/TaskDetailsClosingTip';
@@ -10,9 +10,6 @@ import { TaskDetailsNotFound } from '@/components/task-details/TaskDetailsNotFou
 import { motion } from 'motion/react';
 import { STAGGER_CONTAINER } from '@/lib/animations';
 
-/**
- * Next.js Orchestration Page: Mounts the decoupled task details layout elements.
- */
 export default function TaskDetailPage() {
   const params = useParams();
   const id = params?.id as string;

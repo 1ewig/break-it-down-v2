@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Loader2, ChevronDown, Clock, Package, Info, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { FADE_IN_UP, ACCORDION_ANIMATION, SPRING_GENTLE } from '@/lib/animations';
-import { useTaskMutations } from '@/hooks/mutations/useTaskMutations';
+import { useTaskMutations } from '@/hooks/useTaskMutations';
 
 interface StepItemProps {
   step: any;

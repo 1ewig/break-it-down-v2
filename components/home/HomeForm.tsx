@@ -2,25 +2,33 @@
 
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useHomeForm } from '@/hooks/home/useHomeForm';
 import { FADE_IN_UP } from '@/lib/animations';
 
-/**
- * Dumb form component for typing the big scary task. It calls the useHomeForm hook for all state & logic.
- */
-export function HomeForm() {
-  const { taskTitle, setTaskTitle, handleSubmit, isPending, canSubmit } = useHomeForm();
+interface HomeFormProps {
+  taskTitle: string;
+  onTitleChange: (value: string) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  isPending: boolean;
+  canSubmit: boolean;
+}
 
+export function HomeForm({ 
+  taskTitle, 
+  onTitleChange, 
+  onSubmit, 
+  isPending, 
+  canSubmit 
+}: HomeFormProps) {
   return (
     <motion.form 
-      onSubmit={handleSubmit}
+      onSubmit={onSubmit}
       variants={FADE_IN_UP}
       className="w-full relative"
     >
       <input
         type="text"
         value={taskTitle}
-        onChange={(e) => setTaskTitle(e.target.value)}
+        onChange={(e) => onTitleChange(e.target.value)}
         placeholder="e.g., Clean the entire house, Start a business..."
         disabled={isPending}
         className="w-full bg-surface border-2 border-transparent focus:border-primary/20 rounded-3xl px-8 py-6 text-lg md:text-xl outline-none transition-all shadow-sm focus:shadow-2xl focus:shadow-primary/5 placeholder:opacity-30 pr-20"

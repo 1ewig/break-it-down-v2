@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-export function useGentleNotifications() {
+export function useNotifications() {
   const [enabled, setEnabled] = useState(false);
   const [permission, setPermission] = useState<NotificationPermission>('default');
 
@@ -22,7 +22,6 @@ export function useGentleNotifications() {
       if (result === 'granted') {
         setEnabled(true);
         localStorage.setItem('gentle_notifications', 'true');
-        // Example gentle notification
         new Notification("Take your time", { 
           body: "Gentle nudges are enabled. You can rest whenever you need.", 
           icon: "/favicon.ico" 

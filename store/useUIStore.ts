@@ -7,9 +7,9 @@ interface UIState {
   setSidebarOpen: (isOpen: boolean) => void;
   toggleSidebar: () => void;
 
-  // Persisted Preferences
-  isGentleMode: boolean;
-  toggleGentleMode: () => void;
+  // User Preferences
+  userName: string;
+  setUserName: (name: string) => void;
 }
 
 export const useUIStore = create<UIState>()(
@@ -19,13 +19,12 @@ export const useUIStore = create<UIState>()(
       setSidebarOpen: (isOpen) => set({ isSidebarOpen: isOpen }),
       toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
 
-      isGentleMode: true,
-      toggleGentleMode: () => set((state) => ({ isGentleMode: !state.isGentleMode })),
+      userName: '',
+      setUserName: (name) => set({ userName: name }),
     }),
     {
       name: 'break-it-down-ui-preferences',
-      // Only persist the user preferences, not transient UI state like sidebar or loading
-      partialize: (state) => ({ isGentleMode: state.isGentleMode }),
+      partialize: (state) => ({ userName: state.userName }),
     }
   )
 );
