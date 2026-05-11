@@ -10,6 +10,12 @@ interface UIState {
   // User Preferences
   userName: string;
   setUserName: (name: string) => void;
+
+  // Notifications
+  notificationsEnabled: boolean;
+  setNotificationsEnabled: (enabled: boolean) => void;
+  notificationPermission: NotificationPermission;
+  setNotificationPermission: (permission: NotificationPermission) => void;
 }
 
 export const useUIStore = create<UIState>()(
@@ -21,10 +27,18 @@ export const useUIStore = create<UIState>()(
 
       userName: '',
       setUserName: (name) => set({ userName: name }),
+
+      notificationsEnabled: false,
+      setNotificationsEnabled: (enabled) => set({ notificationsEnabled: enabled }),
+      notificationPermission: 'default',
+      setNotificationPermission: (permission) => set({ notificationPermission: permission }),
     }),
     {
       name: 'break-it-down-ui-preferences',
-      partialize: (state) => ({ userName: state.userName }),
+      partialize: (state) => ({
+        userName: state.userName,
+        notificationsEnabled: state.notificationsEnabled,
+      }),
     }
   )
 );
