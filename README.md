@@ -6,7 +6,7 @@
 
   [![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)](https://nextjs.org/)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
-  [![Supabase](https://img.shields.io/badge/Supabase-Persistence-green?style=flat-square&logo=supabase)](https://supabase.com/)
+  [![IndexedDB](https://img.shields.io/badge/IndexedDB-Persistence-blue?style=flat-square)](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
   [![Zustand](https://img.shields.io/badge/Zustand-State-orange?style=flat-square)](https://zustand-demo.pmnd.rs/)
   [![Tailwind CSS](https://img.shields.io/badge/Tailwind-Styling-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
   [![Groq](https://img.shields.io/badge/AI-Groq%20%2F%20Llama%203.3-red?style=flat-square)](https://groq.com/)
@@ -32,15 +32,15 @@ This project serves as a showcase for modern full-stack engineering patterns and
 
 ### ⚡ Advanced State Management
 - **Dual-Layer Sync**: Orchestrated a robust state system using **Zustand** for transient UI state and **TanStack Query** for server state.
-- **Optimistic UI**: All task interactions (completion, creation, deletion) update the UI instantly via optimistic cache mutations, providing a zero-latency feel while syncing with Supabase in the background.
+- **Optimistic UI**: All task interactions (completion, creation, deletion) update the UI instantly via optimistic cache mutations, providing a zero-latency feel while persisting asynchronously to IndexedDB in the background.
 
 ### 🍃 Custom Motion System
 - **Centralized Animation Physics**: Developed a custom animation library built on top of **Framer Motion**, utilizing specialized spring physics (`SPRING_GENTLE`) to maintain a "weighted" and "organic" feel across the entire app.
 - **Layout Projection**: Leveraging Framer Motion's layout projection to handle complex list reordering and expansion without layout thrashing.
 
-### ☁️ Persistent Architecture
-- **Supabase Integration**: Real-time persistence with PostgreSQL.
-- **Offline-First Persistence**: Middleware-driven `localStorage` sync ensures the app remains functional and responsive even with intermittent connectivity.
+### 💾 Persistent Architecture
+- **Offline-First Storage**: Implemented via a low-level, high-performance **IndexedDB** database layout (defined in `lib/db/indexedDB.ts`), securing data directly inside the browser.
+- **Robust Schema**: Strict object stores for both parent-level tasks and multi-level recursively nested sub-steps.
 
 ## 📂 Architecture at a Glance
 
@@ -70,8 +70,6 @@ For a deep dive into the engineering patterns, AI prompts, and design philosophy
    Create a `.env.local` file with the following:
    ```env
    GROQ_API_KEY=your_key_here
-   NEXT_PUBLIC_SUPABASE_URL=your_url_here
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key_here
    ```
 
 3. **Launch**
