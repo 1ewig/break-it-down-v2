@@ -2,12 +2,22 @@
 
 @theme {
   --font-sans: var(--font-quicksand), "Inter", sans-serif;
+  
+  /* App Colors */
   --color-background: #121212;
   --color-surface: #1E1E24;
   --color-primary: #A3B18A;
   --color-secondary: #BDB2FF;
   --color-text-primary: #F8F9FA;
   --color-text-secondary: #8D99AE;
+  
+  /* Landing Page Colors */
+  --color-charcoal: #121413;
+  --color-charcoal-mid: #1C1F1D;
+  --color-charcoal-surface: #252927;
+  --color-emerald: #4AA073;
+  --color-forest: #2C5E43;
+  --color-mint: #D2EADF;
 }
 
 @layer base {
