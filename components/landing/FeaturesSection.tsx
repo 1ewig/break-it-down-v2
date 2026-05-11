@@ -8,6 +8,7 @@ export default function FeaturesSection() {
   return (
     <section id="features" className="bg-charcoal py-[clamp(5rem,8vw,8rem)] px-6">
       <div className="max-w-[1100px] w-full mx-auto flex flex-col gap-12">
+        {/* Header */}
         <div className="flex flex-col items-center text-center gap-4">
           <motion.div
             variants={FADE_UP}
@@ -27,7 +28,9 @@ export default function FeaturesSection() {
           </motion.h2>
         </div>
 
+        {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* Card 1: Large Hero Feature */}
           <motion.div
             variants={FADE_UP}
             initial="initial"
@@ -36,6 +39,7 @@ export default function FeaturesSection() {
             className="col-span-1 md:col-span-2 bg-white/5 border border-white/10 rounded-3xl p-8 lg:p-12 transition-all duration-300"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+              {/* Left Side: Text */}
               <div className="flex flex-col items-start gap-4">
                 <div className="w-14 h-14 rounded-2xl bg-emerald/10 border border-emerald/20 flex items-center justify-center mb-2">
                   <Infinity size={28} className="text-emerald" />
@@ -49,6 +53,7 @@ export default function FeaturesSection() {
                 </div>
               </div>
 
+              {/* Right Side: Visual Diagram */}
               <div className="relative flex flex-col items-start w-full">
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
@@ -87,12 +92,13 @@ export default function FeaturesSection() {
                   transition={{ delay: 0.8 }}
                   className="text-emerald text-xs font-semibold ml-[3rem] mt-3 flex items-center gap-1.5"
                 >
-                  <span className="text-[10px]">✓</span> That's it. You're doing great.
+                  <span className="text-[10px]">✓</span> That&apos;s it. You&apos;re doing great.
                 </motion.p>
               </div>
             </div>
           </motion.div>
 
+          {/* Card 2: Speed */}
           <motion.div
             variants={FADE_UP}
             initial="initial"
@@ -106,10 +112,11 @@ export default function FeaturesSection() {
             </div>
             <h3 className="text-white font-bold text-lg">Instant AI Breakdown</h3>
             <p className="text-white/50 text-sm leading-relaxed">
-              Groq's Llama 3.3 processes your task in under a second. No waiting. No loading spinners. Just steps, instantly.
+              Groq&apos;s Llama 3.3 processes your task in under a second. No waiting. No loading spinners. Just steps, instantly.
             </p>
           </motion.div>
 
+          {/* Card 3: Empathetic Language */}
           <motion.div
             variants={FADE_UP}
             initial="initial"
@@ -121,12 +128,13 @@ export default function FeaturesSection() {
             <div className="w-10 h-10 rounded-xl bg-emerald/10 flex items-center justify-center">
               <Heart size={20} className="text-emerald" />
             </div>
-            <h3 className="text-white font-bold text-lg">Words That Don't Judge</h3>
+            <h3 className="text-white font-bold text-lg">Words That Don&apos;t Judge</h3>
             <p className="text-white/50 text-sm leading-relaxed">
-              Every step is written to be encouraging. The AI uses language calibrated for anxiety, burnout, and executive dysfunction. No 'just do it' energy.
+              Every step is written to be encouraging. The AI uses language calibrated for anxiety, burnout, and executive dysfunction. No &apos;just do it&apos; energy.
             </p>
           </motion.div>
 
+          {/* Card 4: Progress */}
           <motion.div
             variants={FADE_UP}
             initial="initial"
@@ -140,10 +148,11 @@ export default function FeaturesSection() {
             </div>
             <h3 className="text-white font-bold text-lg">Gentle Progress Tracking</h3>
             <p className="text-white/50 text-sm leading-relaxed">
-              See how far you've come, not how far you have to go. Progress bars are designed to celebrate tiny wins, not remind you of the gap.
+              See how far you&apos;ve come, not how far you have to go. Progress bars are designed to celebrate tiny wins, not remind you of the gap.
             </p>
           </motion.div>
 
+          {/* Card 5: Dark Interface */}
           <motion.div
             variants={FADE_UP}
             initial="initial"
@@ -161,6 +170,7 @@ export default function FeaturesSection() {
             </p>
           </motion.div>
 
+          {/* Card 6: Offline-First Sessions (Wait, it says "Offline-First Sessions" but body says "Your broken-down tasks are saved". Let's assume it's just saved state) */}
           <motion.div
             variants={FADE_UP}
             initial="initial"
@@ -177,6 +187,7 @@ export default function FeaturesSection() {
               Your broken-down tasks are saved so you can come back anytime. Pick up exactly where you left off, even after closing the app.
             </p>
           </motion.div>
+
         </div>
       </div>
     </section>

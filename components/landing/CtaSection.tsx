@@ -8,6 +8,7 @@ import Link from 'next/link';
 export default function CtaSection() {
   return (
     <section className="relative bg-charcoal overflow-hidden py-[clamp(6rem,10vw,10rem)] px-6">
+      {/* Ambient Background */}
       <div className="absolute inset-0 pointer-events-none">
         <motion.div
           animate={{ y: [0, -12, 0] }}
@@ -40,6 +41,7 @@ export default function CtaSection() {
       </div>
 
       <div className="relative z-10 max-w-[800px] w-full mx-auto flex flex-col items-center gap-10 text-center">
+        {/* Sparkle Badge */}
         <motion.div
           variants={FADE_UP}
           initial="initial"
@@ -51,6 +53,7 @@ export default function CtaSection() {
           <Sparkles size={28} className="text-emerald" />
         </motion.div>
 
+        {/* Headings */}
         <div className="flex flex-col gap-6 items-center">
           <motion.h2
             variants={FADE_UP}
@@ -61,7 +64,7 @@ export default function CtaSection() {
           >
             The hardest part <br />
             is deciding to start. <br />
-            <span className="text-emerald">We've got the rest.</span>
+            <span className="text-emerald">We&apos;ve got the rest.</span>
           </motion.h2>
           
           <motion.p
@@ -71,10 +74,11 @@ export default function CtaSection() {
             transition={{ ...SPRING_GENTLE, delay: 0.2 }}
             className="text-white/45 font-medium text-base max-w-[480px] leading-relaxed"
           >
-            Free to use. No account required. Just type what's overwhelming you and let us make it tiny.
+            Free to use. No account required. Just type what&apos;s overwhelming you and let us make it tiny.
           </motion.p>
         </div>
 
+        {/* Buttons */}
         <motion.div
           variants={FADE_UP}
           initial="initial"
@@ -82,21 +86,20 @@ export default function CtaSection() {
           transition={{ ...SPRING_GENTLE, delay: 0.3 }}
           className="flex flex-col items-center gap-6"
         >
-          <Link href="/home">
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: '0 12px 60px rgba(74,160,115,0.5)' }}
-              whileTap={{ scale: 0.97 }}
-              className="bg-emerald text-white font-bold text-lg px-10 py-4 rounded-2xl shadow-[0_8px_40px_rgba(74,160,115,0.35)] flex items-center justify-center hover:bg-[#5BB585] transition-colors"
-            >
-              Break Down My First Task <ArrowRight size={20} className="inline-block ml-2" />
-            </motion.button>
-          </Link>
+          <motion.button
+            whileHover={{ scale: 1.05, boxShadow: '0 12px 60px rgba(74,160,115,0.5)' }}
+            whileTap={{ scale: 0.97 }}
+            className="bg-emerald text-white font-bold text-lg px-10 py-4 rounded-2xl shadow-[0_8px_40px_rgba(74,160,115,0.35)] flex items-center justify-center hover:bg-[#5BB585] transition-colors"
+          >
+            Break Down My First Task <ArrowRight size={20} className="inline-block ml-2" />
+          </motion.button>
           
           <Link href="#how-it-works" className="text-white/35 hover:text-white/65 font-medium text-sm transition-colors">
             See how it works ↓
           </Link>
         </motion.div>
 
+        {/* Feature Ticks */}
         <motion.div
           variants={FADE_UP}
           initial="initial"
@@ -104,7 +107,7 @@ export default function CtaSection() {
           transition={{ ...SPRING_GENTLE, delay: 0.4 }}
           className="flex flex-row flex-wrap items-center justify-center gap-6 md:gap-8 mt-4"
         >
-          {['Free forever', 'No signup needed', 'Built for overwhelmed brains'].map((text, i) => (
+          {[ 'Free forever', 'No signup needed', 'Built for overwhelmed brains' ].map((text, i) => (
             <div key={i} className="flex items-center gap-2">
               <span className="text-emerald font-bold text-sm">✓</span>
               <span className="text-white/35 font-medium text-xs">{text}</span>

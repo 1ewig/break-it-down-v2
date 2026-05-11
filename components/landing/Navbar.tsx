@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, useScroll, useMotionValueEvent } from 'motion/react';
+import { motion, useScroll, useTransform, useMotionValueEvent } from 'motion/react';
 import { Sparkles, Menu, X } from 'lucide-react';
 import { SPRING_GENTLE } from '@/lib/motion';
 import Link from 'next/link';
@@ -27,6 +27,7 @@ export default function Navbar() {
         transition={SPRING_GENTLE}
         className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between h-[68px] px-6 lg:px-12"
       >
+        {/* Left Side — Wordmark */}
         <Link href="/" className="flex items-center gap-[0.6rem] group">
           <div className="flex items-center justify-center w-[28px] h-[28px] bg-white/10 rounded-lg">
             <Sparkles size={14} className="text-white" />
@@ -34,6 +35,7 @@ export default function Navbar() {
           <span className="font-bold text-lg text-white font-sans tracking-tight">Break It Down</span>
         </Link>
 
+        {/* Right Side — Navigation Links + CTA (Desktop) */}
         <div className="hidden md:flex items-center gap-8">
           <Link href="#features" className="text-sm font-medium text-white/65 hover:text-white transition-colors">
             <motion.span whileHover={{ scale: 1.02 }} className="inline-block">Features</motion.span>
@@ -45,17 +47,16 @@ export default function Navbar() {
             <motion.span whileHover={{ scale: 1.02 }} className="inline-block">For Who</motion.span>
           </Link>
 
-          <Link href="/home">
-            <motion.button
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.97 }}
-              className="bg-emerald text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-[#5BB585] transition-colors"
-            >
-              Get Started Free
-            </motion.button>
-          </Link>
+          <motion.button
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
+            className="bg-emerald text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-[#5BB585] transition-colors"
+          >
+            Get Started Free
+          </motion.button>
         </div>
 
+        {/* Mobile Menu Toggle */}
         <button
           className="md:hidden text-white/70"
           onClick={() => setIsMobileMenuOpen(true)}
@@ -64,6 +65,7 @@ export default function Navbar() {
         </button>
       </motion.nav>
 
+      {/* Mobile Drawer */}
       <motion.div
         initial={false}
         animate={{ x: isMobileMenuOpen ? '0%' : '-100%' }}
@@ -92,9 +94,9 @@ export default function Navbar() {
           <Link href="#for-who" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-white/80 hover:text-white">
             For Who
           </Link>
-          <Link href="/home" onClick={() => setIsMobileMenuOpen(false)} className="bg-emerald text-white font-semibold text-base py-3 rounded-xl mt-4 text-center">
+          <button className="bg-emerald text-white font-semibold text-base py-3 rounded-xl mt-4">
             Get Started Free
-          </Link>
+          </button>
         </div>
       </motion.div>
     </>

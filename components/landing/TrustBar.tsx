@@ -15,6 +15,7 @@ export default function TrustBar() {
   return (
     <div className="w-full bg-white/2 border-y border-white/5 py-5 overflow-hidden flex items-center">
       <div className="flex w-max animate-[marquee_40s_linear_infinite]" aria-hidden="true">
+        {/* Double the items to create a seamless loop */}
         {[...items, ...items].map((item, i) => (
           <div key={i} className="flex items-center">
             <span className="text-white/40 font-medium text-sm whitespace-nowrap">

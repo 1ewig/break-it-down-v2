@@ -8,6 +8,7 @@ export default function TechSection() {
   return (
     <section className="bg-[#0F1210] py-[clamp(5rem,8vw,8rem)] px-6">
       <div className="max-w-[900px] w-full mx-auto">
+        {/* Header */}
         <div className="flex flex-col items-center text-center gap-4 mb-16">
           <motion.div
             variants={FADE_UP}
@@ -27,7 +28,9 @@ export default function TechSection() {
           </motion.h2>
         </div>
 
+        {/* Content Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          {/* Left Column — Text */}
           <motion.div
             variants={FADE_UP}
             initial="initial"
@@ -37,17 +40,18 @@ export default function TechSection() {
             <h3 className="text-white font-bold text-xl lg:text-2xl">Calibrated Prompting for Empathy</h3>
             <div className="flex flex-col gap-5 text-white/50 text-sm font-normal leading-[1.8]">
               <p>
-                Break It Down doesn't use a generic productivity prompt. Every task breakdown is generated with a system-level instruction set engineered specifically for people experiencing ADHD, burnout, anxiety, or executive dysfunction.
+                Break It Down doesn&apos;t use a generic productivity prompt. Every task breakdown is generated with a system-level instruction set engineered specifically for people experiencing ADHD, burnout, anxiety, or executive dysfunction.
               </p>
               <p>
-                The AI is instructed to: write at a 6th-grade reading level for clarity, never use imperative commanding language, add one micro-encouragement per step, and always present the absolute minimum viable action — not what's efficient, what's possible.
+                The AI is instructed to: write at a 6th-grade reading level for clarity, never use imperative commanding language, add one micro-encouragement per step, and always present the absolute minimum viable action — not what&apos;s efficient, what&apos;s possible.
               </p>
               <p>
-                Powered by Groq's ultra-low-latency inference with Llama 3.3 70B — the steps appear almost instantly, feeling like a real-time co-pilot rather than a slow tool.
+                Powered by Groq&apos;s ultra-low-latency inference with Llama 3.3 70B — the steps appear almost instantly, feeling like a real-time co-pilot rather than a slow tool.
               </p>
             </div>
           </motion.div>
 
+          {/* Right Column — Stack */}
           <div className="flex flex-col gap-4">
             {[
               {

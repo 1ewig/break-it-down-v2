@@ -4,12 +4,16 @@ import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Sparkles, ChevronDown, ArrowRight } from 'lucide-react';
 import { FADE_UP, STAGGER_CONTAINER } from '@/lib/motion';
-import Link from 'next/link';
 
 const TYPING_PHRASES = [
   'Clean my entire apartment...',
   'Start my business plan...',
-  'Reply to all my emails...'
+  'Reply to all my emails...',
+  "Plan my sister's wedding...",
+  'Organize my digital clutter...',
+  'Research new career paths...',
+  'Write my first novel...',
+  'Prep for the big presentation...'
 ];
 
 export default function HeroSection() {
@@ -30,8 +34,11 @@ export default function HeroSection() {
     }
 
     if (isDeleting && typedText === '') {
-      setIsDeleting(false);
-      setCurrentPhraseIndex((prev) => (prev + 1) % TYPING_PHRASES.length);
+      const nextIndex = (currentPhraseIndex + 1) % TYPING_PHRASES.length;
+      setTimeout(() => {
+        setIsDeleting(false);
+        setCurrentPhraseIndex(nextIndex);
+      }, 0);
       return;
     }
 
@@ -46,6 +53,7 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-[100vh] bg-[#121413] flex flex-col items-center justify-center overflow-hidden">
+      {/* Ambient Background Layer */}
       <div className="absolute inset-0 pointer-events-none">
         <motion.div
           animate={{ y: [0, -12, 0] }}
@@ -77,12 +85,14 @@ export default function HeroSection() {
         </motion.div>
       </div>
 
+      {/* Content Stack */}
       <motion.div
         variants={STAGGER_CONTAINER}
         initial="initial"
         animate="whileInView"
         className="relative z-10 flex flex-col items-center gap-8 w-full max-w-[1200px] px-6 text-center"
       >
+        {/* App Icon Badge */}
         <motion.div
           variants={FADE_UP}
           animate={{ y: [0, -8, 0] }}
@@ -92,49 +102,53 @@ export default function HeroSection() {
           <Sparkles size={32} className="text-emerald" />
         </motion.div>
 
+        {/* Eyebrow Label */}
         <motion.div variants={FADE_UP} className="bg-emerald/10 border border-emerald/20 text-emerald text-xs uppercase tracking-[0.12em] font-semibold px-4 py-[0.3rem] rounded-full">
           Gentle AI Task Architect
         </motion.div>
 
+        {/* Headline */}
         <motion.h1
           variants={FADE_UP}
           className="text-white font-bold tracking-tight text-[clamp(2.5rem,7vw,5.5rem)] leading-[1.05]"
         >
-          What's on <br />
+          What&apos;s on <br />
           your mind<span className="text-emerald">?</span>
         </motion.h1>
 
+        {/* Subheadline */}
         <motion.p
           variants={FADE_UP}
           className="text-white/55 font-medium text-[clamp(1rem,2vw,1.25rem)] leading-[1.7] max-w-[480px]"
         >
           Type that big, overwhelming task. <br />
-          We'll break it into tiny, gentle steps for you.
+          We&apos;ll break it into tiny, gentle steps for you.
         </motion.p>
 
+        {/* Animated Input Mockup */}
         <motion.div variants={FADE_UP} className="flex items-center gap-3 w-full max-w-[560px] mt-4">
-          <Link href="/home" className="flex-1 h-[48px] bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl px-5 flex items-center shadow-inner overflow-hidden">
+          <div className="flex-1 h-[48px] bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl px-5 flex items-center shadow-inner overflow-hidden">
             <p className="text-white/35 font-medium text-base truncate">
               {typedText}
               <span className="inline-block w-px h-5 bg-white/50 animate-pulse ml-0.5 align-middle" />
             </p>
-          </Link>
-          <Link href="/home">
-            <motion.div
-              whileHover={{ scale: 1.06 }}
-              whileTap={{ scale: 0.94 }}
-              className="flex items-center justify-center w-[48px] h-[48px] rounded-xl bg-emerald text-white shadow-[0_4px_20px_rgba(74,160,115,0.4)] flex-shrink-0"
-            >
-              <ArrowRight size={20} />
-            </motion.div>
-          </Link>
+          </div>
+          <motion.button
+            whileHover={{ scale: 1.06 }}
+            whileTap={{ scale: 0.94 }}
+            className="flex items-center justify-center w-[48px] h-[48px] rounded-xl bg-emerald text-white shadow-[0_4px_20px_rgba(74,160,115,0.4)] flex-shrink-0"
+          >
+            <ArrowRight size={20} />
+          </motion.button>
         </motion.div>
 
+        {/* Powered By Label */}
         <motion.p variants={FADE_UP} className="text-white/30 text-xs font-medium">
           Powered by Groq & Llama 3.3 • Gentle AI
         </motion.p>
       </motion.div>
 
+      {/* Scroll Cue */}
       <motion.div
         style={{ opacity }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none"

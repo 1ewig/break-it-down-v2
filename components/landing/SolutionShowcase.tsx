@@ -2,12 +2,13 @@
 
 import { motion } from 'motion/react';
 import { FADE_UP } from '@/lib/motion';
-import { Sparkles, ChevronDown, MoveRight } from 'lucide-react';
+import { Sparkles, Check, ChevronDown, MoveRight } from 'lucide-react';
 
 export default function SolutionShowcase() {
   return (
     <section id="how-it-works" className="bg-[#0F1210] py-[clamp(5rem,8vw,8rem)] px-6">
       <div className="max-w-[1100px] w-full mx-auto">
+        {/* Header */}
         <div className="flex flex-col items-center text-center gap-5 mb-16">
           <motion.div
             variants={FADE_UP}
@@ -37,9 +38,12 @@ export default function SolutionShowcase() {
           </motion.p>
         </div>
 
+        {/* 3-Step Grid */}
         <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6">
+          {/* Connecting Line (Desktop) */}
           <div className="hidden md:block absolute top-[14px] left-[16.66%] right-[16.66%] h-px border-t border-dashed border-white/10 z-0" />
 
+          {/* Step 1 */}
           <motion.div
             variants={FADE_UP}
             initial="initial"
@@ -55,7 +59,7 @@ export default function SolutionShowcase() {
               <div className="w-[52px] h-[52px] rounded-full bg-emerald/15 border border-emerald/30 mb-6 flex items-center justify-center">
                 <Sparkles size={24} className="text-emerald" />
               </div>
-              <h3 className="text-white font-bold text-xl text-center mb-2">What's on your mind?</h3>
+              <h3 className="text-white font-bold text-xl text-center mb-2">What&apos;s on your mind?</h3>
               <p className="text-white/40 text-xs text-center mb-8">Type that big, overwhelming task.</p>
               
               <div className="w-full h-[48px] bg-white/5 border border-white/10 rounded-2xl flex items-center px-4 mb-4">
@@ -74,6 +78,7 @@ export default function SolutionShowcase() {
             </div>
           </motion.div>
 
+          {/* Step 2 */}
           <motion.div
             variants={FADE_UP}
             initial="initial"
@@ -117,6 +122,7 @@ export default function SolutionShowcase() {
             </div>
           </motion.div>
 
+          {/* Step 3 */}
           <motion.div
             variants={FADE_UP}
             initial="initial"
@@ -132,7 +138,7 @@ export default function SolutionShowcase() {
               <h3 className="text-white font-bold text-lg text-center mb-4 truncate">Finding Your Friends...</h3>
               
               <div className="bg-white/5 border border-white/10 rounded-xl p-3 mb-4">
-                <p className="text-white/50 text-[11px] text-center italic leading-relaxed">"It's perfectly okay to feel a little lost..."</p>
+                <p className="text-white/50 text-[11px] text-center italic leading-relaxed">&quot;It&apos;s perfectly okay to feel a little lost...&quot;</p>
               </div>
               
               <p className="text-white/40 text-xs mb-2">0 of 7 completed</p>
@@ -161,6 +167,7 @@ export default function SolutionShowcase() {
               <p className="text-white/45 text-xs leading-relaxed">Click any step to break it into even tinier micro-actions. Go as deep as you need. The AI has infinite patience.</p>
             </div>
           </motion.div>
+
         </div>
       </div>
     </section>

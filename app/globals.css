@@ -12,12 +12,22 @@
   --color-text-secondary: #8D99AE;
   
   /* Landing Page Colors */
+  --color-cream: #FAF8F5;
+  --color-sage-tint: #F1F5F2;
   --color-charcoal: #121413;
   --color-charcoal-mid: #1C1F1D;
   --color-charcoal-surface: #252927;
-  --color-emerald: #4AA073;
   --color-forest: #2C5E43;
+  --color-emerald: #4AA073;
   --color-mint: #D2EADF;
+  --color-slate-text: #1F2421;
+  --color-sand: #E9E3DB;
+  --color-clay: #D6CFC7;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
 }
 
 @layer base {

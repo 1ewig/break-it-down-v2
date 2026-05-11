@@ -1,6 +1,11 @@
 import { Variants, Transition } from 'motion/react';
 
 /**
+ * App animations - used for the dashboard pages (home, tasks, settings, task-details)
+ * Import from '@/lib/animations'
+ */
+
+/**
  * Standard spring transition for a "gentle" feel.
  */
 export const SPRING_GENTLE: Transition = {

@@ -9,6 +9,7 @@ export default function Footer() {
   return (
     <footer className="bg-[#0C0F0D] pt-12 pb-12 px-[clamp(1.5rem,5vw,5rem)]">
       <div className="max-w-[1200px] w-full mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 items-start relative z-10">
+        {/* Brand */}
         <motion.div 
           variants={FADE_UP}
           initial="initial"
@@ -29,6 +30,7 @@ export default function Footer() {
           </p>
         </motion.div>
 
+        {/* Navigation */}
         <motion.div 
           variants={FADE_UP}
           initial="initial"
@@ -40,20 +42,17 @@ export default function Footer() {
             APP
           </h4>
           <div className="flex flex-col gap-3">
-            {[
-              { name: 'Home', href: '/home' },
-              { name: 'My Tasks', href: '/tasks' },
-              { name: 'Settings', href: '/settings' }
-            ].map((link, i) => (
+            {[ 'Home', 'My Tasks', 'Settings' ].map((link, i) => (
               <motion.div key={i} whileHover={{ x: 3 }}>
-                <Link href={link.href} className="text-white/40 hover:text-white/75 font-medium text-sm transition-colors block">
-                  {link.name}
+                <Link href="#" className="text-white/40 hover:text-white/75 font-medium text-sm transition-colors block">
+                  {link}
                 </Link>
               </motion.div>
             ))}
           </div>
         </motion.div>
 
+        {/* Info */}
         <motion.div 
           variants={FADE_UP}
           initial="initial"
@@ -65,17 +64,18 @@ export default function Footer() {
             BUILT WITH
           </h4>
           <div className="flex flex-col gap-3">
-            {['Groq API', 'Llama 3.3', 'Next.js 15', 'Framer Motion'].map((item, i) => (
+            {[ 'Groq API', 'Llama 3.3', 'Next.js 15', 'Framer Motion' ].map((item, i) => (
                <motion.div key={i} whileHover={{ x: 3 }}>
-               <span className="text-white/40 font-medium text-sm block">
-                 {item}
-               </span>
-              </motion.div>
+                <Link href="#" className="text-white/40 hover:text-white/75 font-medium text-sm transition-colors block pointer-events-none">
+                  {item}
+                </Link>
+               </motion.div>
             ))}
           </div>
         </motion.div>
       </div>
 
+      {/* Bottom Bar */}
       <motion.div 
         variants={FADE_UP}
         initial="initial"
