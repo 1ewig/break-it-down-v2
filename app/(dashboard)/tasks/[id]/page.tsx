@@ -1,8 +1,6 @@
 'use client';
 
-import { useParams } from 'next/navigation';
-import { useTaskQuery } from '@/hooks/useTasksQuery';
-import { useTaskMutations } from '@/hooks/useTaskMutations';
+import { useTaskDetail } from '@/hooks/useTaskDetail';
 import { TaskDetailsHeader } from '@/components/task-details/TaskDetailsHeader';
 import { TaskDetailsSteps } from '@/components/task-details/TaskDetailsSteps';
 import { TaskDetailsClosingTip } from '@/components/task-details/TaskDetailsClosingTip';
@@ -12,13 +10,13 @@ import { motion } from 'motion/react';
 import { STAGGER_CONTAINER } from '@/lib/animations';
 
 export default function TaskDetailPage() {
-  const params = useParams();
-  const id = params?.id as string;
-
-  const { data: task, isLoading } = useTaskQuery(id);
-  const { updateStepCompletion, breakdownTask } = useTaskMutations();
-
-  const breakingStepId = breakdownTask.isPending ? breakdownTask.variables?.stepId ?? null : null;
+  const { 
+    task, 
+    isLoading, 
+    breakingStepId, 
+    handleToggleComplete, 
+    handleBreakdown 
+  } = useTaskDetail();
 
   if (isLoading) {
     return <TaskDetailsLoading />;
@@ -27,14 +25,6 @@ export default function TaskDetailPage() {
   if (!task) {
     return <TaskDetailsNotFound />;
   }
-
-  const handleToggleComplete = (taskId: string, stepId: string, isCompleted: boolean) => {
-    updateStepCompletion.mutate({ taskId, stepId, isCompleted });
-  };
-
-  const handleBreakdown = (taskId: string, stepId: string, stepTitle: string) => {
-    breakdownTask.mutate({ taskId, stepId, stepTitle });
-  };
 
   return (
     <motion.div 
