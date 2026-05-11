@@ -1,12 +1,14 @@
 import { groq } from '@ai-sdk/groq';
 import { generateText } from 'ai';
-import { supabase, hasSupabaseConfig } from '@/lib/supabase/client';
-
 import { TASK_BREAKDOWN_PROMPT } from '@/lib/ai/prompts';
 
 export const runtime = 'edge';
 export const maxDuration = 30;
 
+/**
+ * API route to break a step down into substeps using Llama 3.3.
+ * Returns the mapped substeps directly, leaving persistence entirely to the client.
+ */
 export async function POST(req: Request) {
   const { stepId, stepTitle, taskId } = await req.json();
 
@@ -36,11 +38,6 @@ export async function POST(req: Request) {
       order_index: idx,
       created_at: new Date().toISOString()
     }));
-
-
-    if (hasSupabaseConfig && supabase) {
-      await supabase.from('steps').insert(subSteps);
-    }
 
     return Response.json({ subSteps });
   } catch (error) {
