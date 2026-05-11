@@ -35,8 +35,9 @@ export default function FeaturesSection() {
             variants={FADE_UP}
             initial="initial"
             whileInView="whileInView"
+            transition={{ delay: 0 }}
             whileHover={{ y: -3, borderColor: 'rgba(74,160,115,0.25)', backgroundColor: 'rgba(255,255,255,0.06)' }}
-            className="col-span-1 md:col-span-2 bg-white/5 border border-white/10 rounded-3xl p-8 lg:p-12 transition-all duration-300"
+            className="col-span-1 md:col-span-2 bg-white/5 border border-white/10 rounded-3xl p-8 lg:p-12 transition-colors duration-300"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               {/* Left Side: Text */}
@@ -103,9 +104,9 @@ export default function FeaturesSection() {
             variants={FADE_UP}
             initial="initial"
             whileInView="whileInView"
-            transition={{ delay: 0.07 }}
+            transition={{ delay: 0.08 }}
             whileHover={{ y: -3, borderColor: 'rgba(74,160,115,0.25)', backgroundColor: 'rgba(255,255,255,0.06)' }}
-            className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-start gap-4 transition-all duration-300"
+            className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-start gap-4 transition-colors duration-300"
           >
             <div className="w-10 h-10 rounded-xl bg-emerald/10 flex items-center justify-center">
               <Zap size={20} className="text-emerald" />
@@ -121,9 +122,9 @@ export default function FeaturesSection() {
             variants={FADE_UP}
             initial="initial"
             whileInView="whileInView"
-            transition={{ delay: 0.14 }}
+            transition={{ delay: 0.16 }}
             whileHover={{ y: -3, borderColor: 'rgba(74,160,115,0.25)', backgroundColor: 'rgba(255,255,255,0.06)' }}
-            className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-start gap-4 transition-all duration-300"
+            className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-start gap-4 transition-colors duration-300"
           >
             <div className="w-10 h-10 rounded-xl bg-emerald/10 flex items-center justify-center">
               <Heart size={20} className="text-emerald" />
@@ -139,9 +140,9 @@ export default function FeaturesSection() {
             variants={FADE_UP}
             initial="initial"
             whileInView="whileInView"
-            transition={{ delay: 0.21 }}
+            transition={{ delay: 0.24 }}
             whileHover={{ y: -3, borderColor: 'rgba(74,160,115,0.25)', backgroundColor: 'rgba(255,255,255,0.06)' }}
-            className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-start gap-4 transition-all duration-300"
+            className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-start gap-4 transition-colors duration-300"
           >
             <div className="w-10 h-10 rounded-xl bg-emerald/10 flex items-center justify-center">
               <BarChart3 size={20} className="text-emerald" />
@@ -157,9 +158,9 @@ export default function FeaturesSection() {
             variants={FADE_UP}
             initial="initial"
             whileInView="whileInView"
-            transition={{ delay: 0.28 }}
+            transition={{ delay: 0.32 }}
             whileHover={{ y: -3, borderColor: 'rgba(74,160,115,0.25)', backgroundColor: 'rgba(255,255,255,0.06)' }}
-            className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-start gap-4 transition-all duration-300"
+            className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-start gap-4 transition-colors duration-300"
           >
             <div className="w-10 h-10 rounded-xl bg-emerald/10 flex items-center justify-center">
               <Moon size={20} className="text-emerald" />
@@ -170,14 +171,14 @@ export default function FeaturesSection() {
             </p>
           </motion.div>
 
-          {/* Card 6: Offline-First Sessions (Wait, it says "Offline-First Sessions" but body says "Your broken-down tasks are saved". Let's assume it's just saved state) */}
+          {/* Card 6: Tasks That Stick Around */}
           <motion.div
             variants={FADE_UP}
             initial="initial"
             whileInView="whileInView"
-            transition={{ delay: 0.35 }}
+            transition={{ delay: 0.4 }}
             whileHover={{ y: -3, borderColor: 'rgba(74,160,115,0.25)', backgroundColor: 'rgba(255,255,255,0.06)' }}
-            className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-start gap-4 transition-all duration-300"
+            className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-start gap-4 transition-colors duration-300"
           >
             <div className="w-10 h-10 rounded-xl bg-emerald/10 flex items-center justify-center">
               <Bookmark size={20} className="text-emerald" />

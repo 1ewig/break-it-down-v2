@@ -29,10 +29,7 @@ export const FADE_UP = {
   initial: { opacity: 0, y: 32 },      // Increased from 24 for smoother drift
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: '-100px' },  // Increased margin for earlier trigger
-  transition: { 
-    duration: 0.8,     // Slower, more elegant
-    ease: [0.22, 1, 0.36, 1]  // Quintic ease-out for buttery smoothness
-  }
+  transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] }
 };
 
 export const FADE_IN = {
