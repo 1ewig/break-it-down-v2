@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { TaskWithSteps, Step } from '@/types';
+import { TaskWithSteps } from '@/types';
 import { 
-  saveTask, 
   saveSteps, 
   deleteTask, 
-  updateStepCompletionInDB 
+  updateStepCompletionInDB,
+  createTaskWithStepsFromAI
 } from '@/lib/db/indexedDB';
 
 /**
@@ -99,52 +99,7 @@ export function useTaskMutations() {
       if (!response.ok) throw new Error('Failed to create task');
 
       const data = await response.json();
-      const taskId = `task-${Date.now()}`;
-
-      // Build out initial steps collection with local schemas
-      const stepsData: Step[] = data.steps.map((step: any, idx: number) => ({
-        id: `${taskId}-s-${idx}`,
-        task_id: taskId,
-        parent_step_id: null,
-        title: step.title,
-        subtitle: step.subtitle,
-        time_estimate: step.time_estimate,
-        materials: step.materials,
-        note: step.note,
-        why: step.why,
-        is_completed: false,
-        order_index: idx,
-        created_at: new Date().toISOString()
-      }));
-
-      // Persist Task to IndexedDB
-      await saveTask({
-        id: taskId,
-        user_id: 'anonymous',
-        title: data.title || taskTitle,
-        affirmation: data.affirmation,
-        closing_tip: data.closing_tip,
-        is_completed: false,
-        progress_percentage: 0,
-        created_at: new Date().toISOString()
-      });
-
-      // Bulk save Steps to IndexedDB
-      await saveSteps(stepsData);
-
-      const newTask: TaskWithSteps = {
-        id: taskId,
-        user_id: 'anonymous',
-        title: data.title || taskTitle,
-        affirmation: data.affirmation,
-        closing_tip: data.closing_tip,
-        is_completed: false,
-        progress_percentage: 0,
-        created_at: new Date().toISOString(),
-        steps: stepsData
-      };
-
-      return newTask;
+      return createTaskWithStepsFromAI(taskTitle, data);
     },
     onSuccess: () => {
       // Refresh list query
