@@ -2,42 +2,49 @@
 
 A "Gentle AI" task management system designed to reduce cognitive load through recursive AI-powered task decomposition and minimalist motion design.
 
+---
+
 ## 🧠 Application Philosophy
 "Break It Down" is not a standard productivity tool. It is built for users facing executive dysfunction or burnout. 
 - **The Goal**: Turn a "big scary task" into tiny, non-threatening steps.
 - **The Vibe**: Calming, low-pressure, and visually soft.
-- **AI Orchestration**: Groq (Llama 3.3) for all task and step breakdowns.
+- **AI Orchestration**: AI SDK (Groq/Llama 3.3) for all task and step breakdowns.
 - **The Interaction**: Infinite breakdown. Any step can be broken down into further steps.
 
 ## 🛠 Technical Stack
 - **Frontend**: Next.js 15 (App Router), TypeScript, Tailwind CSS.
 - **Animations**: Framer Motion (`motion/react`) using a centralized spring physics system.
-- **AI**: Groq/Llama for all task decomposition and affirmations.
-- **Storage**: Dual-layer sync:
-    - **Supabase**: PostgreSQL persistence (Tasks & Steps tables).
-    - **localStorage**: Immediate persistence and offline-first fallback.
+- **State Management**: 
+    - **React Query**: Server-state synchronization (Optimistic UI).
+    - **Zustand**: Client-side UI state and persistence.
+- **Storage**: Offline-first via **IndexedDB** (Dexie-like raw implementation in `lib/db/indexedDB.ts`).
+- **Upcoming**: **Convex** integration for cloud sync and user data storage.
 
 ## 📂 Project Structure
 
 ### `/app` (Routing & Pages)
-- `/(dashboard)/home`: The entry point. A focused AI input that accepts a "scary task" and generates the initial breakdown.
-- `/(dashboard)/tasks`: The dashboard view showing all active tasks in a grid.
-- `/(dashboard)/tasks/[id]`: The breakdown view. This is the heart of the app where users interact with steps and trigger further AI breakdowns.
-- `/api/tasks/create`: Handles the initial AI generation of a task using Groq.
-- `/api/tasks/breakdown`: Handles recursive breakdowns using Groq.
+- `/(dashboard)/home`: Entry point. Focused AI input.
+- `/(dashboard)/tasks`: Dashboard view showing all tasks.
+- `/(dashboard)/tasks/[id]`: Recursive breakdown view. Core interaction layer.
 
-### `/components` (UI & Logic)
-- `/tasks/StepItem.tsx`: The most complex component. Handles its own expanded state, completion logic, and triggers recursive breakdowns.
-- `/tasks/TaskCard.tsx`: The high-level summary card used in the dashboard.
-- `/ui/ProgressBar.tsx`: A customized, smooth-transitioning progress bar.
-- `/ui/Sidebar.tsx`: The responsive navigation system.
+### `/components` (Modular & Reusable)
+- `/(tasks-dashboard)`: Components for the task list grid.
+- `/(task-details)`: 
+    - `StepItem.tsx`: High-level step orchestration.
+    - `StepMetadata.tsx`, `StepContent.tsx`, `StepActions.tsx`: Modularized UI components.
+- `/ui/`: Atomic components like `ProgressBar.tsx`, `GentleCheckbox.tsx`, `Sidebar.tsx`.
 
-### `/hooks`
-- `useTasks.ts`: The **Source of Truth**. Manages global state for tasks, handles local storage syncing, and performs the optimistic updates to Supabase.
+### `/hooks` (Logic & Data)
+- `useTasksQuery.ts`: Centralized data fetching (All tasks / Single task).
+- `useTaskMutations.ts`: Optimistic UI handlers for CRUD operations.
+- `useHomeForm.ts`: Isolated logic for the task creation form.
+- `useStepItemLogic.ts`: Encapsulated UI state (accordion) for steps.
+- `useNotifications.ts`: Unified notification persistence via Zustand.
 
 ### `/lib`
-- `animations.ts`: The **Motion Design System**. Defines all shared Framer Motion variants and spring configurations (`SPRING_GENTLE`).
-- `supabase/`: Configuration for the database connection.
+- `animations.ts`: Centralized variants and physics (`SPRING_GENTLE`).
+- `db/indexedDB.ts`: Low-level database initialization and queries.
+- `ai/prompts.ts`: Core AI persona and JSON schema definitions.
 
 ## 📐 Data Architecture
 
@@ -46,11 +53,11 @@ A "Gentle AI" task management system designed to reduce cognitive load through r
 {
   id: string;
   title: string;
+  affirmation?: string; // AI-generated calming quote
+  closing_tip?: string; // Final reassurance message
   is_completed: boolean;
   progress_percentage: number;
-  affirmation: string; // AI-generated calming quote
-  closing_tip: string; // Final reassurance message
-  steps: Step[];
+  created_at: string;
 }
 ```
 
@@ -59,24 +66,26 @@ A "Gentle AI" task management system designed to reduce cognitive load through r
 {
   id: string;
   task_id: string;
-  parent_id: string | null; // Allows for infinite nesting
+  parent_step_id: string | null; // Infinite nesting support
   title: string;
-  subtitle: string; // The "gentle" framing
-  is_completed: boolean;
-  note?: string;
-  why?: string; // Why this step matters
+  subtitle?: string;
   time_estimate?: string;
+  materials?: string;
+  note?: string;
+  why?: string;
+  is_completed: boolean;
+  order_index: number;
+  created_at: string;
 }
 ```
 
 ## ✨ Motion Design Guidelines
 All animations must follow the `lib/animations.ts` standards:
-1. **Never use standard CSS transitions** for layout-shifting elements (use `motion` instead to prevent flickering).
-2. **Use Staggering**: Page contents must use `STAGGER_CONTAINER` to reveal elements sequentially.
-3. **Spring Physics**: Always use `SPRING_GENTLE` for a weighted, calm feeling. Avoid snappy or bouncy defaults.
+1. **Layout Animation**: Use Framer Motion's `layout` prop for all size/position changes.
+2. **Staggering**: Use `STAGGER_CONTAINER` for sequential element reveal.
+3. **Physics**: Always use `SPRING_GENTLE` (stiffness: 150, damping: 25) for a calm feeling.
 
-## 🚀 Future AI Instructions
-When modifying this app:
-1. **Maintain Vertical Rhythm**: Use the `gap-4`, `gap-6`, `gap-12` scale to match page padding.
-2. **Preserve Tone**: AI prompts in `/lib/ai/prompts.ts` should remain encouraging, minimalist, and non-judgmental.
-3. **Optimistic UI**: Always update the local state in `useTasks.ts` before awaiting API/DB responses.
+## 🚀 Future Roadmap
+1. **Convex Integration**: Move from IndexedDB to Convex for cross-device sync.
+2. **User Authentication**: Secure user-specific data storage.
+3. **Enhanced AI Persona**: Further refine the "Gentle" tone in prompts.
