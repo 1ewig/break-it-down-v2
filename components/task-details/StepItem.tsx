@@ -1,26 +1,47 @@
+'use client';
+
 import { useState } from 'react';
 import { GentleCheckbox } from '@/components/ui/GentleCheckbox';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Loader2, ChevronDown, Clock, Package, Info, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { FADE_IN_UP, ACCORDION_ANIMATION, SPRING_GENTLE } from '@/lib/animations';
+import { useTaskMutations } from '@/hooks/mutations/useTaskMutations';
 
 interface StepItemProps {
   step: any;
-  onToggle: (checked: boolean) => void;
-  onBreakdown: () => void;
-  isBreakingDown?: boolean;
   children?: React.ReactNode;
 }
 
-export function StepItem({ step, onToggle, onBreakdown, isBreakingDown, children }: StepItemProps) {
+/**
+ * Dumb presentational step component that maps user events directly to our custom mutations hook,
+ * eliminating drill-down callback handlers and parent state tracking.
+ */
+export function StepItem({ step, children }: StepItemProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { updateStepCompletion, breakdownTask } = useTaskMutations();
+
+  // Determine if this specific step is currently breaking down
+  const isBreakingDown = breakdownTask.isPending && breakdownTask.variables?.stepId === step.id;
 
   const handleToggle = (checked: boolean) => {
-    onToggle(checked);
+    updateStepCompletion.mutate({
+      taskId: step.task_id,
+      stepId: step.id,
+      isCompleted: checked
+    });
     if (checked) {
       setIsOpen(false);
     }
+  };
+
+  const handleBreakdownClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    breakdownTask.mutate({
+      taskId: step.task_id,
+      stepId: step.id,
+      stepTitle: step.title
+    });
   };
 
   return (
@@ -125,10 +146,7 @@ export function StepItem({ step, onToggle, onBreakdown, isBreakingDown, children
                 {!children && (
                   <div className="grid grid-cols-2 gap-3 mt-2">
                     <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onBreakdown();
-                      }}
+                      onClick={handleBreakdownClick}
                       disabled={isBreakingDown}
                       className="flex items-center justify-center gap-2 py-3 bg-surface border border-text-secondary/10 hover:border-primary/30 rounded-2xl text-sm text-text-primary transition-all disabled:opacity-50"
                     >
@@ -146,7 +164,6 @@ export function StepItem({ step, onToggle, onBreakdown, isBreakingDown, children
                       <Check className="w-4 h-4" />
                       <span>Mark done</span>
                     </button>
-
                   </div>
                 )}
               </div>

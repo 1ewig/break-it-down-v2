@@ -10,6 +10,9 @@ interface TaskCardProps {
   task: TaskWithSteps;
 }
 
+/**
+ * Dumb presentational component that displays task details, steps counts, and progressive indicators.
+ */
 export function TaskCard({ task }: TaskCardProps) {
   const isDone = task.progress_percentage === 100;
 
@@ -26,8 +29,6 @@ export function TaskCard({ task }: TaskCardProps) {
             : "bg-surface border border-text-secondary/5 shadow-sm hover:shadow-md"
         )}
       >
-
-
         {isDone && (
           <div className="absolute top-0 right-0 p-2 opacity-10">
             <Trophy className="w-20 h-20 text-primary rotate-12" />
