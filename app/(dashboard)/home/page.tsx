@@ -1,8 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useTaskMutations } from '@/hooks/useTaskMutations';
+import { useHomeForm } from '@/hooks/useHomeForm';
 import { HomeHeader } from '@/components/home/HomeHeader';
 import { HomeForm } from '@/components/home/HomeForm';
 import { HomeFooter } from '@/components/home/HomeFooter';
@@ -10,22 +8,7 @@ import { motion } from 'motion/react';
 import { STAGGER_CONTAINER } from '@/lib/animations';
 
 export default function Home() {
-  const [taskTitle, setTaskTitle] = useState('');
-  const { createTask } = useTaskMutations();
-  const router = useRouter();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!taskTitle.trim() || createTask.isPending) return;
-
-    try {
-      const newTask = await createTask.mutateAsync(taskTitle);
-      router.push(`/tasks/${newTask.id}`);
-    } catch (error) {
-      console.error('Error creating task:', error);
-      alert("Something went wrong. Let's try again gently.");
-    }
-  };
+  const { taskTitle, setTaskTitle, handleSubmit, isPending, canSubmit } = useHomeForm();
 
   return (
     <motion.div 
@@ -39,8 +22,8 @@ export default function Home() {
         taskTitle={taskTitle}
         onTitleChange={setTaskTitle}
         onSubmit={handleSubmit}
-        isPending={createTask.isPending}
-        canSubmit={taskTitle.trim().length > 0}
+        isPending={isPending}
+        canSubmit={canSubmit}
       />
       <HomeFooter />
     </motion.div>
