@@ -6,30 +6,26 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Loader2, ChevronDown, Clock, Package, Info, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { FADE_IN_UP, ACCORDION_ANIMATION, SPRING_GENTLE } from '@/lib/animations';
-import { useTaskMutations } from '@/hooks/useTaskMutations';
 
 interface StepItemProps {
   step: any;
   children?: React.ReactNode;
+  onToggleComplete: (taskId: string, stepId: string, isCompleted: boolean) => void;
+  onBreakdown: (taskId: string, stepId: string, stepTitle: string) => void;
+  isBreakingDown: boolean;
 }
 
-/**
- * Dumb presentational step component that maps user events directly to our custom mutations hook,
- * eliminating drill-down callback handlers and parent state tracking.
- */
-export function StepItem({ step, children }: StepItemProps) {
+export function StepItem({ 
+  step, 
+  children, 
+  onToggleComplete, 
+  onBreakdown,
+  isBreakingDown 
+}: StepItemProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { updateStepCompletion, breakdownTask } = useTaskMutations();
-
-  // Determine if this specific step is currently breaking down
-  const isBreakingDown = breakdownTask.isPending && breakdownTask.variables?.stepId === step.id;
 
   const handleToggle = (checked: boolean) => {
-    updateStepCompletion.mutate({
-      taskId: step.task_id,
-      stepId: step.id,
-      isCompleted: checked
-    });
+    onToggleComplete(step.task_id, step.id, checked);
     if (checked) {
       setIsOpen(false);
     }
@@ -37,11 +33,7 @@ export function StepItem({ step, children }: StepItemProps) {
 
   const handleBreakdownClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    breakdownTask.mutate({
-      taskId: step.task_id,
-      stepId: step.id,
-      stepTitle: step.title
-    });
+    onBreakdown(step.task_id, step.id, step.title);
   };
 
   return (
@@ -102,7 +94,6 @@ export function StepItem({ step, children }: StepItemProps) {
               className="overflow-hidden"
             >
               <div className="px-5 pb-6 flex flex-col gap-5 border-t border-text-secondary/5 pt-5">
-                {/* Tags */}
                 <div className="flex flex-wrap gap-2">
                   {step.time_estimate && (
                     <div className="flex items-center gap-1.5 px-3 py-1 bg-surface-raised border border-text-secondary/10 rounded-full text-[11px] text-text-secondary uppercase tracking-wider">
@@ -122,14 +113,12 @@ export function StepItem({ step, children }: StepItemProps) {
                   </div>
                 </div>
 
-                {/* Note */}
                 {step.note && (
                   <div className="text-text-primary/80 text-[15px] leading-relaxed italic border-l-2 border-primary/20 pl-4 py-1">
                     {step.note}
                   </div>
                 )}
 
-                {/* Why Box */}
                 {step.why && (
                   <div className="bg-primary/5 rounded-2xl p-4 border border-primary/10">
                     <div className="flex items-center gap-2 text-[11px] font-bold text-primary uppercase tracking-widest mb-2">
@@ -142,7 +131,6 @@ export function StepItem({ step, children }: StepItemProps) {
                   </div>
                 )}
 
-                {/* Actions Grid */}
                 {!children && (
                   <div className="grid grid-cols-2 gap-3 mt-2">
                     <button

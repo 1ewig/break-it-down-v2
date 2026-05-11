@@ -7,20 +7,30 @@ import { STAGGER_CONTAINER } from '@/lib/animations';
 
 interface TaskDetailsStepsProps {
   task: TaskWithSteps;
+  onToggleComplete: (taskId: string, stepId: string, isCompleted: boolean) => void;
+  onBreakdown: (taskId: string, stepId: string, stepTitle: string) => void;
+  breakingStepId: string | null;
 }
 
-/**
- * Dumb component that processes steps into a nested layout tree structure
- * and renders StepItem components recursively.
- */
-export function TaskDetailsSteps({ task }: TaskDetailsStepsProps) {
+export function TaskDetailsSteps({ 
+  task, 
+  onToggleComplete, 
+  onBreakdown,
+  breakingStepId 
+}: TaskDetailsStepsProps) {
   const buildStepTree = (parentId: string | null): React.ReactNode[] => {
     const children = task.steps.filter((s) => s.parent_step_id === parentId);
     return children.map((step) => {
       const childElements = buildStepTree(step.id);
 
       return (
-        <StepItem key={step.id} step={step}>
+        <StepItem 
+          key={step.id} 
+          step={step}
+          onToggleComplete={onToggleComplete}
+          onBreakdown={onBreakdown}
+          isBreakingDown={breakingStepId === step.id}
+        >
           {childElements.length > 0 ? childElements : null}
         </StepItem>
       );

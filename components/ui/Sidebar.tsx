@@ -1,12 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, Home, ListTodo, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TRANSITION_SMOOTH } from '@/lib/animations';
-import { useUIStore } from '@/store/useUIStore';
 
 const links = [
   { href: '/home', label: 'Home', icon: Home },
@@ -14,10 +12,14 @@ const links = [
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
 
-export function Sidebar({ children }: { children: React.ReactNode }) {
-  const { isSidebarOpen, setSidebarOpen } = useUIStore();
-  const pathname = usePathname();
+interface SidebarProps {
+  children: React.ReactNode;
+  isSidebarOpen: boolean;
+  setSidebarOpen: (isOpen: boolean) => void;
+  currentPath: string;
+}
 
+export function Sidebar({ children, isSidebarOpen, setSidebarOpen, currentPath }: SidebarProps) {
   return (
     <div className="flex min-h-screen w-full flex-col md:flex-row">
       <div className="md:hidden flex items-center p-4 border-b border-text-secondary/5 relative min-h-[64px]">
@@ -66,7 +68,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
               </div>
               <nav className="flex flex-col gap-2">
                 {links.map((link) => {
-                  const isActive = pathname.startsWith(link.href);
+                  const isActive = currentPath.startsWith(link.href);
                   return (
                     <Link
                       key={link.href}
@@ -88,14 +90,13 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
         )}
       </AnimatePresence>
 
-      {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 bg-surface p-6 sticky top-0 h-screen border-r border-text-secondary/5">
         <Link href="/home" className="flex items-center gap-2 text-primary mb-10 pl-4 hover:opacity-80 transition-opacity">
           <span className="font-bold text-xl tracking-tight">Break It Down</span>
         </Link>
         <nav className="flex flex-col gap-2 flex-grow">
           {links.map((link) => {
-            const isActive = pathname.startsWith(link.href);
+            const isActive = currentPath.startsWith(link.href);
             return (
               <Link
                 key={link.href}
