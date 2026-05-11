@@ -31,9 +31,18 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-text-primary);
+  }
+
+  /* Offset for anchor links to account for fixed navbar */
+  section[id] {
+    scroll-margin-top: 68px;
   }
 
   /* Custom Scrollbar */

@@ -28,7 +28,7 @@ export default function Navbar() {
         className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between h-[68px] px-6 lg:px-12"
       >
         {/* Left Side — Wordmark */}
-        <Link href="/" className="flex items-center gap-[0.6rem] group">
+        <Link href="#hero" className="flex items-center gap-[0.6rem] group">
           <div className="flex items-center justify-center w-[28px] h-[28px] bg-white/10 rounded-lg">
             <Sparkles size={14} className="text-white" />
           </div>
@@ -37,11 +37,11 @@ export default function Navbar() {
 
         {/* Right Side — Navigation Links + CTA (Desktop) */}
         <div className="hidden md:flex items-center gap-8">
-          <Link href="#features" className="text-sm font-medium text-white/65 hover:text-white transition-colors">
-            <motion.span whileHover={{ scale: 1.02 }} className="inline-block">Features</motion.span>
-          </Link>
           <Link href="#how-it-works" className="text-sm font-medium text-white/65 hover:text-white transition-colors">
             <motion.span whileHover={{ scale: 1.02 }} className="inline-block">How It Works</motion.span>
+          </Link>
+          <Link href="#features" className="text-sm font-medium text-white/65 hover:text-white transition-colors">
+            <motion.span whileHover={{ scale: 1.02 }} className="inline-block">Features</motion.span>
           </Link>
           <Link href="#for-who" className="text-sm font-medium text-white/65 hover:text-white transition-colors">
             <motion.span whileHover={{ scale: 1.02 }} className="inline-block">For Who</motion.span>
@@ -73,23 +73,23 @@ export default function Navbar() {
         className="fixed inset-0 z-[60] bg-charcoal flex flex-col pt-6 px-6"
       >
         <div className="flex items-center justify-between h-[68px] mb-8">
-          <div className="flex items-center gap-[0.6rem]">
+          <Link href="#hero" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-[0.6rem]">
             <div className="flex items-center justify-center w-[28px] h-[28px] bg-white/10 rounded-lg">
               <Sparkles size={14} className="text-white" />
             </div>
             <span className="font-bold text-lg text-white font-sans tracking-tight">Break It Down</span>
-          </div>
+          </Link>
           <button className="text-white/70" onClick={() => setIsMobileMenuOpen(false)}>
             <X size={24} />
           </button>
         </div>
 
         <div className="flex flex-col gap-6">
-          <Link href="#features" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-white/80 hover:text-white">
-            Features
-          </Link>
           <Link href="#how-it-works" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-white/80 hover:text-white">
             How It Works
+          </Link>
+          <Link href="#features" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-white/80 hover:text-white">
+            Features
           </Link>
           <Link href="#for-who" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-white/80 hover:text-white">
             For Who

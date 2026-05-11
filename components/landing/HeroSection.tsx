@@ -52,7 +52,7 @@ export default function HeroSection() {
   }, [typedText, isDeleting, currentPhraseIndex]);
 
   return (
-    <section className="relative min-h-[100vh] bg-[#121413] flex flex-col items-center justify-center overflow-hidden">
+    <section id="hero" className="relative min-h-[100vh] bg-[#121413] flex flex-col items-center justify-center overflow-hidden">
       {/* Ambient Background Layer */}
       <div className="absolute inset-0 pointer-events-none">
         <motion.div
