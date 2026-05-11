@@ -24,7 +24,7 @@ export default function ForWhoSection() {
     {
       icon: <CloudFog size={32} className="text-emerald" />,
       title: 'Executive Dysfunction',
-      body: "When the &apos;getting started&apos; part of the brain isn&apos;t working, an external scaffold helps. That&apos;s us — your scaffold, no judgment."
+      body: "When the 'getting started' part of the brain isn't working, an external scaffold helps. That's us — your scaffold, no judgment."
     }
   ];
 

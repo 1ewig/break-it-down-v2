@@ -93,14 +93,16 @@ export default function HeroSection() {
         className="relative z-10 flex flex-col items-center gap-8 w-full max-w-[1200px] px-6 text-center"
       >
         {/* App Icon Badge */}
-        <motion.div
-          variants={FADE_UP}
-          animate={{ y: [0, -8, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          className="flex items-center justify-center w-[72px] h-[72px] rounded-full bg-emerald/15 border-[1.5px] border-emerald/30 shadow-[0_0_60px_rgba(74,160,115,0.25)]"
-        >
-          <Sparkles size={32} className="text-emerald" />
-        </motion.div>
+        <div className="relative">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, y: [0, -8, 0] }}
+            transition={{ opacity: { duration: 0.7 }, y: { duration: 4, repeat: Infinity, ease: 'easeInOut' } }}
+            className="flex items-center justify-center w-[72px] h-[72px] rounded-full bg-emerald/15 border-[1.5px] border-emerald/30 shadow-[0_0_60px_rgba(74,160,115,0.25)]"
+          >
+            <Sparkles size={32} className="text-emerald" />
+          </motion.div>
+        </div>
 
         {/* Eyebrow Label */}
         <motion.div variants={FADE_UP} className="bg-emerald/10 border border-emerald/20 text-emerald text-xs uppercase tracking-[0.12em] font-semibold px-4 py-[0.3rem] rounded-full">

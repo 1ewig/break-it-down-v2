@@ -42,16 +42,18 @@ export default function CtaSection() {
 
       <div className="relative z-10 max-w-[800px] w-full mx-auto flex flex-col items-center gap-10 text-center">
         {/* Sparkle Badge */}
-        <motion.div
-          variants={FADE_UP}
-          initial="initial"
-          whileInView="whileInView"
-          animate={{ y: [0, -8, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          className="flex items-center justify-center w-[60px] h-[60px] rounded-full bg-emerald/15 border-[1.5px] border-emerald/30 shadow-[0_0_60px_rgba(74,160,115,0.25)]"
-        >
-          <Sparkles size={28} className="text-emerald" />
-        </motion.div>
+        <div className="relative">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            animate={{ y: [0, -8, 0] }}
+            transition={{ y: { duration: 4, repeat: Infinity, ease: 'easeInOut' } }}
+            className="flex items-center justify-center w-[60px] h-[60px] rounded-full bg-emerald/15 border-[1.5px] border-emerald/30 shadow-[0_0_60px_rgba(74,160,115,0.25)]"
+          >
+            <Sparkles size={28} className="text-emerald" />
+          </motion.div>
+        </div>
 
         {/* Headings */}
         <div className="flex flex-col gap-6 items-center">

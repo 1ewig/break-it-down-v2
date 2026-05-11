@@ -2,7 +2,7 @@
 
 import { motion } from 'motion/react';
 import { FADE_UP } from '@/lib/motion';
-import { Infinity, Zap, Heart, BarChart3, Moon, Bookmark } from 'lucide-react';
+import { Zap, Heart, BarChart3, Moon, Bookmark, Smartphone } from 'lucide-react';
 
 export default function FeaturesSection() {
   return (
@@ -30,81 +30,12 @@ export default function FeaturesSection() {
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Card 1: Large Hero Feature */}
+          {/* Card 1: Speed */}
           <motion.div
             variants={FADE_UP}
             initial="initial"
             whileInView="whileInView"
             transition={{ delay: 0 }}
-            whileHover={{ y: -3, borderColor: 'rgba(74,160,115,0.25)', backgroundColor: 'rgba(255,255,255,0.06)' }}
-            className="col-span-1 md:col-span-2 bg-white/5 border border-white/10 rounded-3xl p-8 lg:p-12 transition-colors duration-300"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-              {/* Left Side: Text */}
-              <div className="flex flex-col items-start gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-emerald/10 border border-emerald/20 flex items-center justify-center mb-2">
-                  <Infinity size={28} className="text-emerald" />
-                </div>
-                <h3 className="text-white font-bold text-2xl">Infinite Recursive Breakdown</h3>
-                <p className="text-white/50 text-sm leading-[1.75]">
-                  Every single step can be broken down further. And that step can be broken down. And that one too. The AI never runs out of patience, and there is no floor — only smaller and smaller until you can finally start.
-                </p>
-                <div className="bg-emerald/10 border border-emerald/20 text-emerald text-xs font-semibold px-3 py-1 rounded-full mt-2">
-                  Core Feature
-                </div>
-              </div>
-
-              {/* Right Side: Visual Diagram */}
-              <div className="relative flex flex-col items-start w-full">
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="w-full max-w-[320px] bg-white/10 rounded-xl px-4 py-3 border border-white/5 relative z-30"
-                >
-                  <p className="text-white/80 font-medium text-sm">Clean my apartment</p>
-                </motion.div>
-                
-                <div className="w-[1.5rem] border-l border-white/10 h-4 ml-6" />
-                
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.35 }}
-                  className="w-full max-w-[280px] bg-white/5 rounded-xl px-4 py-3 ml-[1.5rem] border border-white/5 relative z-20"
-                >
-                  <p className="text-white/70 font-medium text-sm">Tackle the living room</p>
-                </motion.div>
-
-                <div className="w-[3rem] border-l border-white/10 h-4 ml-12" />
-
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.5 }}
-                  className="w-full max-w-[240px] bg-emerald/15 rounded-xl px-4 py-3 ml-[3rem] border border-emerald/20 relative z-10"
-                >
-                  <p className="text-white font-medium text-[13px]">Pick up 3 things from the floor</p>
-                </motion.div>
-                
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  transition={{ delay: 0.8 }}
-                  className="text-emerald text-xs font-semibold ml-[3rem] mt-3 flex items-center gap-1.5"
-                >
-                  <span className="text-[10px]">✓</span> That&apos;s it. You&apos;re doing great.
-                </motion.p>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Card 2: Speed */}
-          <motion.div
-            variants={FADE_UP}
-            initial="initial"
-            whileInView="whileInView"
-            transition={{ delay: 0.08 }}
             whileHover={{ y: -3, borderColor: 'rgba(74,160,115,0.25)', backgroundColor: 'rgba(255,255,255,0.06)' }}
             className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-start gap-4 transition-colors duration-300"
           >
@@ -117,12 +48,12 @@ export default function FeaturesSection() {
             </p>
           </motion.div>
 
-          {/* Card 3: Empathetic Language */}
+          {/* Card 2: Empathetic Language */}
           <motion.div
             variants={FADE_UP}
             initial="initial"
             whileInView="whileInView"
-            transition={{ delay: 0.16 }}
+            transition={{ delay: 0.08 }}
             whileHover={{ y: -3, borderColor: 'rgba(74,160,115,0.25)', backgroundColor: 'rgba(255,255,255,0.06)' }}
             className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-start gap-4 transition-colors duration-300"
           >
@@ -135,12 +66,12 @@ export default function FeaturesSection() {
             </p>
           </motion.div>
 
-          {/* Card 4: Progress */}
+          {/* Card 3: Progress */}
           <motion.div
             variants={FADE_UP}
             initial="initial"
             whileInView="whileInView"
-            transition={{ delay: 0.24 }}
+            transition={{ delay: 0.16 }}
             whileHover={{ y: -3, borderColor: 'rgba(74,160,115,0.25)', backgroundColor: 'rgba(255,255,255,0.06)' }}
             className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-start gap-4 transition-colors duration-300"
           >
@@ -153,12 +84,12 @@ export default function FeaturesSection() {
             </p>
           </motion.div>
 
-          {/* Card 5: Dark Interface */}
+          {/* Card 4: Dark Interface */}
           <motion.div
             variants={FADE_UP}
             initial="initial"
             whileInView="whileInView"
-            transition={{ delay: 0.32 }}
+            transition={{ delay: 0.24 }}
             whileHover={{ y: -3, borderColor: 'rgba(74,160,115,0.25)', backgroundColor: 'rgba(255,255,255,0.06)' }}
             className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-start gap-4 transition-colors duration-300"
           >
@@ -171,12 +102,12 @@ export default function FeaturesSection() {
             </p>
           </motion.div>
 
-          {/* Card 6: Tasks That Stick Around */}
+          {/* Card 5: Tasks That Stick Around */}
           <motion.div
             variants={FADE_UP}
             initial="initial"
             whileInView="whileInView"
-            transition={{ delay: 0.4 }}
+            transition={{ delay: 0.32 }}
             whileHover={{ y: -3, borderColor: 'rgba(74,160,115,0.25)', backgroundColor: 'rgba(255,255,255,0.06)' }}
             className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-start gap-4 transition-colors duration-300"
           >
@@ -186,6 +117,24 @@ export default function FeaturesSection() {
             <h3 className="text-white font-bold text-lg">Tasks That Stick Around</h3>
             <p className="text-white/50 text-sm leading-relaxed">
               Your broken-down tasks are saved so you can come back anytime. Pick up exactly where you left off, even after closing the app.
+            </p>
+          </motion.div>
+
+          {/* Card 6: Works Everywhere */}
+          <motion.div
+            variants={FADE_UP}
+            initial="initial"
+            whileInView="whileInView"
+            transition={{ delay: 0.4 }}
+            whileHover={{ y: -3, borderColor: 'rgba(74,160,115,0.25)', backgroundColor: 'rgba(255,255,255,0.06)' }}
+            className="bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-start gap-4 transition-colors duration-300"
+          >
+            <div className="w-10 h-10 rounded-xl bg-emerald/10 flex items-center justify-center">
+              <Smartphone size={20} className="text-emerald" />
+            </div>
+            <h3 className="text-white font-bold text-lg">Works Everywhere</h3>
+            <p className="text-white/50 text-sm leading-relaxed">
+              Use it on your phone, tablet, or desktop. Your tasks sync automatically so you can switch devices without losing your progress.
             </p>
           </motion.div>
 

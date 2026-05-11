@@ -35,4 +35,29 @@
     background-color: var(--color-background);
     color: var(--color-text-primary);
   }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-charcoal);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-charcoal-mid);
+    border: 2px solid var(--color-charcoal);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-emerald);
+  }
+
+  /* Firefox support */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-charcoal-mid) var(--color-charcoal);
+  }
 }
