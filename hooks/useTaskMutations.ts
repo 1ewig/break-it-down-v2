@@ -9,6 +9,20 @@ import {
   createTaskWithStepsFromAI
 } from '@/lib/db/indexedDB';
 
+function updateTaskInCache(task: TaskWithSteps, stepId: string, isCompleted: boolean): TaskWithSteps {
+  const updatedSteps = task.steps.map((step) =>
+    step.id === stepId ? { ...step, is_completed: isCompleted } : step
+  );
+  const completedCount = updatedSteps.filter((s) => s.is_completed).length;
+  const progress = updatedSteps.length > 0 ? Math.round((completedCount / updatedSteps.length) * 100) : 0;
+  return {
+    ...task,
+    steps: updatedSteps,
+    progress_percentage: progress,
+    is_completed: progress === 100,
+  };
+}
+
 export function useTaskMutations() {
   const queryClient = useQueryClient();
 
@@ -18,39 +32,39 @@ export function useTaskMutations() {
     },
     onMutate: async ({ taskId, stepId, isCompleted }) => {
       await queryClient.cancelQueries({ queryKey: ['tasks'] });
+      await queryClient.cancelQueries({ queryKey: ['task', taskId] });
 
       const previousTasks = queryClient.getQueryData<TaskWithSteps[]>(['tasks']);
+      const previousTask = queryClient.getQueryData<TaskWithSteps>(['task', taskId]);
 
       queryClient.setQueryData<TaskWithSteps[]>(['tasks'], (old) => {
         if (!old) return old;
         return old.map((task) => {
           if (task.id !== taskId) return task;
-
-          const updatedSteps = task.steps.map((step) => 
-            step.id === stepId ? { ...step, is_completed: isCompleted } : step
-          );
-
-          const completedCount = updatedSteps.filter((s) => s.is_completed).length;
-          const progress = updatedSteps.length > 0 ? Math.round((completedCount / updatedSteps.length) * 100) : 0;
-
-          return { 
-            ...task, 
-            steps: updatedSteps, 
-            progress_percentage: progress, 
-            is_completed: progress === 100 
-          };
+          return updateTaskInCache(task, stepId, isCompleted);
         });
       });
 
-      return { previousTasks };
+      queryClient.setQueryData<TaskWithSteps>(['task', taskId], (old) => {
+        if (!old) return old;
+        return updateTaskInCache(old, stepId, isCompleted);
+      });
+
+      return { previousTasks, previousTask };
     },
     onError: (err, variables, context) => {
       if (context?.previousTasks) {
         queryClient.setQueryData(['tasks'], context.previousTasks);
       }
+      if (context?.previousTask) {
+        queryClient.setQueryData(['task', variables?.taskId], context.previousTask);
+      }
     },
-    onSettled: () => {
+    onSettled: (data, error, variables) => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      if (variables) {
+        queryClient.invalidateQueries({ queryKey: ['task', variables.taskId] });
+      }
     },
   });
 
@@ -71,8 +85,11 @@ export function useTaskMutations() {
 
       return { taskId, stepId, newSteps: data.subSteps };
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      if (data) {
+        queryClient.invalidateQueries({ queryKey: ['task', data.taskId] });
+      }
     }
   });
 
