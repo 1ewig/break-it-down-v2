@@ -23,7 +23,7 @@ export function TaskDetailsClosingTip({ closingTip }: TaskDetailsClosingTipProps
       >
          <Sparkles className="w-6 h-6 text-primary" />
       </motion.div>
-      <h3 className="text-text-primary font-medium mb-3">You've got this</h3>
+      <h3 className="text-text-primary font-medium mb-3">You&apos;ve got this</h3>
       <p className="text-text-secondary/80 text-sm leading-relaxed">
         {closingTip}
       </p>

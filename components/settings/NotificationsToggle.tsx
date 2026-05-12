@@ -28,7 +28,7 @@ export function NotificationsToggle({ enabled, onToggle }: NotificationsTogglePr
             <h3 className="text-lg text-text-primary font-medium mb-1">Gentle Nudges</h3>
             <p className="text-text-secondary text-sm max-w-md">
               Receive very soft, sporadic reminders to take a tiny step. 
-              You can always snooze them with zero guilt by clicking "Not today".
+              You can always snooze them with zero guilt by clicking &quot;Not today&quot;.
             </p>
           </div>
         </div>

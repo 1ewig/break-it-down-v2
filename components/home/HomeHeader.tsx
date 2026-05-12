@@ -21,12 +21,12 @@ export function HomeHeader() {
       </motion.div>
       
       <h1 className="text-4xl md:text-6xl font-light text-text-primary mb-4 tracking-tight">
-        What's on your mind?
+        What&apos;s on your mind?
       </h1>
       <p className="text-xl text-text-secondary font-light leading-relaxed">
         Type that big, overwhelming task. 
         <br />
-        We'll break it into tiny, gentle steps for you.
+        We&apos;ll break it into tiny, gentle steps for you.
       </p>
     </motion.div>
   );

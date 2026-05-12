@@ -15,7 +15,7 @@ export function TasksEmpty() {
     >
       <h2 className="text-xl font-light text-text-primary mb-2">No tasks yet</h2>
       <p className="text-text-secondary text-sm mb-6 max-w-xs">
-        Whenever you're ready, let's break something down together.
+        Whenever you&apos;re ready, let&apos;s break something down together.
       </p>
       <Link href="/home" className="bg-primary/20 text-primary px-6 py-3 rounded-full hover:bg-primary/30 transition-colors">
         Get started

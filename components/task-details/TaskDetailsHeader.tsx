@@ -33,7 +33,7 @@ export function TaskDetailsHeader({ task }: TaskDetailsHeaderProps) {
           variants={SCALE_IN}
           className="bg-primary/5 border border-primary/10 rounded-3xl p-6 relative overflow-hidden w-full"
         >
-          <div className="absolute top-0 left-4 text-7xl text-primary/10 font-serif leading-none select-none">"</div>
+          <div className="absolute top-0 left-4 text-7xl text-primary/10 font-serif leading-none select-none">&ldquo;</div>
           <p className="text-primary font-light text-lg leading-relaxed relative z-10 pl-4">
             {task.affirmation}
           </p>
