@@ -6,11 +6,22 @@ interface StepContentProps {
 }
 
 export function StepContent({ step }: StepContentProps) {
+  const noteLines = step.note 
+    ? step.note.split('\n').map(line => line.trim()).filter(Boolean)
+    : [];
+
   return (
     <>
-      {step.note && (
-        <div className="text-text-primary text-[15px] font-normal leading-relaxed border-l-2 border-primary/30 pl-4 py-1.5 whitespace-pre-line bg-surface/30 rounded-r-xl pr-3">
-          {step.note}
+      {noteLines.length > 0 && (
+        <div className="flex flex-col gap-3">
+          {noteLines.map((line, idx) => (
+            <div 
+              key={idx}
+              className="text-text-primary text-[15px] font-normal leading-relaxed border-l-2 border-primary/40 pl-4 py-2.5 bg-surface/40 rounded-r-2xl pr-4 shadow-2xs"
+            >
+              {line}
+            </div>
+          ))}
         </div>
       )}
 
