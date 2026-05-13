@@ -22,7 +22,7 @@ export function TasksList({ tasks }: TasksListProps) {
     if (!pendingDeleteId) return;
     deleteTask.mutate(pendingDeleteId);
     setPendingDeleteId(null);
-    showToast('Task moved to bin. You can find it at the top of My Tasks.');
+    showToast('Task moved to bin. You can find it in the sidebar.');
   };
 
   return (
