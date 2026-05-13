@@ -6,6 +6,7 @@ export type Task = {
   is_completed: boolean;
   progress_percentage: number;
   created_at: string;
+  deleted_at?: string;
 };
 
 export type Step = {

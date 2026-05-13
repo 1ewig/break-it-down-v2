@@ -5,6 +5,7 @@ import { TasksHeader } from '@/components/tasks-dashboard/TasksHeader';
 import { TasksList } from '@/components/tasks-dashboard/TasksList';
 import { TasksLoading } from '@/components/tasks-dashboard/TasksLoading';
 import { TasksEmpty } from '@/components/tasks-dashboard/TasksEmpty';
+import { TasksFloatingBin } from '@/components/tasks-dashboard/TasksFloatingBin';
 import { motion } from 'motion/react';
 import { STAGGER_CONTAINER } from '@/lib/animations';
 
@@ -26,6 +27,7 @@ export default function TasksPage() {
       ) : (
         <TasksList tasks={tasks} />
       )}
+      <TasksFloatingBin />
     </motion.div>
   );
 }

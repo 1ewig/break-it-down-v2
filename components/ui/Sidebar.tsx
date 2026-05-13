@@ -2,13 +2,14 @@
 
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Home, ListTodo, Settings } from 'lucide-react';
+import { Menu, X, Home, ListTodo, Settings, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TRANSITION_SMOOTH } from '@/lib/animations';
 
 const links = [
   { href: '/home', label: 'Home', icon: Home },
   { href: '/tasks', label: 'My Tasks', icon: ListTodo },
+  { href: '/bin', label: 'Bin', icon: Trash2 },
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
 

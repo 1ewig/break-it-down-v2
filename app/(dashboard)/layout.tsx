@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { useUIStore } from '@/store/useUIStore';
 import { Sidebar } from '@/components/ui/Sidebar';
+import { Toast } from '@/components/ui/Toast';
 
 export default function DashboardLayout({
   children,
@@ -13,12 +14,15 @@ export default function DashboardLayout({
   const pathname = usePathname();
 
   return (
-    <Sidebar 
-      isSidebarOpen={isSidebarOpen} 
-      setSidebarOpen={setSidebarOpen}
-      currentPath={pathname}
-    >
-      {children}
-    </Sidebar>
+    <>
+      <Sidebar 
+        isSidebarOpen={isSidebarOpen} 
+        setSidebarOpen={setSidebarOpen}
+        currentPath={pathname}
+      >
+        {children}
+      </Sidebar>
+      <Toast />
+    </>
   );
 }

@@ -64,15 +64,18 @@ export function getTasksWithSteps(): Promise<TaskWithSteps[]> {
 
       const combineAndResolve = () => {
         if (tasksLoaded && stepsLoaded) {
-          const combined: TaskWithSteps[] = tasks.map((task) => {
-            const taskSteps = steps
-              .filter((step) => step.task_id === task.id)
-              .sort((a, b) => a.order_index - b.order_index);
-            return {
-              ...task,
-              steps: taskSteps,
-            };
-          }).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+          const combined: TaskWithSteps[] = tasks
+            .filter((t) => !t.deleted_at)
+            .map((task) => {
+              const taskSteps = steps
+                .filter((step) => step.task_id === task.id)
+                .sort((a, b) => a.order_index - b.order_index);
+              return {
+                ...task,
+                steps: taskSteps,
+              };
+            })
+            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
           resolve(combined);
         }
       };
@@ -201,9 +204,38 @@ export function saveSteps(steps: Step[]): Promise<void> {
 }
 
 /**
- * Deletes a task and all associated steps in a single transaction.
+ * Soft-deletes a task by setting deleted_at timestamp.
  */
 export function deleteTask(taskId: string): Promise<void> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const db = await initDB();
+      const transaction = db.transaction('tasks', 'readwrite');
+      const store = transaction.objectStore('tasks');
+
+      const getRequest = store.get(taskId);
+      getRequest.onsuccess = () => {
+        const task = getRequest.result as Task | undefined;
+        if (!task) {
+          resolve();
+          return;
+        }
+        task.deleted_at = new Date().toISOString();
+        store.put(task);
+      };
+      getRequest.onerror = () => reject(getRequest.error);
+      transaction.onerror = () => reject(transaction.error);
+      transaction.oncomplete = () => resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+/**
+ * Permanently deletes a task and all associated steps.
+ */
+export function permanentDeleteTask(taskId: string): Promise<void> {
   return new Promise(async (resolve, reject) => {
     try {
       const db = await initDB();
@@ -211,40 +243,136 @@ export function deleteTask(taskId: string): Promise<void> {
       const tasksStore = transaction.objectStore('tasks');
       const stepsStore = transaction.objectStore('steps');
 
-      const deleteTaskRequest = tasksStore.delete(taskId);
-      
-      deleteTaskRequest.onsuccess = () => {
-        const index = stepsStore.index('task_id');
-        const getStepsRequest = index.getAllKeys(taskId);
+      tasksStore.delete(taskId);
 
-        getStepsRequest.onsuccess = () => {
-          const keys = getStepsRequest.result as string[];
-          if (keys.length === 0) {
-            resolve();
-            return;
-          }
-
-          let deletedCount = 0;
-          let hasError = false;
-
-          keys.forEach((key) => {
-            const deleteStepRequest = stepsStore.delete(key);
-            deleteStepRequest.onsuccess = () => {
-              deletedCount++;
-              if (deletedCount === keys.length && !hasError) {
-                resolve();
-              }
-            };
-            deleteStepRequest.onerror = () => {
-              hasError = true;
-              reject(deleteStepRequest.error);
-            };
-          });
-        };
-        getStepsRequest.onerror = () => reject(getStepsRequest.error);
+      const stepsIndex = stepsStore.index('task_id');
+      const getStepsRequest = stepsIndex.getAllKeys(taskId);
+      getStepsRequest.onsuccess = () => {
+        const keys = getStepsRequest.result as string[];
+        keys.forEach((key) => stepsStore.delete(key));
       };
-      deleteTaskRequest.onerror = () => reject(deleteTaskRequest.error);
 
+      transaction.onerror = () => reject(transaction.error);
+      transaction.oncomplete = () => resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+/**
+ * Restores a soft-deleted task by clearing deleted_at.
+ */
+export function restoreTask(taskId: string): Promise<void> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const db = await initDB();
+      const transaction = db.transaction('tasks', 'readwrite');
+      const store = transaction.objectStore('tasks');
+
+      const getRequest = store.get(taskId);
+      getRequest.onsuccess = () => {
+        const task = getRequest.result as Task | undefined;
+        if (!task) return;
+        delete task.deleted_at;
+        store.put(task);
+      };
+      getRequest.onerror = () => reject(getRequest.error);
+      transaction.onerror = () => reject(transaction.error);
+      transaction.oncomplete = () => resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+/**
+ * Fetches all soft-deleted tasks with their steps, sorted by deleted_at desc.
+ */
+export function getDeletedTasksWithSteps(): Promise<TaskWithSteps[]> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const db = await initDB();
+      const transaction = db.transaction(['tasks', 'steps'], 'readonly');
+      const tasksStore = transaction.objectStore('tasks');
+      const stepsStore = transaction.objectStore('steps');
+
+      const getAllTasksRequest = tasksStore.getAll();
+      const getAllStepsRequest = stepsStore.getAll();
+
+      let tasks: Task[] = [];
+      let steps: Step[] = [];
+      let tasksLoaded = false;
+      let stepsLoaded = false;
+
+      const combineAndResolve = () => {
+        if (tasksLoaded && stepsLoaded) {
+          const deleted = tasks
+            .filter((t) => t.deleted_at)
+            .map((task) => ({
+              ...task,
+              steps: steps
+                .filter((s) => s.task_id === task.id)
+                .sort((a, b) => a.order_index - b.order_index),
+            }))
+            .sort((a, b) => new Date(b.deleted_at!).getTime() - new Date(a.deleted_at!).getTime());
+          resolve(deleted);
+        }
+      };
+
+      getAllTasksRequest.onsuccess = () => {
+        tasks = getAllTasksRequest.result as Task[];
+        tasksLoaded = true;
+        combineAndResolve();
+      };
+      getAllTasksRequest.onerror = () => reject(getAllTasksRequest.error);
+
+      getAllStepsRequest.onsuccess = () => {
+        steps = getAllStepsRequest.result as Step[];
+        stepsLoaded = true;
+        combineAndResolve();
+      };
+      getAllStepsRequest.onerror = () => reject(getAllStepsRequest.error);
+
+      transaction.onerror = () => reject(transaction.error);
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+/**
+ * Purges tasks whose deleted_at is older than the specified number of days.
+ */
+export function purgeExpiredDeletedTasks(days: number = 30): Promise<number> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const db = await initDB();
+      const transaction = db.transaction(['tasks', 'steps'], 'readwrite');
+      const tasksStore = transaction.objectStore('tasks');
+      const stepsStore = transaction.objectStore('steps');
+
+      const getAllRequest = tasksStore.getAll();
+      getAllRequest.onsuccess = () => {
+        const allTasks = getAllRequest.result as Task[];
+        const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+        let purgedCount = 0;
+
+        allTasks.forEach((task) => {
+          if (task.deleted_at && new Date(task.deleted_at).getTime() < cutoff) {
+            tasksStore.delete(task.id);
+            const stepsIndex = stepsStore.index('task_id');
+            const getKeysRequest = stepsIndex.getAllKeys(task.id);
+            getKeysRequest.onsuccess = () => {
+              (getKeysRequest.result as string[]).forEach((key) => stepsStore.delete(key));
+            };
+            purgedCount++;
+          }
+        });
+
+        transaction.oncomplete = () => resolve(purgedCount);
+      };
+      getAllRequest.onerror = () => reject(getAllRequest.error);
       transaction.onerror = () => reject(transaction.error);
     } catch (err) {
       reject(err);
