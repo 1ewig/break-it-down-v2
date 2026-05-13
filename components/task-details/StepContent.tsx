@@ -9,7 +9,7 @@ export function StepContent({ step }: StepContentProps) {
   return (
     <>
       {step.note && (
-        <div className="text-text-primary/80 text-[15px] leading-relaxed italic border-l-2 border-primary/20 pl-4 py-1 whitespace-pre-line">
+        <div className="text-text-primary text-[15px] font-normal leading-relaxed border-l-2 border-primary/30 pl-4 py-1.5 whitespace-pre-line bg-surface/30 rounded-r-xl pr-3">
           {step.note}
         </div>
       )}
