@@ -1,10 +1,11 @@
 import { Task, Step, TaskWithSteps } from '@/types';
+import type { TaskBreakdown } from '@/lib/ai/schemas';
 import { saveTask } from './tasks';
 import { saveSteps } from './steps';
 
 export async function createTaskWithStepsFromAI(
   taskTitle: string,
-  aiData: { title?: string; affirmation?: string; closing_tip?: string; steps: any[] }
+  aiData: TaskBreakdown
 ): Promise<TaskWithSteps> {
   const taskId = `task-${Date.now()}`;
 

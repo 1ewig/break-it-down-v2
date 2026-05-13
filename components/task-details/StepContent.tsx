@@ -8,7 +8,9 @@ interface StepContentProps {
 export function StepContent({ step }: StepContentProps) {
   const parts = step.note ? step.note.split('---') : [];
   const noteLines = parts[0] 
-    ? parts[0].split('\n').map(line => line.trim()).filter(Boolean)
+    ? parts[0].includes('\n')
+      ? parts[0].split('\n').map(l => l.trim()).filter(Boolean)
+      : parts[0].split(/(?=\d+\.\s)/).map(l => l.trim()).filter(Boolean)
     : [];
   const reassurance = parts[1] ? parts[1].trim() : null;
 

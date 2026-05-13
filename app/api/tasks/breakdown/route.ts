@@ -1,6 +1,8 @@
 import { groq } from '@ai-sdk/groq';
 import { generateText } from 'ai';
 import { STEP_BREAKDOWN_PROMPT } from '@/lib/ai/prompts';
+import { stepBreakdownSchema } from '@/lib/ai/schemas';
+import { ZodError } from 'zod';
 
 export const runtime = 'edge';
 export const maxDuration = 30;
@@ -20,12 +22,20 @@ export async function POST(req: Request) {
       responseFormat: { type: 'json_object' },
     });
 
-    // Strip markdown code blocks if they exist
     const cleanText = text.replace(/```json\n?|```/g, '').trim();
     const object = JSON.parse(cleanText);
+    const validated = stepBreakdownSchema.parse(object);
 
-    return Response.json({ detailed_note: object.detailed_note, reassurance: object.reassurance });
+    return Response.json({ detailed_note: validated.detailed_note, reassurance: validated.reassurance });
   } catch (error) {
+    if (error instanceof SyntaxError) {
+      console.error('JSON parse error:', error);
+      return Response.json({ error: 'AI returned malformed JSON' }, { status: 502 });
+    }
+    if (error instanceof ZodError) {
+      console.error('Schema validation error:', error.issues);
+      return Response.json({ error: 'AI response missing required fields', details: error.issues }, { status: 502 });
+    }
     console.error('Error explaining step:', error);
     return Response.json({ error: 'Failed to explain step' }, { status: 500 });
   }
