@@ -16,32 +16,17 @@ export async function POST(req: Request) {
     const { text } = await (generateText as any)({
       model: groq('llama-3.3-70b-versatile'),
       system: STEP_BREAKDOWN_PROMPT,
-      prompt: `Please break down this specific step into exactly 3-5 tiny micro-steps: "${stepTitle}"`,
+      prompt: `Please explain how to accomplish this step in 3-5 detailed, calming sentences: "${stepTitle}"`,
       responseFormat: { type: 'json_object' },
     });
 
     // Strip markdown code blocks if they exist
     const cleanText = text.replace(/```json\n?|```/g, '').trim();
     const object = JSON.parse(cleanText);
-    
-    const subSteps = object.steps.map((step: any, idx: number) => ({
-      id: `${stepId}-sub-${idx}`,
-      task_id: taskId,
-      parent_step_id: stepId,
-      title: step.title,
-      subtitle: step.subtitle,
-      time_estimate: step.time_estimate,
-      materials: step.materials,
-      note: step.note,
-      why: step.why,
-      is_completed: false,
-      order_index: idx,
-      created_at: new Date().toISOString()
-    }));
 
-    return Response.json({ subSteps });
+    return Response.json({ detailed_note: object.detailed_note });
   } catch (error) {
-    console.error('Error breaking down step:', error);
-    return Response.json({ error: 'Failed to break down step' }, { status: 500 });
+    console.error('Error explaining step:', error);
+    return Response.json({ error: 'Failed to explain step' }, { status: 500 });
   }
 }

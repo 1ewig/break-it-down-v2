@@ -322,6 +322,40 @@ export function updateStepCompletionInDB(
 }
 
 /**
+ * Updates a step's note with a detailed breakdown and sets is_broken_down to true.
+ */
+export function updateStepNoteInDB(stepId: string, detailedNote: string): Promise<void> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const db = await initDB();
+      const transaction = db.transaction('steps', 'readwrite');
+      const store = transaction.objectStore('steps');
+
+      const getStepRequest = store.get(stepId);
+      getStepRequest.onsuccess = () => {
+        const step = getStepRequest.result as Step | undefined;
+        if (!step) {
+          reject(new Error(`Step with ID ${stepId} not found`));
+          return;
+        }
+
+        step.note = detailedNote;
+        step.is_broken_down = true;
+        const putStepRequest = store.put(step);
+
+        putStepRequest.onsuccess = () => resolve();
+        putStepRequest.onerror = () => reject(putStepRequest.error);
+      };
+      getStepRequest.onerror = () => reject(getStepRequest.error);
+
+      transaction.onerror = () => reject(transaction.error);
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+/**
  * Model factory that takes raw AI generation output, maps it to Task & Step database schemas,
  * saves both to IndexedDB atomically, and returns the unified TaskWithSteps.
  */

@@ -21,6 +21,7 @@ export type Step = {
   is_completed: boolean;
   order_index: number;
   created_at: string;
+  is_broken_down?: boolean;
 };
 
 // Joined types for UI

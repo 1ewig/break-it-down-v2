@@ -18,34 +18,20 @@ export function TaskDetailsSteps({
   onBreakdown,
   breakingStepId 
 }: TaskDetailsStepsProps) {
-  const buildStepTree = (parentId: string | null, level: number = 0): React.ReactNode[] => {
-    const children = task.steps.filter((s) => s.parent_step_id === parentId);
-    return children.map((step) => {
-      const childElements = buildStepTree(step.id, level + 1);
-
-      return (
+  return (
+    <motion.div 
+      variants={STAGGER_CONTAINER}
+      className="flex flex-col gap-4 w-full"
+    >
+      {task.steps.map((step) => (
         <StepItem 
           key={step.id} 
           step={step}
           onToggleComplete={onToggleComplete}
           onBreakdown={onBreakdown}
           isBreakingDown={breakingStepId === step.id}
-          level={level}
-        >
-          {childElements.length > 0 ? childElements : null}
-        </StepItem>
-      );
-    });
-  };
-
-  const topLevelSteps = buildStepTree(null, 0);
-
-  return (
-    <motion.div 
-      variants={STAGGER_CONTAINER}
-      className="flex flex-col gap-4 w-full"
-    >
-      {topLevelSteps}
+        />
+      ))}
     </motion.div>
   );
 }

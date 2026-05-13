@@ -2,7 +2,7 @@
 
 import { GentleCheckbox } from '@/components/ui/GentleCheckbox';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronDown, Loader2, Sparkles } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { FADE_IN_UP, ACCORDION_ANIMATION, SPRING_GENTLE } from '@/lib/animations';
 import { Step } from '@/types';
@@ -13,20 +13,16 @@ import { useStepItemLogic } from '@/hooks/useStepItemLogic';
 
 interface StepItemProps {
   step: Step;
-  children?: React.ReactNode;
   onToggleComplete: (taskId: string, stepId: string, isCompleted: boolean) => void;
   onBreakdown: (taskId: string, stepId: string, stepTitle: string) => void;
   isBreakingDown: boolean;
-  level?: number;
 }
 
 export function StepItem({ 
   step, 
-  children, 
   onToggleComplete, 
   onBreakdown,
   isBreakingDown,
-  level = 0
 }: StepItemProps) {
   const {
     isOpen,
@@ -35,47 +31,6 @@ export function StepItem({
     handleBreakdownClick,
     handleMarkDoneClick,
   } = useStepItemLogic({ step, onToggleComplete, onBreakdown });
-
-  if (level > 0) {
-    return (
-      <motion.div
-        layout
-        variants={FADE_IN_UP}
-        initial="initial"
-        animate="animate"
-        className={cn(
-          "flex flex-col bg-surface rounded-2xl border border-text-secondary/5 p-3.5 shadow-sm transition-all duration-300",
-          step.is_completed ? "opacity-50 bg-transparent border-transparent" : "hover:border-primary/20 bg-surface"
-        )}
-      >
-        <div className="flex items-start gap-3">
-          <div onClick={(e) => e.stopPropagation()}>
-            <GentleCheckbox 
-              checked={step.is_completed} 
-              onChange={(checked) => onToggleComplete(step.task_id, step.id, checked)}
-              className="mt-0.5 scale-90"
-            />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h4 className={cn(
-              "text-[15px] font-medium transition-all duration-300",
-              step.is_completed ? 'text-text-secondary line-through' : 'text-text-primary'
-            )}>
-              {step.title}
-            </h4>
-            {step.subtitle && (
-              <p className="text-text-secondary/70 text-xs mt-0.5">{step.subtitle}</p>
-            )}
-            {step.time_estimate && !step.is_completed && (
-              <span className="inline-block text-[10px] text-primary/80 bg-primary/10 px-2 py-0.5 rounded-full mt-1.5 font-medium">
-                {step.time_estimate}
-              </span>
-            )}
-          </div>
-        </div>
-      </motion.div>
-    );
-  }
 
   return (
     <motion.div
@@ -136,13 +91,11 @@ export function StepItem({
             >
               <div className="px-5 pb-6 flex flex-col gap-5 border-t border-text-secondary/5 pt-5">
                 <StepMetadata step={step} />
-                <StepContent step={step}>
-                  {children}
-                </StepContent>
+                <StepContent step={step} />
 
                 <StepActions 
                   isBreakingDown={isBreakingDown}
-                  hasChildren={Boolean(children)}
+                  hasChildren={step.is_broken_down}
                   onBreakdown={handleBreakdownClick}
                   onToggleComplete={handleMarkDoneClick}
                 />

@@ -6,7 +6,8 @@ import {
   saveSteps, 
   deleteTask, 
   updateStepCompletionInDB,
-  createTaskWithStepsFromAI
+  createTaskWithStepsFromAI,
+  updateStepNoteInDB
 } from '@/lib/db/indexedDB';
 
 function updateTaskInCache(task: TaskWithSteps, stepId: string, isCompleted: boolean): TaskWithSteps {
@@ -76,14 +77,14 @@ export function useTaskMutations() {
         body: JSON.stringify({ stepId, stepTitle, taskId })
       });
 
-      if (!res.ok) throw new Error('Failed to fetch breakdown steps');
+      if (!res.ok) throw new Error('Failed to fetch explanation');
 
       const data = await res.json();
-      if (!data.subSteps) throw new Error('No substeps returned');
+      if (!data.detailed_note) throw new Error('No explanation returned');
 
-      await saveSteps(data.subSteps);
+      await updateStepNoteInDB(stepId, data.detailed_note);
 
-      return { taskId, stepId, newSteps: data.subSteps };
+      return { taskId, stepId, detailedNote: data.detailed_note };
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
