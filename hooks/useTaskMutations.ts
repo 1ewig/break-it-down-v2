@@ -70,11 +70,11 @@ export function useTaskMutations() {
   });
 
   const breakdownTask = useMutation({
-    mutationFn: async ({ taskId, stepId, stepTitle }: { taskId: string, stepId: string, stepTitle: string }) => {
+    mutationFn: async ({ taskId, stepId, stepTitle, taskTitle }: { taskId: string, stepId: string, stepTitle: string, taskTitle?: string }) => {
       const res = await fetch('/api/tasks/breakdown', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ stepId, stepTitle, taskId })
+        body: JSON.stringify({ stepId, stepTitle, taskId, taskTitle })
       });
 
       if (!res.ok) throw new Error('Failed to fetch explanation');

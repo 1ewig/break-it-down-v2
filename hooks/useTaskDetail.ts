@@ -18,7 +18,7 @@ export function useTaskDetail() {
   };
 
   const handleBreakdown = (taskId: string, stepId: string, stepTitle: string) => {
-    breakdownTask.mutate({ taskId, stepId, stepTitle });
+    breakdownTask.mutate({ taskId, stepId, stepTitle, taskTitle: task?.title });
   };
 
   return {

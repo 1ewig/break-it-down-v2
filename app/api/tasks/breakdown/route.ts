@@ -10,13 +10,13 @@ export const maxDuration = 30;
  * Returns the mapped substeps directly, leaving persistence entirely to the client.
  */
 export async function POST(req: Request) {
-  const { stepId, stepTitle, taskId } = await req.json();
+  const { stepId, stepTitle, taskId, taskTitle } = await req.json();
 
   try {
     const { text } = await (generateText as any)({
       model: groq('llama-3.3-70b-versatile'),
       system: STEP_BREAKDOWN_PROMPT,
-      prompt: `Please explain how to accomplish this step in exactly 3-5 concise, numbered points (e.g. 1. Do this\\n2. Do that): "${stepTitle}"`,
+      prompt: `Task Context: "${taskTitle || 'General Task'}"\nPlease explain how to accomplish this specific step in exactly 3-5 concise, numbered points (e.g. 1. Do this\\n2. Do that): "${stepTitle}"`,
       responseFormat: { type: 'json_object' },
     });
 
