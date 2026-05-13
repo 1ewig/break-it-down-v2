@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     const { text } = await (generateText as any)({
       model: groq('llama-3.3-70b-versatile'),
       system: STEP_BREAKDOWN_PROMPT,
-      prompt: `Please explain how to accomplish this step in 3-5 detailed, calming sentences: "${stepTitle}"`,
+      prompt: `Please explain how to accomplish this step in exactly 3-5 concise, numbered points (e.g. 1. Do this\\n2. Do that): "${stepTitle}"`,
       responseFormat: { type: 'json_object' },
     });
 
