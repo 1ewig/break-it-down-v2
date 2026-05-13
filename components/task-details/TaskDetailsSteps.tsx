@@ -18,10 +18,10 @@ export function TaskDetailsSteps({
   onBreakdown,
   breakingStepId 
 }: TaskDetailsStepsProps) {
-  const buildStepTree = (parentId: string | null): React.ReactNode[] => {
+  const buildStepTree = (parentId: string | null, level: number = 0): React.ReactNode[] => {
     const children = task.steps.filter((s) => s.parent_step_id === parentId);
     return children.map((step) => {
-      const childElements = buildStepTree(step.id);
+      const childElements = buildStepTree(step.id, level + 1);
 
       return (
         <StepItem 
@@ -30,6 +30,7 @@ export function TaskDetailsSteps({
           onToggleComplete={onToggleComplete}
           onBreakdown={onBreakdown}
           isBreakingDown={breakingStepId === step.id}
+          level={level}
         >
           {childElements.length > 0 ? childElements : null}
         </StepItem>
@@ -37,7 +38,7 @@ export function TaskDetailsSteps({
     });
   };
 
-  const topLevelSteps = buildStepTree(null);
+  const topLevelSteps = buildStepTree(null, 0);
 
   return (
     <motion.div 

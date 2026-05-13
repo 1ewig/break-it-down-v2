@@ -1,6 +1,6 @@
 import { groq } from '@ai-sdk/groq';
 import { generateText } from 'ai';
-import { TASK_BREAKDOWN_PROMPT } from '@/lib/ai/prompts';
+import { STEP_BREAKDOWN_PROMPT } from '@/lib/ai/prompts';
 
 export const runtime = 'edge';
 export const maxDuration = 30;
@@ -15,8 +15,8 @@ export async function POST(req: Request) {
   try {
     const { text } = await (generateText as any)({
       model: groq('llama-3.3-70b-versatile'),
-      system: TASK_BREAKDOWN_PROMPT,
-      prompt: `Break down this step into smaller pieces: "${stepTitle}"`,
+      system: STEP_BREAKDOWN_PROMPT,
+      prompt: `Please break down this specific step into exactly 3-5 tiny micro-steps: "${stepTitle}"`,
       responseFormat: { type: 'json_object' },
     });
 
