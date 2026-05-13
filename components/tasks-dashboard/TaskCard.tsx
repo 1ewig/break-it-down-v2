@@ -4,18 +4,19 @@ import { TaskWithSteps } from '@/types';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import Link from 'next/link';
 import { motion } from 'motion/react';
-import { CheckCircle2, Trophy } from 'lucide-react';
+import { CheckCircle2, Trophy, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SPRING_GENTLE } from '@/lib/animations';
 
 interface TaskCardProps {
   task: TaskWithSteps;
+  onDelete?: (taskId: string) => void;
 }
 
 /**
  * Dumb presentational component that displays task details, steps counts, and progressive indicators.
  */
-export function TaskCard({ task }: TaskCardProps) {
+export function TaskCard({ task, onDelete }: TaskCardProps) {
   const isDone = task.progress_percentage === 100;
 
   return (
@@ -52,12 +53,27 @@ export function TaskCard({ task }: TaskCardProps) {
               </span>
             )}
           </div>
-          <span className={cn(
-            "text-xs px-3 py-1 rounded-full shrink-0 whitespace-nowrap",
-            isDone ? "bg-primary/20 text-primary" : "text-text-secondary bg-text-secondary/5"
-          )}>
-            {task.steps.length} {task.steps.length === 1 ? 'step' : 'steps'}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className={cn(
+              "text-xs px-3 py-1 rounded-full shrink-0 whitespace-nowrap",
+              isDone ? "bg-primary/20 text-primary" : "text-text-secondary bg-text-secondary/5"
+            )}>
+              {task.steps.length} {task.steps.length === 1 ? 'step' : 'steps'}
+            </span>
+            {onDelete && (
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onDelete(task.id);
+                }}
+                className="text-text-secondary/40 hover:text-red-400 p-1.5 rounded-full hover:bg-red-500/10 transition-colors"
+                title="Delete task"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
+          </div>
         </div>
         
         <div className="space-y-2 relative z-10">
