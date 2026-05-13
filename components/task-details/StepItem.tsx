@@ -136,31 +136,20 @@ export function StepItem({
             >
               <div className="px-5 pb-6 flex flex-col gap-5 border-t border-text-secondary/5 pt-5">
                 <StepMetadata step={step} />
-                <StepContent step={step} />
+                <StepContent step={step}>
+                  {children}
+                </StepContent>
 
-                {!children && (
-                  <StepActions 
-                    isBreakingDown={isBreakingDown}
-                    onBreakdown={handleBreakdownClick}
-                    onToggleComplete={handleMarkDoneClick}
-                  />
-                )}
+                <StepActions 
+                  isBreakingDown={isBreakingDown}
+                  hasChildren={Boolean(children)}
+                  onBreakdown={handleBreakdownClick}
+                  onToggleComplete={handleMarkDoneClick}
+                />
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-
-        {children && (
-          <div className="px-5 pb-5 pt-4 flex flex-col gap-3 border-t border-text-secondary/5 bg-primary/5 rounded-b-3xl">
-            <div className="text-[12px] font-semibold text-primary uppercase tracking-wider flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-primary" />
-              <span>Micro-steps</span>
-            </div>
-            <div className="flex flex-col gap-2.5">
-              {children}
-            </div>
-          </div>
-        )}
       </div>
     </motion.div>
   );
