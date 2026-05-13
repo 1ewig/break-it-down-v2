@@ -20,6 +20,11 @@ export async function POST(req: Request) {
 
     const cleanText = text.replace(/```json\n?|```/g, '').trim();
     const object = JSON.parse(cleanText);
+
+    if (object?.error === true && typeof object.message === 'string') {
+      return Response.json({ error: object.message }, { status: 400 });
+    }
+
     const validated = taskBreakdownSchema.parse(object);
     return Response.json(validated);
   } catch (error) {

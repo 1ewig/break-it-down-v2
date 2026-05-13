@@ -106,9 +106,12 @@ export function useTaskMutations() {
         body: JSON.stringify({ taskTitle }),
       });
 
-      if (!response.ok) throw new Error('Failed to create task');
-
       const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create task');
+      }
+
       return createTaskWithStepsFromAI(taskTitle, data);
     },
     onSuccess: () => {

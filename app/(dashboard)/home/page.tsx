@@ -6,11 +6,13 @@ import { useTaskMutations } from '@/hooks/useTaskMutations';
 import { HomeHeader } from '@/components/home/HomeHeader';
 import { HomeForm } from '@/components/home/HomeForm';
 import { HomeFooter } from '@/components/home/HomeFooter';
+import { AlertDialog } from '@/components/ui/AlertDialog';
 import { motion } from 'motion/react';
 import { STAGGER_CONTAINER } from '@/lib/animations';
 
 export default function Home() {
   const [taskTitle, setTaskTitle] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { createTask } = useTaskMutations();
   const router = useRouter();
 
@@ -22,8 +24,8 @@ export default function Home() {
       const newTask = await createTask.mutateAsync(taskTitle);
       router.push(`/tasks/${newTask.id}`);
     } catch (error) {
-      console.error('Error creating task:', error);
-      alert("Something went wrong. Let's try again gently.");
+      const msg = error instanceof Error ? error.message : "Something went wrong. Let's try again gently.";
+      setErrorMessage(msg);
     }
   };
 
@@ -43,6 +45,12 @@ export default function Home() {
         canSubmit={taskTitle.trim().length > 0}
       />
       <HomeFooter />
+
+      <AlertDialog
+        open={!!errorMessage}
+        message={errorMessage ?? ''}
+        onClose={() => setErrorMessage(null)}
+      />
     </motion.div>
   );
 }
