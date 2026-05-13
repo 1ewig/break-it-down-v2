@@ -82,9 +82,13 @@ export function useTaskMutations() {
       const data = await res.json();
       if (!data.detailed_note) throw new Error('No explanation returned');
 
-      await updateStepNoteInDB(stepId, data.detailed_note);
+      const combinedNote = data.reassurance 
+        ? `${data.detailed_note}\n\n---\n${data.reassurance}`
+        : data.detailed_note;
 
-      return { taskId, stepId, detailedNote: data.detailed_note };
+      await updateStepNoteInDB(stepId, combinedNote);
+
+      return { taskId, stepId, detailedNote: combinedNote };
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });

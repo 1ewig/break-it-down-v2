@@ -1,4 +1,4 @@
-import { Info } from 'lucide-react';
+import { Info, Heart } from 'lucide-react';
 import { Step } from '@/types';
 
 interface StepContentProps {
@@ -6,9 +6,11 @@ interface StepContentProps {
 }
 
 export function StepContent({ step }: StepContentProps) {
-  const noteLines = step.note 
-    ? step.note.split('\n').map(line => line.trim()).filter(Boolean)
+  const parts = step.note ? step.note.split('---') : [];
+  const noteLines = parts[0] 
+    ? parts[0].split('\n').map(line => line.trim()).filter(Boolean)
     : [];
+  const reassurance = parts[1] ? parts[1].trim() : null;
 
   return (
     <>
@@ -22,6 +24,15 @@ export function StepContent({ step }: StepContentProps) {
               {line}
             </div>
           ))}
+        </div>
+      )}
+
+      {reassurance && (
+        <div className="bg-primary/10 border border-primary/20 rounded-2xl p-4 flex items-start gap-3 shadow-2xs">
+          <Heart className="w-4 h-4 text-primary mt-1 shrink-0" />
+          <p className="text-primary/90 text-sm font-medium italic leading-relaxed">
+            {reassurance}
+          </p>
         </div>
       )}
 

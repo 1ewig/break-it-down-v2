@@ -24,7 +24,7 @@ export async function POST(req: Request) {
     const cleanText = text.replace(/```json\n?|```/g, '').trim();
     const object = JSON.parse(cleanText);
 
-    return Response.json({ detailed_note: object.detailed_note });
+    return Response.json({ detailed_note: object.detailed_note, reassurance: object.reassurance });
   } catch (error) {
     console.error('Error explaining step:', error);
     return Response.json({ error: 'Failed to explain step' }, { status: 500 });
