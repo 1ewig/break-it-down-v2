@@ -37,15 +37,14 @@ function CallbackContent() {
 
       const { data } = await supabase.auth.getSession();
       if (data?.session) {
-        router.push('/home');
+        const next = searchParams.get('next') || '/home';
+        router.push(next);
         return;
       }
 
       const { error } = await supabase.auth.exchangeCodeForSession(code!);
-      if (error) {
-        console.error('exchangeCodeForSession error:', error);
-      }
-      router.push(error ? '/login' : '/home');
+      const next = searchParams.get('next') || '/home';
+      router.push(error ? '/login' : next);
     };
 
     run();
