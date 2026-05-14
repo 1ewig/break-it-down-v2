@@ -41,8 +41,8 @@ export function StepItem({
       className="flex flex-col gap-2"
     >
       <div className={cn(
-        "flex flex-col bg-surface rounded-3xl border transition-all duration-300",
-        step.is_completed ? "opacity-60 border-transparent bg-surface/50" : "border-text-secondary/10 shadow-sm",
+        "flex flex-col rounded-3xl border transition-all duration-300",
+        step.is_completed ? "opacity-60 border-transparent bg-background" : "bg-background border-text-secondary/10 shadow-xs",
         isOpen && !step.is_completed && "border-primary/30 bg-surface-raised shadow-md"
       )}>
         <div 
