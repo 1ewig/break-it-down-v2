@@ -1,16 +1,19 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Home, ListTodo, Settings, Trash2 } from 'lucide-react';
+import { Menu, X, Home, ListTodo, Settings, Trash2, User, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TRANSITION_SMOOTH } from '@/lib/animations';
+import { useAuth } from '@/providers/AuthProvider';
 
 const links = [
   { href: '/home', label: 'Home', icon: Home },
   { href: '/tasks', label: 'My Tasks', icon: ListTodo },
   { href: '/bin', label: 'Bin', icon: Trash2 },
   { href: '/settings', label: 'Settings', icon: Settings },
+  { href: '/profile', label: 'Profile', icon: User },
 ];
 
 interface SidebarProps {
@@ -21,6 +24,14 @@ interface SidebarProps {
 }
 
 export function Sidebar({ children, isSidebarOpen, setSidebarOpen, currentPath }: SidebarProps) {
+  const { user, signOut } = useAuth();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push('/');
+  };
+
   return (
     <div className="flex min-h-screen w-full flex-col md:flex-row">
       <div className="md:hidden flex items-center p-4 border-b border-text-secondary/5 relative min-h-[64px]">
@@ -86,6 +97,18 @@ export function Sidebar({ children, isSidebarOpen, setSidebarOpen, currentPath }
                   );
                 })}
               </nav>
+              <div className="mt-auto pt-6 border-t border-text-secondary/5 space-y-3">
+                <div className="px-4 text-sm text-text-secondary truncate">
+                  {user?.email}
+                </div>
+                <button
+                  onClick={() => { handleSignOut(); setSidebarOpen(false); }}
+                  className="flex items-center gap-3 px-4 py-3 w-full text-left text-text-secondary hover:text-red-400 transition-colors rounded-2xl hover:bg-background"
+                >
+                  <LogOut className="h-5 w-5" />
+                  Sign Out
+                </button>
+              </div>
             </motion.aside>
           </>
         )}
@@ -113,8 +136,17 @@ export function Sidebar({ children, isSidebarOpen, setSidebarOpen, currentPath }
             );
           })}
         </nav>
-        <div className="mt-auto px-4 text-xs text-text-secondary text-center opacity-50">
-          Take your time.
+        <div className="mt-auto pt-6 border-t border-text-secondary/5 space-y-3">
+          <div className="px-4 text-sm text-text-secondary truncate">
+            {user?.email}
+          </div>
+          <button
+            onClick={handleSignOut}
+            className="flex items-center gap-3 px-4 py-3 w-full text-left text-text-secondary hover:text-red-400 transition-colors rounded-2xl hover:bg-background"
+          >
+            <LogOut className="h-5 w-5" />
+            Sign Out
+          </button>
         </div>
       </aside>
 
