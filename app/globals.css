@@ -4,12 +4,13 @@
   --font-sans: var(--font-quicksand), "Inter", sans-serif;
   
   /* App Colors */
-  --color-background: #121212;
-  --color-surface: #1E1E24;
-  --color-primary: #A3B18A;
-  --color-secondary: #BDB2FF;
+  --color-background: #121413;
+  --color-surface: #1C1F1D;
+  --color-surface-raised: #252927;
+  --color-primary: #4AA073;
+  --color-secondary: #D2EADF;
   --color-text-primary: #F8F9FA;
-  --color-text-secondary: #8D99AE;
+  --color-text-secondary: #9CA3A0;
   
   /* Landing Page Colors */
   --color-cream: #FAF8F5;

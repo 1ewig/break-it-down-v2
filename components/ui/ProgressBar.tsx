@@ -14,7 +14,7 @@ export function ProgressBar({ percentage, className }: ProgressBarProps) {
   return (
     <div className={cn("w-full h-1.5 bg-text-secondary/10 rounded-full overflow-hidden relative", className)}>
       <motion.div
-        className="h-full bg-gradient-to-r from-primary to-[#a88de8] rounded-full relative"
+        className="h-full bg-gradient-to-r from-primary to-secondary rounded-full relative"
         initial={{ width: 0 }}
         animate={{ width: `${boundedPercentage}%` }}
         transition={{ type: 'spring', stiffness: 40, damping: 20 }}
