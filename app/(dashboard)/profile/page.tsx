@@ -61,15 +61,6 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="flex items-center justify-center w-10 h-10 bg-background rounded-xl">
-            <User className="h-5 w-5 text-text-secondary" />
-          </div>
-          <div>
-            <p className="text-xs text-text-secondary uppercase tracking-wider">User ID</p>
-            <p className="text-text-primary font-mono text-sm truncate max-w-[300px]">{user.id}</p>
-          </div>
-        </div>
       </div>
 
       <button
