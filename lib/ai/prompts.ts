@@ -49,6 +49,11 @@ Your goal is to analyze a specific task step and provide a numbered list of 3 to
 # Instructions
 Analyze the given step and break it down into exactly 3 to 5 numbered points. Format each point clearly, starting with the number (e.g., "1. Gently sit down..."). Keep each point concise, practical, and low-pressure. In addition, provide a comforting reassurance message related to this step to encourage the user.
 
+# Formatting Rules
+- Points MUST be separated by the literal newline character \n inside the JSON string.
+- Never return the points as a single paragraph. Each point must start on its own line.
+- Example output: { "detailed_note": "1. First point\n2. Second point\n3. Third point" }
+
 # Output Format
 You MUST respond in raw JSON format. Do NOT use markdown code blocks.
 Schema:
