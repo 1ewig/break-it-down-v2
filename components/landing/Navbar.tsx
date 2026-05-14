@@ -5,8 +5,10 @@ import { motion, useScroll, useTransform, useMotionValueEvent } from 'motion/rea
 import { Sparkles, Menu, X } from 'lucide-react';
 import { SPRING_GENTLE } from '@/lib/motion';
 import Link from 'next/link';
+import { useAuth } from '@/providers/AuthProvider';
 
 export default function Navbar() {
+  const { user } = useAuth();
   const { scrollY } = useScroll();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -47,15 +49,32 @@ export default function Navbar() {
             <motion.span whileHover={{ scale: 1.02 }} className="inline-block">For Who</motion.span>
           </Link>
 
-          <Link href="/home">
-            <motion.div
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.97 }}
-              className="bg-emerald text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-[#5BB585] transition-colors cursor-pointer"
-            >
-              Get Started Free
-            </motion.div>
-          </Link>
+          {user ? (
+            <Link href="/home">
+              <motion.div
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.97 }}
+                className="bg-emerald text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-[#5BB585] transition-colors cursor-pointer"
+              >
+                Dashboard
+              </motion.div>
+            </Link>
+          ) : (
+            <>
+              <Link href="/login" className="text-sm font-medium text-white/65 hover:text-white transition-colors">
+                <motion.span whileHover={{ scale: 1.02 }} className="inline-block">Sign In</motion.span>
+              </Link>
+              <Link href="/register">
+                <motion.div
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="bg-emerald text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-[#5BB585] transition-colors cursor-pointer"
+                >
+                  Get Started Free
+                </motion.div>
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -96,9 +115,20 @@ export default function Navbar() {
           <Link href="#for-who" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-white/80 hover:text-white">
             For Who
           </Link>
-          <Link href="/home" className="bg-emerald text-white font-semibold text-base py-3 rounded-xl mt-4 text-center">
-            Get Started Free
-          </Link>
+          {user ? (
+            <Link href="/home" onClick={() => setIsMobileMenuOpen(false)} className="bg-emerald text-white font-semibold text-base py-3 rounded-xl mt-4 text-center">
+              Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-white/80 hover:text-white">
+                Sign In
+              </Link>
+              <Link href="/register" onClick={() => setIsMobileMenuOpen(false)} className="bg-emerald text-white font-semibold text-base py-3 rounded-xl mt-4 text-center">
+                Get Started Free
+              </Link>
+            </>
+          )}
         </div>
       </motion.div>
     </>
