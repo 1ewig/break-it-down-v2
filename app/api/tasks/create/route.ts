@@ -3,11 +3,17 @@ import { generateText } from 'ai';
 import { TASK_BREAKDOWN_PROMPT } from '@/lib/ai/prompts';
 import { taskBreakdownSchema, sanitizeAIJSON } from '@/lib/ai/schemas';
 import { ZodError } from 'zod';
+import { createClient } from '@/lib/supabase/server';
 
-export const runtime = 'edge';
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
+  const supabase = await createClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const { taskTitle } = await req.json();
 

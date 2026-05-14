@@ -3,8 +3,8 @@ import { generateText } from 'ai';
 import { STEP_BREAKDOWN_PROMPT } from '@/lib/ai/prompts';
 import { stepBreakdownSchema, sanitizeAIJSON } from '@/lib/ai/schemas';
 import { ZodError } from 'zod';
+import { createClient } from '@/lib/supabase/server';
 
-export const runtime = 'edge';
 export const maxDuration = 30;
 
 /**
@@ -12,6 +12,12 @@ export const maxDuration = 30;
  * Returns the mapped substeps directly, leaving persistence entirely to the client.
  */
 export async function POST(req: Request) {
+  const supabase = await createClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const { stepId, stepTitle, taskId, taskTitle } = await req.json();
 
   try {
