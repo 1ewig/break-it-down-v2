@@ -1,13 +1,16 @@
 'use client';
 
 import { useAuth } from '@/providers/AuthProvider';
+import { useUIStore } from '@/store/useUIStore';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
 import { STAGGER_CONTAINER } from '@/lib/animations';
 import { User, Mail, Calendar, LogOut } from 'lucide-react';
+import { NameSetting } from '@/components/settings/NameSetting';
 
 export default function ProfilePage() {
   const { user, signOut } = useAuth();
+  const { userName, setUserName } = useUIStore();
   const router = useRouter();
 
   const handleSignOut = async () => {
@@ -62,6 +65,8 @@ export default function ProfilePage() {
         </div>
 
       </div>
+
+      <NameSetting userName={userName} onSave={setUserName} />
 
       <button
         onClick={handleSignOut}

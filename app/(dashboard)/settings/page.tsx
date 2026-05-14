@@ -1,9 +1,7 @@
 'use client';
 
 import { useNotifications } from '@/hooks/useNotifications';
-import { useUIStore } from '@/store/useUIStore';
 import { SettingsHeader } from '@/components/settings/SettingsHeader';
-import { NameSetting } from '@/components/settings/NameSetting';
 import { NotificationsToggle } from '@/components/settings/NotificationsToggle';
 import { SettingsFooter } from '@/components/settings/SettingsFooter';
 import { motion } from 'motion/react';
@@ -11,7 +9,6 @@ import { STAGGER_CONTAINER } from '@/lib/animations';
 
 export default function SettingsPage() {
   const { enabled, toggle } = useNotifications();
-  const { userName, setUserName } = useUIStore();
 
   return (
     <motion.div 
@@ -21,7 +18,6 @@ export default function SettingsPage() {
       className="flex flex-col h-full max-w-3xl mx-auto w-full p-4 md:p-8 gap-4 md:gap-8"
     >
       <SettingsHeader />
-      <NameSetting userName={userName} onSave={setUserName} />
       <NotificationsToggle enabled={enabled} onToggle={toggle} />
       <SettingsFooter />
     </motion.div>
