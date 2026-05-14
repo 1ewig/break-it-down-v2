@@ -9,6 +9,7 @@ import {
   createTaskWithStepsFromAI,
   updateStepNoteInDB
 } from '@/lib/db/indexedDB';
+import { useAuth } from '@/providers/AuthProvider';
 
 function updateTaskInCache(task: TaskWithSteps, stepId: string, isCompleted: boolean): TaskWithSteps {
   const updatedSteps = task.steps.map((step) =>
@@ -25,6 +26,7 @@ function updateTaskInCache(task: TaskWithSteps, stepId: string, isCompleted: boo
 }
 
 export function useTaskMutations() {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
 
   const updateStepCompletion = useMutation({
@@ -32,13 +34,13 @@ export function useTaskMutations() {
       return updateStepCompletionInDB(taskId, stepId, isCompleted);
     },
     onMutate: async ({ taskId, stepId, isCompleted }) => {
-      await queryClient.cancelQueries({ queryKey: ['tasks'] });
-      await queryClient.cancelQueries({ queryKey: ['task', taskId] });
+      await queryClient.cancelQueries({ queryKey: ['tasks', user?.id] });
+      await queryClient.cancelQueries({ queryKey: ['task', taskId, user?.id] });
 
-      const previousTasks = queryClient.getQueryData<TaskWithSteps[]>(['tasks']);
-      const previousTask = queryClient.getQueryData<TaskWithSteps>(['task', taskId]);
+      const previousTasks = queryClient.getQueryData<TaskWithSteps[]>(['tasks', user?.id]);
+      const previousTask = queryClient.getQueryData<TaskWithSteps>(['task', taskId, user?.id]);
 
-      queryClient.setQueryData<TaskWithSteps[]>(['tasks'], (old) => {
+      queryClient.setQueryData<TaskWithSteps[]>(['tasks', user?.id], (old) => {
         if (!old) return old;
         return old.map((task) => {
           if (task.id !== taskId) return task;
@@ -46,7 +48,7 @@ export function useTaskMutations() {
         });
       });
 
-      queryClient.setQueryData<TaskWithSteps>(['task', taskId], (old) => {
+      queryClient.setQueryData<TaskWithSteps>(['task', taskId, user?.id], (old) => {
         if (!old) return old;
         return updateTaskInCache(old, stepId, isCompleted);
       });
@@ -55,16 +57,16 @@ export function useTaskMutations() {
     },
     onError: (err, variables, context) => {
       if (context?.previousTasks) {
-        queryClient.setQueryData(['tasks'], context.previousTasks);
+        queryClient.setQueryData(['tasks', user?.id], context.previousTasks);
       }
       if (context?.previousTask) {
-        queryClient.setQueryData(['task', variables?.taskId], context.previousTask);
+        queryClient.setQueryData(['task', variables?.taskId, user?.id], context.previousTask);
       }
     },
     onSettled: (data, error, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['tasks', user?.id] });
       if (variables) {
-        queryClient.invalidateQueries({ queryKey: ['task', variables.taskId] });
+        queryClient.invalidateQueries({ queryKey: ['task', variables.taskId, user?.id] });
       }
     },
   });
@@ -91,9 +93,9 @@ export function useTaskMutations() {
       return { taskId, stepId, detailedNote: combinedNote };
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['tasks', user?.id] });
       if (data) {
-        queryClient.invalidateQueries({ queryKey: ['task', data.taskId] });
+        queryClient.invalidateQueries({ queryKey: ['task', data.taskId, user?.id] });
       }
     }
   });
@@ -112,10 +114,10 @@ export function useTaskMutations() {
         throw new Error(data.error || 'Failed to create task');
       }
 
-      return createTaskWithStepsFromAI(taskTitle, data);
+      return createTaskWithStepsFromAI(taskTitle, data, user?.id);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['tasks', user?.id] });
     }
   });
 
@@ -125,8 +127,8 @@ export function useTaskMutations() {
       return taskId;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
-      queryClient.invalidateQueries({ queryKey: ['bin'] });
+      queryClient.invalidateQueries({ queryKey: ['tasks', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['bin', user?.id] });
     }
   });
 

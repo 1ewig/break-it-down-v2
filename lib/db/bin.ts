@@ -21,13 +21,14 @@ export async function restoreTask(taskId: string): Promise<void> {
   await db.tasks.put(clean);
 }
 
-export async function getDeletedTasksWithSteps(): Promise<TaskWithSteps[]> {
+export async function getDeletedTasksWithSteps(userId?: string): Promise<TaskWithSteps[]> {
   const [tasks, steps] = await Promise.all([
     db.tasks.toArray(),
     db.steps.toArray(),
   ]);
   return tasks
     .filter((t): t is Task & { deleted_at: string } => !!t.deleted_at)
+    .filter((t) => !userId || t.user_id === userId)
     .map((task) => ({
       ...task,
       steps: steps
@@ -37,12 +38,15 @@ export async function getDeletedTasksWithSteps(): Promise<TaskWithSteps[]> {
     .sort((a, b) => new Date(b.deleted_at).getTime() - new Date(a.deleted_at).getTime());
 }
 
-export async function purgeExpiredDeletedTasks(days: number = 30): Promise<number> {
+export async function purgeExpiredDeletedTasks(days: number = 30, userId?: string): Promise<number> {
+  const allTasks = await db.tasks.toArray();
+
+export async function purgeExpiredDeletedTasks(days: number = 30, userId?: string): Promise<number> {
   const allTasks = await db.tasks.toArray();
   const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
   const expired = allTasks.filter(
     (t) => t.deleted_at && new Date(t.deleted_at).getTime() < cutoff
-  );
+  ).filter((t) => !userId || t.user_id === userId);
 
   if (expired.length === 0) return 0;
 

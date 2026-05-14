@@ -1,13 +1,14 @@
 import { Task, TaskWithSteps } from '@/types';
 import db from './db';
 
-export async function getTasksWithSteps(): Promise<TaskWithSteps[]> {
+export async function getTasksWithSteps(userId?: string): Promise<TaskWithSteps[]> {
   const [tasks, steps] = await Promise.all([
     db.tasks.toArray(),
     db.steps.toArray(),
   ]);
   return tasks
     .filter((t) => !t.deleted_at)
+    .filter((t) => !userId || t.user_id === userId)
     .map((task) => ({
       ...task,
       steps: steps

@@ -2,8 +2,10 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { restoreTask, permanentDeleteTask } from '@/lib/db/indexedDB';
+import { useAuth } from '@/providers/AuthProvider';
 
 export function useBinMutations() {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
 
   const restore = useMutation({
@@ -11,8 +13,8 @@ export function useBinMutations() {
       await restoreTask(taskId);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['bin'] });
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ['bin', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['tasks', user?.id] });
     },
   });
 
@@ -21,7 +23,7 @@ export function useBinMutations() {
       await permanentDeleteTask(taskId);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['bin'] });
+      queryClient.invalidateQueries({ queryKey: ['bin', user?.id] });
     },
   });
 

@@ -3,22 +3,26 @@
 import { useQuery } from '@tanstack/react-query';
 import { getTasksWithSteps, getTaskWithSteps } from '@/lib/db/indexedDB';
 import { TaskWithSteps } from '@/types';
+import { useAuth } from '@/providers/AuthProvider';
 
 export function useTasksQuery() {
+  const { user } = useAuth();
   return useQuery({
-    queryKey: ['tasks'],
+    queryKey: ['tasks', user?.id],
     queryFn: async () => {
-      return getTasksWithSteps();
+      return getTasksWithSteps(user?.id);
     },
+    enabled: !!user,
   });
 }
 
 export function useTaskQuery(taskId: string) {
+  const { user } = useAuth();
   return useQuery({
-    queryKey: ['task', taskId],
+    queryKey: ['task', taskId, user?.id],
     queryFn: async () => {
       return getTaskWithSteps(taskId);
     },
-    enabled: !!taskId,
+    enabled: !!taskId && !!user,
   });
 }

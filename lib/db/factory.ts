@@ -5,7 +5,8 @@ import { saveSteps } from './steps';
 
 export async function createTaskWithStepsFromAI(
   taskTitle: string,
-  aiData: TaskBreakdown
+  aiData: TaskBreakdown,
+  userId?: string
 ): Promise<TaskWithSteps> {
   const taskId = `task-${Date.now()}`;
 
@@ -26,6 +27,7 @@ export async function createTaskWithStepsFromAI(
 
   const newTask: Task = {
     id: taskId,
+    user_id: userId,
     title: aiData.title || taskTitle,
     affirmation: aiData.affirmation,
     closing_tip: aiData.closing_tip,
