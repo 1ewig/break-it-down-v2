@@ -42,10 +42,10 @@ export default function Footer() {
             APP
           </h4>
           <div className="flex flex-col gap-3">
-            {[ 'Home', 'My Tasks', 'Settings' ].map((link, i) => (
+            {[ { label: 'Home', href: '/home' }, { label: 'My Tasks', href: '/tasks' }, { label: 'Settings', href: '/settings' } ].map((link, i) => (
               <motion.div key={i} whileHover={{ x: 3 }}>
-                <Link href="#" className="text-white/40 hover:text-white/75 font-medium text-sm transition-colors block">
-                  {link}
+                <Link href={link.href} className="text-white/40 hover:text-white/75 font-medium text-sm transition-colors block">
+                  {link.label}
                 </Link>
               </motion.div>
             ))}
@@ -84,7 +84,7 @@ export default function Footer() {
         className="max-w-[1200px] w-full mx-auto border-t border-white/5 mt-10 pt-6 flex flex-row flex-wrap justify-between gap-4"
       >
         <p className="text-white/20 font-normal text-xs">
-          © 2025 Break It Down. Made with care for overwhelmed humans.
+          © 2026 Break It Down. Made with care for overwhelmed humans.
         </p>
         <p className="text-white/15 font-normal text-xs italic">
           Take your time.
