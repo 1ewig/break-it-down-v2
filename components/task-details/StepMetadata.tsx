@@ -9,13 +9,13 @@ export function StepMetadata({ step }: StepMetadataProps) {
   return (
     <div className="flex flex-wrap gap-2">
       {step.time_estimate && (
-        <div className="flex items-center gap-1.5 px-3 py-1 bg-surface-raised border border-text-secondary/10 rounded-full text-[11px] text-text-secondary uppercase tracking-wider">
+        <div className="flex items-center gap-1.5 px-3 py-1 bg-background/40 border border-text-secondary/15 rounded-full text-[11px] text-text-secondary uppercase tracking-wider">
           <Clock className="w-3 h-3" />
           {step.time_estimate}
         </div>
       )}
       {step.materials && (
-        <div className="flex items-center gap-1.5 px-3 py-1 bg-surface-raised border border-text-secondary/10 rounded-full text-[11px] text-text-secondary uppercase tracking-wider">
+        <div className="flex items-center gap-1.5 px-3 py-1 bg-background/40 border border-text-secondary/15 rounded-full text-[11px] text-text-secondary uppercase tracking-wider">
           <Package className="w-3 h-3" />
           {step.materials}
         </div>

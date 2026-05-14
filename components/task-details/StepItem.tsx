@@ -43,7 +43,7 @@ export function StepItem({
       <div className={cn(
         "flex flex-col bg-surface rounded-3xl border transition-all duration-300",
         step.is_completed ? "opacity-60 border-transparent bg-surface/50" : "border-text-secondary/10 shadow-sm",
-        isOpen && !step.is_completed && "border-primary/20 bg-surface-raised"
+        isOpen && !step.is_completed && "border-primary/30 bg-surface-raised shadow-md"
       )}>
         <div 
           className="flex items-start gap-4 p-5 cursor-pointer"
@@ -89,7 +89,7 @@ export function StepItem({
               exit="exit"
               className="overflow-hidden"
             >
-              <div className="px-5 pb-6 flex flex-col gap-5 border-t border-text-secondary/5 pt-5">
+              <div className="px-5 pb-6 flex flex-col gap-4 border-t border-text-secondary/10 pt-5">
                 <StepMetadata step={step} />
                 <StepContent step={step} />
 

@@ -21,7 +21,7 @@ export function StepContent({ step }: StepContentProps) {
           {noteLines.map((line, idx) => (
             <div 
               key={idx}
-              className="text-text-primary text-[15px] font-normal leading-relaxed border-l-2 border-primary/40 pl-4 py-2.5 bg-surface/40 rounded-r-2xl pr-4 shadow-2xs"
+              className="text-text-primary text-[15px] font-normal leading-relaxed border-l-[3px] border-primary/60 pl-4 py-3 bg-background/30 rounded-r-2xl pr-4 shadow-xs"
             >
               {line}
             </div>
@@ -30,7 +30,7 @@ export function StepContent({ step }: StepContentProps) {
       )}
 
       {reassurance && (
-        <div className="bg-primary/10 border border-primary/20 rounded-2xl p-4 flex items-start gap-3 shadow-2xs">
+        <div className="bg-primary/10 border border-primary/20 rounded-2xl p-4 flex items-start gap-3 shadow-xs">
           <Heart className="w-4 h-4 text-primary mt-1 shrink-0" />
           <p className="text-primary/90 text-sm font-medium italic leading-relaxed">
             {reassurance}
@@ -39,12 +39,12 @@ export function StepContent({ step }: StepContentProps) {
       )}
 
       {step.why && (
-        <div className="bg-primary/5 rounded-2xl p-4 border border-primary/10">
+        <div className="bg-primary/8 rounded-2xl p-4 border border-primary/20">
           <div className="flex items-center gap-2 text-[11px] font-bold text-primary uppercase tracking-widest mb-2">
             <Info className="w-3.5 h-3.5" />
             Why this matters
           </div>
-          <p className="text-text-secondary text-sm leading-relaxed">
+          <p className="text-text-primary/80 text-sm leading-relaxed">
             {step.why}
           </p>
         </div>
