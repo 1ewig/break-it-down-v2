@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Sparkles } from 'lucide-react';
@@ -8,13 +8,21 @@ import { Sparkles } from 'lucide-react';
 function CallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [message, setMessage] = useState('Completing your sign in...');
+  const handled = useRef(false);
 
   useEffect(() => {
-    const handleCallback = async () => {
+    if (handled.current) return;
+    handled.current = true;
+
+    const run = async () => {
       const code = searchParams.get('code');
       const token_hash = searchParams.get('token_hash');
       const type = searchParams.get('type');
+
+      if (!code && !token_hash) {
+        router.push('/login');
+        return;
+      }
 
       const supabase = createClient();
 
@@ -23,30 +31,24 @@ function CallbackContent() {
           type: type as 'email' | 'sms' | 'recovery' | 'invite' | 'email_change',
           token_hash,
         });
-        if (error) {
-          setMessage('Verification failed. Redirecting...');
-          setTimeout(() => router.push('/login'), 2000);
-          return;
-        }
-        router.push(type === 'recovery' ? '/update-password' : '/home');
+        router.push(error ? '/login' : type === 'recovery' ? '/update-password' : '/home');
         return;
       }
 
-      if (code) {
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
-        if (error) {
-          setMessage('Sign in failed. Redirecting...');
-          setTimeout(() => router.push('/login'), 2000);
-          return;
-        }
+      const { data } = await supabase.auth.getSession();
+      if (data?.session) {
         router.push('/home');
         return;
       }
 
-      router.push('/login');
+      const { error } = await supabase.auth.exchangeCodeForSession(code!);
+      if (error) {
+        console.error('exchangeCodeForSession error:', error);
+      }
+      router.push(error ? '/login' : '/home');
     };
 
-    handleCallback();
+    run();
   }, [router, searchParams]);
 
   return (
@@ -55,7 +57,7 @@ function CallbackContent() {
         <div className="flex items-center justify-center w-10 h-10 bg-primary/20 rounded-lg">
           <Sparkles size={20} className="text-primary" />
         </div>
-        <p className="text-text-secondary text-sm">{message}</p>
+        <p className="text-text-secondary text-sm">Completing your sign in...</p>
       </div>
     </div>
   );
