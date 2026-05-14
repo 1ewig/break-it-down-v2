@@ -9,12 +9,12 @@ export default function ForWhoSection() {
     {
       icon: <Brain size={32} className="text-emerald" />,
       title: 'ADHD Warriors',
-      body: "Your brain needs tasks chunked small enough to feel approachable. Break It Down&apos;s step-by-step breakdown was built with ADHD hyperfocus and paralysis in mind."
+      body: "Your brain needs tasks chunked small enough to feel approachable. Break It Down's step-by-step breakdown was built with ADHD hyperfocus and paralysis in mind."
     },
     {
       icon: <BatteryLow size={32} className="text-emerald" />,
       title: 'The Burnt Out',
-      body: "When you&apos;re running on empty, even small tasks feel enormous. We strip them down to their absolute minimum viable first action."
+      body: "When you're running on empty, even small tasks feel enormous. We strip them down to their absolute minimum viable first action."
     },
     {
       icon: <Activity size={32} className="text-emerald" />,
