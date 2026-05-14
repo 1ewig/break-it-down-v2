@@ -9,6 +9,7 @@ const quicksand = Quicksand({
 });
 
 import QueryProvider from '@/providers/QueryProvider';
+import AuthProvider from '@/providers/AuthProvider';
 
 export const metadata: Metadata = {
   title: 'Break It Down',
@@ -20,7 +21,9 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
     <html lang="en" className={quicksand.variable}>
       <body className="antialiased min-h-screen font-sans selection:bg-primary/30" suppressHydrationWarning>
         <QueryProvider>
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>
