@@ -8,7 +8,7 @@ import { createClient } from '@/lib/supabase/server';
 export const maxDuration = 30;
 
 /**
- * API route to break a step down into substeps using Llama 3.3.
+ * API route to break a step down into substeps using Llama 3.1.
  * Returns the mapped substeps directly, leaving persistence entirely to the client.
  */
 export async function POST(req: Request) {
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
   try {
     const { text } = await (generateText as any)({
-      model: groq('llama-3.3-70b-versatile'),
+      model: groq('llama-3.1-8b-instant'),
       system: STEP_BREAKDOWN_PROMPT,
       prompt: `Task Context: "${taskTitle || 'General Task'}"\nPlease explain how to accomplish this specific step in exactly 3-5 concise, numbered points (e.g. 1. Do this\\n2. Do that): "${stepTitle}"`,
       responseFormat: { type: 'json_object' },
