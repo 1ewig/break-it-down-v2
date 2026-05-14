@@ -1,7 +1,7 @@
 import { groq } from '@ai-sdk/groq';
 import { generateText } from 'ai';
 import { TASK_BREAKDOWN_PROMPT } from '@/lib/ai/prompts';
-import { taskBreakdownSchema } from '@/lib/ai/schemas';
+import { taskBreakdownSchema, sanitizeAIJSON } from '@/lib/ai/schemas';
 import { ZodError } from 'zod';
 
 export const runtime = 'edge';
@@ -18,8 +18,8 @@ export async function POST(req: Request) {
       responseFormat: { type: 'json_object' },
     });
 
-    const cleanText = text.replace(/```json\n?|```/g, '').trim();
-    const object = JSON.parse(cleanText);
+    const sanitized = sanitizeAIJSON(text);
+    const object = JSON.parse(sanitized);
 
     if (object?.error === true && typeof object.message === 'string') {
       return Response.json({ error: object.message }, { status: 400 });

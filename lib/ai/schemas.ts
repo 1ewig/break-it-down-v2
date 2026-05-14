@@ -1,5 +1,20 @@
 import { z } from 'zod';
 
+export function sanitizeAIJSON(text: string): string {
+  let cleaned = text.replace(/```json\n?|```/g, '').trim();
+  let inString = false;
+  let escape = false;
+  let result = '';
+  for (const char of cleaned) {
+    if (escape) { escape = false; result += char; continue; }
+    if (char === '\\' && inString) { escape = true; result += char; continue; }
+    if (char === '"') { inString = !inString; result += char; continue; }
+    if (inString && (char === '\n' || char === '\r')) { result += '\\n'; continue; }
+    result += char;
+  }
+  return result;
+}
+
 export const stepSchema = z.object({
   title: z.string().min(1),
   subtitle: z.string().optional(),
