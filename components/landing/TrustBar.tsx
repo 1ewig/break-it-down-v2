@@ -5,7 +5,7 @@ export default function TrustBar() {
     'Built for ADHD brains',
     'Executive dysfunction friendly',
     'No judgment. No pressure.',
-    'Infinite task breakdown',
+    'AI-powered step breakdown',
     'Powered by Groq & Llama 3.3',
     'One step at a time',
     'For the overwhelmed & burnt out',

@@ -27,7 +27,7 @@ export default function TestimonialsSection() {
       gradient: "linear-gradient(135deg, #4AA073, #D2EADF)"
     },
     {
-      quote: "The infinite breakdown feature is genuinely mind-bending. I broke 'start my business' down about six levels deep and ended up with 'open a Google Doc'. Perfect.",
+      quote: "I love how each step comes with a time estimate and a 'why this matters'. It turned 'clean the kitchen' from a monster into a list of 5-minute chores. I actually did the dishes.",
       name: "Lena M.",
       handle: "First-time founder",
       initials: "LM",

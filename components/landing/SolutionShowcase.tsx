@@ -163,8 +163,8 @@ export default function SolutionShowcase() {
             </div>
 
             <div className="mt-2">
-              <h4 className="text-white font-bold text-base mb-1">Break It Down, Infinitely</h4>
-              <p className="text-white/45 text-xs leading-relaxed">Click any step to break it into even tinier micro-actions. Go as deep as you need. The AI has infinite patience.</p>
+              <h4 className="text-white font-bold text-base mb-1">Every Step Has a Guide</h4>
+              <p className="text-white/45 text-xs leading-relaxed">Click any step to see time estimates, materials, a numbered walkthrough, and why this tiny step matters.</p>
             </div>
           </motion.div>
 
