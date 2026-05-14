@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
-const protectedRoutes = ['/home', '/tasks', '/bin', '/settings', '/profile']
+const protectedRoutes = ['/home', '/tasks', '/bin', '/settings', '/profile', '/update-password']
 
 export async function middleware(request: NextRequest) {
   const { supabaseResponse, user } = await updateSession(request)
