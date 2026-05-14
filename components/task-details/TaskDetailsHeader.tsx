@@ -23,7 +23,7 @@ export function TaskDetailsHeader({ task }: TaskDetailsHeaderProps) {
     >
       <motion.h1 
         layout 
-        className="text-4xl md:text-5xl font-light text-text-primary tracking-tight leading-tight"
+        className="text-4xl md:text-5xl font-bold text-text-primary tracking-tight leading-tight"
       >
         {task.title}
       </motion.h1>
@@ -31,10 +31,10 @@ export function TaskDetailsHeader({ task }: TaskDetailsHeaderProps) {
       {task.affirmation && (
         <motion.div 
           variants={SCALE_IN}
-          className="bg-primary/5 border border-primary/10 rounded-3xl p-6 relative overflow-hidden w-full"
+          className="bg-primary/5 border border-primary/10 rounded-3xl p-6 relative overflow-hidden w-full shadow-sm"
         >
-          <p className="text-primary font-light text-lg leading-relaxed">
-            {task.affirmation}
+          <p className="text-primary font-medium text-lg leading-relaxed italic">
+            &quot;{task.affirmation}&quot;
           </p>
         </motion.div>
       )}

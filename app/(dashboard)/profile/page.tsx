@@ -5,13 +5,16 @@ import { useUIStore } from '@/store/useUIStore';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
 import { STAGGER_CONTAINER } from '@/lib/animations';
-import { User, Mail, Calendar, LogOut } from 'lucide-react';
+import { User, Mail, Calendar, LogOut, LogOut as LogOutIcon } from 'lucide-react';
 import { NameSetting } from '@/components/settings/NameSetting';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { useState } from 'react';
 
 export default function ProfilePage() {
   const { user, signOut } = useAuth();
   const { userName, setUserName } = useUIStore();
   const router = useRouter();
+  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();
@@ -32,8 +35,8 @@ export default function ProfilePage() {
           <User className="h-6 w-6 text-primary" />
         </div>
         <div>
-          <h1 className="text-2xl font-light text-text-primary">Profile</h1>
-          <p className="text-sm text-text-secondary">Your account details</p>
+          <h1 className="text-2xl font-bold text-text-primary tracking-tight">Profile</h1>
+          <p className="text-sm font-medium text-text-secondary">Your account details</p>
         </div>
       </div>
 
@@ -90,12 +93,21 @@ export default function ProfilePage() {
       </div>
 
       <button
-        onClick={handleSignOut}
+        onClick={() => setShowSignOutConfirm(true)}
         className="flex items-center justify-center gap-2 py-3 px-4 bg-surface border border-text-secondary/5 rounded-2xl text-text-secondary hover:text-red-400 hover:border-red-400/20 transition-colors font-medium"
       >
-        <LogOut className="h-5 w-5" />
+        <LogOutIcon className="h-5 w-5" />
         Sign Out
       </button>
+
+      <ConfirmDialog
+        open={showSignOutConfirm}
+        title="Sign Out"
+        message="Are you sure you want to sign out? You'll need to sign back in to access your tasks."
+        confirmLabel="Sign Out"
+        onConfirm={handleSignOut}
+        onCancel={() => setShowSignOutConfirm(false)}
+      />
     </motion.div>
   );
 }

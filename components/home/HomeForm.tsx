@@ -29,15 +29,15 @@ export function HomeForm({
         type="text"
         value={taskTitle}
         onChange={(e) => onTitleChange(e.target.value)}
-        placeholder="e.g., Clean the entire house, Start a business..."
+        placeholder="e.g., Clean the entire house..."
         disabled={isPending}
-        className="w-full bg-surface border-2 border-transparent focus:border-primary/20 rounded-3xl px-8 py-6 text-lg md:text-xl outline-none transition-all shadow-sm focus:shadow-2xl focus:shadow-primary/5 placeholder:opacity-30 pr-20"
+        className="w-full h-[72px] bg-surface border border-text-secondary/10 rounded-[2rem] px-8 text-lg md:text-xl outline-none transition-all shadow-sm focus:shadow-[0_0_40px_rgba(74,160,115,0.1)] focus:border-primary/30 placeholder:text-text-secondary/30 pr-20 font-medium"
       />
       
       <button
         type="submit"
         disabled={!canSubmit || isPending}
-        className="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-white p-4 rounded-2xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100 shadow-lg shadow-primary/20 flex items-center justify-center"
+        className="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-white w-[52px] h-[52px] rounded-[1.25rem] hover:scale-105 active:scale-95 transition-all disabled:opacity-30 disabled:scale-100 shadow-[0_4px_20px_rgba(74,160,115,0.3)] flex items-center justify-center"
       >
         {isPending ? (
           <Loader2 className="w-6 h-6 animate-spin" />

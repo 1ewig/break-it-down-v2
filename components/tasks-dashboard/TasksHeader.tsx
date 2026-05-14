@@ -10,10 +10,10 @@ export function TasksHeader() {
   return (
     <motion.div 
       variants={FADE_IN_UP}
-      className="text-center"
+      className="text-center mb-4"
     >
-      <h1 className="text-3xl font-light text-text-primary mb-2">My Tasks</h1>
-      <p className="text-text-secondary text-sm">One gentle step at a time.</p>
+      <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-2 tracking-tight">My Tasks</h1>
+      <p className="text-text-secondary text-base font-medium">One gentle step at a time.</p>
     </motion.div>
   );
 }

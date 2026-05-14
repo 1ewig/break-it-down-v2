@@ -7,10 +7,10 @@ export function BinHeader() {
   return (
     <motion.div
       variants={FADE_IN_UP}
-      className="text-center"
+      className="text-center mb-4"
     >
-      <h1 className="text-3xl font-light text-text-primary mb-2">Bin</h1>
-      <p className="text-text-secondary text-sm">
+      <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-2 tracking-tight">Bin</h1>
+      <p className="text-text-secondary text-base font-medium">
         Deleted tasks are automatically removed after 30 days.
       </p>
     </motion.div>
