@@ -196,7 +196,7 @@ function StepActions({
       <button
         onClick={onBreakdown}
         disabled={isBreakingDown || hasChildren}
-        className="flex items-center justify-center gap-2 py-3 bg-surface border border-text-secondary/10 hover:border-primary/30 rounded-2xl text-sm text-text-primary transition-all disabled:opacity-50 cursor-pointer"
+        className="flex items-center justify-center gap-2 py-3 bg-surface border border-text-secondary/10 hover:border-primary/30 rounded-2xl text-sm text-text-primary transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
       >
         {isBreakingDown ? (
           <Loader2 className="w-4 h-4 animate-spin text-primary" />
@@ -208,7 +208,7 @@ function StepActions({
 
       <button
         onClick={onToggleComplete}
-        className="flex items-center justify-center gap-2 py-3 bg-primary text-white rounded-2xl text-sm font-medium transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-primary/20 cursor-pointer"
+        className="flex items-center justify-center gap-2 py-3 bg-primary text-white rounded-2xl text-sm font-medium transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-primary/20 disabled:cursor-not-allowed cursor-pointer"
       >
         <Check className="w-4 h-4" />
         <span>Mark done</span>
