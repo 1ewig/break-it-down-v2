@@ -1,11 +1,13 @@
 'use client';
 
 import { useTaskDetail } from '@/hooks/useTaskDetail';
-import { TaskDetailsHeader } from '@/components/task-details/TaskDetailsHeader';
-import { TaskDetailsSteps } from '@/components/task-details/TaskDetailsSteps';
-import { TaskDetailsClosingTip } from '@/components/task-details/TaskDetailsClosingTip';
-import { TaskDetailsLoading } from '@/components/task-details/TaskDetailsLoading';
-import { TaskDetailsNotFound } from '@/components/task-details/TaskDetailsNotFound';
+import { 
+  TaskDetailsHeader, 
+  TaskDetailsSteps, 
+  TaskDetailsClosingTip, 
+  TaskDetailsLoading, 
+  TaskDetailsNotFound 
+} from '@/components/task-details/TaskDetailsView';
 import { motion } from 'motion/react';
 import { STAGGER_CONTAINER } from '@/lib/animations';
 
