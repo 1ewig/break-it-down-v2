@@ -6,6 +6,10 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Mail, Lock, ArrowRight, Sparkles } from 'lucide-react';
 
+// Server-side password policy should be configured in Supabase Auth settings
+// (Settings > Authentication > Password Policy) to enforce min length, etc.
+// This client-side check is a UX courtesy, not a security boundary.
+
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
