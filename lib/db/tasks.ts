@@ -1,21 +1,9 @@
 import { Task, TaskWithSteps } from '@/types';
 import db from './db';
+import { loadTasksWithSteps } from './shared';
 
 export async function getTasksWithSteps(userId?: string): Promise<TaskWithSteps[]> {
-  const [tasks, steps] = await Promise.all([
-    db.tasks.toArray(),
-    db.steps.toArray(),
-  ]);
-  return tasks
-    .filter((t) => !t.deleted_at)
-    .filter((t) => !userId || t.user_id === userId)
-    .map((task) => ({
-      ...task,
-      steps: steps
-        .filter((s) => s.task_id === task.id)
-        .sort((a, b) => a.order_index - b.order_index),
-    }))
-    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  return loadTasksWithSteps(userId, 'active');
 }
 
 export async function getTaskWithSteps(taskId: string): Promise<TaskWithSteps | null> {

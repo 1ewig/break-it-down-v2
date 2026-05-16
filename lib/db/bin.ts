@@ -1,5 +1,6 @@
 import { Task, TaskWithSteps } from '@/types';
 import db from './db';
+import { loadTasksWithSteps } from './shared';
 
 export async function deleteTask(taskId: string): Promise<void> {
   const task = await db.tasks.get(taskId);
@@ -22,20 +23,7 @@ export async function restoreTask(taskId: string): Promise<void> {
 }
 
 export async function getDeletedTasksWithSteps(userId?: string): Promise<TaskWithSteps[]> {
-  const [tasks, steps] = await Promise.all([
-    db.tasks.toArray(),
-    db.steps.toArray(),
-  ]);
-  return tasks
-    .filter((t): t is Task & { deleted_at: string } => !!t.deleted_at)
-    .filter((t) => !userId || t.user_id === userId)
-    .map((task) => ({
-      ...task,
-      steps: steps
-        .filter((s) => s.task_id === task.id)
-        .sort((a, b) => a.order_index - b.order_index),
-    }))
-    .sort((a, b) => new Date(b.deleted_at).getTime() - new Date(a.deleted_at).getTime());
+  return loadTasksWithSteps(userId, 'deleted');
 }
 
 export async function purgeExpiredDeletedTasks(days: number = 30, userId?: string): Promise<number> {
