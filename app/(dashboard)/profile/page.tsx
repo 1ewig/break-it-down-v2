@@ -4,7 +4,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import { useUIStore } from '@/store/useUIStore';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
-import { STAGGER_CONTAINER } from '@/lib/animations';
+import { STAGGER_CONTAINER, FADE_IN_UP } from '@/lib/animations';
 import { User, Mail, Calendar, LogOut, LogOut as LogOutIcon } from 'lucide-react';
 import { NameSetting } from '@/components/settings/NameSetting';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
@@ -30,7 +30,7 @@ export default function ProfilePage() {
       animate="animate"
       className="flex flex-col flex-1 max-w-2xl mx-auto w-full p-6 gap-6"
     >
-      <div className="flex items-center gap-4 mb-2">
+      <motion.div variants={FADE_IN_UP} className="flex items-center gap-4 mb-2">
         <div className="flex items-center justify-center w-12 h-12 bg-primary/15 rounded-full">
           <User className="h-6 w-6 text-primary" />
         </div>
@@ -38,11 +38,11 @@ export default function ProfilePage() {
           <h1 className="text-2xl font-bold text-text-primary tracking-tight">Profile</h1>
           <p className="text-sm font-medium text-text-secondary">Your account details</p>
         </div>
-      </div>
+      </motion.div>
 
       <NameSetting userName={userName} onSave={setUserName} />
 
-      <div className="bg-surface border border-text-secondary/5 rounded-3xl p-6 space-y-5">
+      <motion.div variants={FADE_IN_UP} className="bg-surface border border-text-secondary/5 rounded-3xl p-6 space-y-5">
         <div className="flex items-center gap-4">
           <div className="flex items-center justify-center w-10 h-10 bg-background rounded-xl">
             <Mail className="h-5 w-5 text-text-secondary" />
@@ -90,15 +90,17 @@ export default function ProfilePage() {
           </div>
         </div>
 
-      </div>
+      </motion.div>
 
-      <button
-        onClick={() => setShowSignOutConfirm(true)}
-        className="flex items-center justify-center gap-2 py-3 px-4 bg-surface border border-text-secondary/5 rounded-2xl text-text-secondary hover:text-red-400 hover:border-red-400/20 transition-colors font-medium"
-      >
-        <LogOutIcon className="h-5 w-5" />
-        Sign Out
-      </button>
+      <motion.div variants={FADE_IN_UP}>
+        <button
+          onClick={() => setShowSignOutConfirm(true)}
+          className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-surface border border-text-secondary/5 rounded-2xl text-text-secondary hover:text-red-400 hover:border-red-400/20 transition-colors font-medium"
+        >
+          <LogOutIcon className="h-5 w-5" />
+          Sign Out
+        </button>
+      </motion.div>
 
       <ConfirmDialog
         open={showSignOutConfirm}
