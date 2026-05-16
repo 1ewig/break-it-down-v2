@@ -1,4 +1,17 @@
-import { z } from 'zod';
+import { z, ZodError } from 'zod';
+
+export function handleAIError(error: unknown, context: string): Response {
+  if (error instanceof SyntaxError) {
+    console.error(`${context}: JSON parse error:`, error);
+    return Response.json({ error: 'AI returned malformed JSON' }, { status: 502 });
+  }
+  if (error instanceof ZodError) {
+    console.error(`${context}: Schema validation error:`, error.issues);
+    return Response.json({ error: 'AI response missing required fields', details: error.issues }, { status: 502 });
+  }
+  console.error(`${context}:`, error);
+  return Response.json({ error: 'Failed to generate breakdown' }, { status: 500 });
+}
 
 export function sanitizeAIJSON(text: string): string {
   let cleaned = text.replace(/```json\n?|```/g, '').trim();

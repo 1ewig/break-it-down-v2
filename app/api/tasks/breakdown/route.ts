@@ -1,8 +1,7 @@
 import { groq } from '@ai-sdk/groq';
 import { generateText } from 'ai';
 import { STEP_BREAKDOWN_PROMPT } from '@/lib/ai/prompts';
-import { stepBreakdownSchema, sanitizeAIJSON } from '@/lib/ai/schemas';
-import { ZodError } from 'zod';
+import { stepBreakdownSchema, sanitizeAIJSON, handleAIError } from '@/lib/ai/schemas';
 import { createClient } from '@/lib/supabase/server';
 
 type GenerateTextOptions = Parameters<typeof generateText>[0] & {
@@ -38,15 +37,6 @@ export async function POST(req: Request) {
 
     return Response.json({ detailed_note: validated.detailed_note, reassurance: validated.reassurance });
   } catch (error) {
-    if (error instanceof SyntaxError) {
-      console.error('JSON parse error:', error);
-      return Response.json({ error: 'AI returned malformed JSON' }, { status: 502 });
-    }
-    if (error instanceof ZodError) {
-      console.error('Schema validation error:', error.issues);
-      return Response.json({ error: 'AI response missing required fields', details: error.issues }, { status: 502 });
-    }
-    console.error('Error explaining step:', error);
-    return Response.json({ error: 'Failed to explain step' }, { status: 500 });
+    return handleAIError(error, 'Error explaining step');
   }
 }

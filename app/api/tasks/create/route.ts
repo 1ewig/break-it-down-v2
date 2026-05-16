@@ -1,7 +1,7 @@
 import { groq } from '@ai-sdk/groq';
 import { generateText } from 'ai';
 import { TASK_BREAKDOWN_PROMPT } from '@/lib/ai/prompts';
-import { taskBreakdownSchema, sanitizeAIJSON } from '@/lib/ai/schemas';
+import { taskBreakdownSchema, sanitizeAIJSON, handleAIError } from '@/lib/ai/schemas';
 import { z, ZodError } from 'zod';
 import { createClient } from '@/lib/supabase/server';
 
@@ -51,15 +51,6 @@ export async function POST(req: Request) {
     const validated = taskBreakdownSchema.parse(object);
     return Response.json(validated);
   } catch (error) {
-    if (error instanceof SyntaxError) {
-      console.error('JSON parse error:', error);
-      return Response.json({ error: 'AI returned malformed JSON' }, { status: 502 });
-    }
-    if (error instanceof ZodError) {
-      console.error('Schema validation error:', error.issues);
-      return Response.json({ error: 'AI response missing required fields', details: error.issues }, { status: 502 });
-    }
-    console.error('Error creating task breakdown:', error);
-    return Response.json({ error: 'Failed to generate breakdown' }, { status: 500 });
+    return handleAIError(error, 'Error creating task breakdown');
   }
 }
