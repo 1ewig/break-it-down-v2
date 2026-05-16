@@ -10,6 +10,7 @@ import {
   updateStepNoteInDB
 } from '@/lib/db/indexedDB';
 import { useAuth } from '@/providers/AuthProvider';
+import { useToastStore } from '@/store/useToastStore';
 
 function updateTaskInCache(task: TaskWithSteps, stepId: string, isCompleted: boolean): TaskWithSteps {
   const updatedSteps = task.steps.map((step) =>
@@ -28,6 +29,7 @@ function updateTaskInCache(task: TaskWithSteps, stepId: string, isCompleted: boo
 export function useTaskMutations() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { showToast } = useToastStore();
 
   const updateStepCompletion = useMutation({
     mutationFn: async ({ taskId, stepId, isCompleted }: { taskId: string, stepId: string, isCompleted: boolean }) => {
@@ -79,7 +81,10 @@ export function useTaskMutations() {
         body: JSON.stringify({ stepId, stepTitle, taskId, taskTitle })
       });
 
-      if (!res.ok) throw new Error('Failed to fetch explanation');
+      if (!res.ok) {
+        const errorBody = await res.json().catch(() => ({}));
+        throw new Error(errorBody.error || 'Failed to fetch explanation');
+      }
 
       const data = await res.json();
       if (!data.detailed_note) throw new Error('No explanation returned');
@@ -97,6 +102,10 @@ export function useTaskMutations() {
       if (data) {
         queryClient.invalidateQueries({ queryKey: ['task', data.taskId, user?.id] });
       }
+    },
+    onError: (err) => {
+      const message = err instanceof Error ? err.message : 'Failed to break down step';
+      showToast(`${message}. Let's try again gently.`);
     }
   });
 

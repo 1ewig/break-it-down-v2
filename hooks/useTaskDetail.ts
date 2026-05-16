@@ -25,6 +25,7 @@ export function useTaskDetail() {
     task,
     isLoading,
     breakingStepId,
+    breakdownError: breakdownTask.error,
     handleToggleComplete,
     handleBreakdown,
   };

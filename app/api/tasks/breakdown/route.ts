@@ -5,6 +5,10 @@ import { stepBreakdownSchema, sanitizeAIJSON } from '@/lib/ai/schemas';
 import { ZodError } from 'zod';
 import { createClient } from '@/lib/supabase/server';
 
+type GenerateTextOptions = Parameters<typeof generateText>[0] & {
+  responseFormat?: { type: 'json_object' | 'json_schema'; schema?: unknown };
+};
+
 export const maxDuration = 30;
 
 /**
@@ -21,12 +25,12 @@ export async function POST(req: Request) {
   const { stepId, stepTitle, taskId, taskTitle } = await req.json();
 
   try {
-    const { text } = await (generateText as any)({
+    const { text } = await generateText({
       model: groq('llama-3.1-8b-instant'),
       system: STEP_BREAKDOWN_PROMPT,
       prompt: `Task Context: "${taskTitle || 'General Task'}"\nPlease explain how to accomplish this specific step in exactly 3-5 concise, numbered points (e.g. 1. Do this\\n2. Do that): "${stepTitle}"`,
       responseFormat: { type: 'json_object' },
-    });
+    } as GenerateTextOptions);
 
     const sanitized = sanitizeAIJSON(text);
     const object = JSON.parse(sanitized);
