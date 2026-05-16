@@ -1,58 +1,71 @@
-# Implementation Plan: Visual Refactor & Design System
+# Implementation Plan: Smart Design System Refactor
 
-## 1. Overview
-The goal of this refactor is to transition the **Break It Down** styling architecture from a pure Tailwind utility approach to a **Hybrid System**. We will use **Vanilla CSS** for global layout, positioning, and design tokens (variables), while retaining **Tailwind CSS** for micro-adjustments and component-specific styling.
+## 1. Goal
+Transition to a token-driven system where every visual property is derived from a central theme. JSX will focus on **what** a component is (e.g., `.type-heading`, `.layout-stack`) rather than **how** it looks (e.g., `text-3xl font-bold mb-4`).
 
-## 2. Core Architecture
-- **Vanilla CSS**: Used for `display`, `position`, `grid`, `flex`, `gap`, `padding/margin` (layout level), and `typography` (heading levels).
-- **CSS Variables**: All "magic numbers" (colors, spacing, font sizes, border radii) will be moved to `:root` variables.
-- **Tailwind**: Reserved for atomic utilities like `hover:effects`, `transitions`, `opacity`, and specific decorative properties.
+## 2. Phase 1: The Token Foundation (@theme)
+We will expand the `@theme` block in `app/globals.css` to define a strict mathematical scale.
 
-## 3. The Design System (Variables)
-We will define a unified set of tokens in `app/globals.css`.
+### A. Spacing & Gap Scale (8px Base)
+Standardized spacing to be used for gaps, padding, and layout offsets.
+- `--spacing-1: 0.25rem;` (4px)
+- `--spacing-2: 0.5rem;` (8px)
+- `--spacing-4: 1rem;` (16px)
+- `--spacing-8: 2rem;` (32px)
+- `--spacing-12: 3rem;` (48px)
 
-### Tokens to Define:
-- **Colors**: Primary (Emerald), Surface, Background, Text (Primary/Secondary), and Accent colors.
-- **Spacing**: A scale based on `8px` (e.g., `--space-1: 0.25rem`, `--space-4: 1rem`).
-- **Typography**: 
-  - `--font-heading-lg`: The "Clamped" bold style from the landing page.
-  - `--font-heading-md`: The Dashboard header style.
-  - `--font-body`: Clean, readable weight for task text.
-- **Radii**: Consistent rounding for cards and inputs (e.g., `--radius-lg: 2rem`).
+### B. Typography Scale (Fluid & Clamped)
+Centralizing the font sizes and line heights.
+- `--text-display: clamp(2.5rem, 7vw, 5.5rem);`
+- `--text-h1: clamp(2rem, 5vw, 3.5rem);`
+- `--text-h2: 2rem;`
+- `--text-body: 1rem;`
+- `--text-sm: 0.875rem;`
 
-## 4. Implementation Phases
+### C. Semantic Colors
+Unifying the brand across Landing and Dashboard.
+- `--color-brand: var(--color-emerald);`
+- `--color-surface-bg: var(--color-background);`
+- `--color-surface-card: var(--color-surface);`
 
-### Phase 1: Foundation (The Tokens)
-- [ ] Create a new branch `feat/css-refactor`.
-- [ ] Update `app/globals.css` with a full `:root` variable list.
-- [ ] Map existing Tailwind colors to these variables in `tailwind.config.ts` (so we can use both).
+## 3. Phase 2: Preset Presets (@layer utilities)
+Instead of applying 5 utilities to every text element, we create bundles.
 
-### Phase 2: Structural Layout
-- [ ] Refactor `Sidebar.tsx`: Move the complex flex/positioning logic into a CSS module or global layout classes.
-- [ ] Refactor the main dashboard wrapper (`app/(dashboard)/layout.tsx`) to use CSS Grid for the Sidebar/Main split.
+### A. Typography Bundles
+- `.type-display`: Uses `--text-display`, `font-bold`, `tracking-tight`, `leading-[1.05]`.
+- `.type-heading`: Uses `--text-h1`, `font-semibold`, `tracking-tight`.
+- `.type-body`: Uses `--text-body`, `font-medium`, `leading-relaxed`.
+- `.type-label`: Uses `--text-sm`, `uppercase`, `tracking-widest`.
 
-### Phase 3: Component Realignment
-- [ ] **Home Page**: Refactor `HomeHeader` and `HomeForm` to use standard layout classes.
-- [ ] **Task List**: Move the `StepItem` layout (flex rows, padding) into CSS.
-- [ ] **Typography Audit**: Replace ad-hoc `text-3xl font-bold` with semantic classes like `.heading-primary`.
+### B. Layout Containers (The "Gap" System)
+Getting rid of margins for spacing.
+- `.layout-stack-lg`: `flex flex-col gap-[var(--spacing-12)]`. (For sections)
+- `.layout-stack-md`: `flex flex-col gap-[var(--spacing-6)]`. (For cards)
+- `.layout-stack-sm`: `flex flex-col gap-[var(--spacing-2)]`. (For item groups)
+- `.layout-row`: `flex items-center gap-[var(--spacing-3)]`.
 
-## 5. Success Criteria
-1. **Clean JSX**: Components should have 50% fewer Tailwind classes.
-2. **Variable Control**: Changing `--color-primary` in one place updates the entire app (landing page and dashboard).
-3. **Consistency**: Typography and spacing feel mathematically consistent across all screens.
+## 4. Phase 3: Global Component Styles
+Defining core UI atoms in CSS to clean up the React code.
+- `.card-premium`: The glassmorphic, rounded container.
+- `.button-primary`: The standardized Emerald button with hover states.
+- `.input-standard`: The standardized form field style.
 
-## 6. Example Comparison
+## 5. Example: Before vs. After
 
-### Before (Current)
+### Before (Utility Chaos)
 ```tsx
-<div className="flex flex-col items-center justify-center p-6 gap-8 md:gap-12 bg-surface rounded-3xl border border-text-secondary/10">
-  <h1 className="text-3xl font-bold tracking-tight">Title</h1>
+<div className="flex flex-col gap-8 md:gap-12 p-6 bg-[#121413] rounded-3xl border border-white/10">
+  <h1 className="text-white font-bold tracking-tight text-[clamp(2.5rem,7vw,5.5rem)] leading-[1.05]">
+    Title
+  </h1>
+  <p className="text-white/55 font-medium text-lg mb-4">Description</p>
 </div>
 ```
 
-### After (Proposed)
+### After (Smart System)
 ```tsx
-<div className="card-container layout-centered shadow-premium">
-  <h1 className="heading-primary">Title</h1>
+<div className="card-premium layout-stack-md">
+  <h1 className="type-display">Title</h1>
+  <p className="type-body opacity-55">Description</p>
 </div>
 ```
