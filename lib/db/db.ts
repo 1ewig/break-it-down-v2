@@ -11,4 +11,9 @@ db.version(1).stores({
   steps: 'id, task_id, parent_step_id',
 });
 
+db.version(2).stores({
+  tasks: 'id, deleted_at, user_id, created_at',
+  steps: 'id, task_id, parent_step_id, is_completed',
+});
+
 export default db;
