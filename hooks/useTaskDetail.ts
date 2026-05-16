@@ -10,7 +10,7 @@ export function useTaskDetail() {
   const { updateStepCompletion, breakdownTask } = useTaskMutations();
 
   const breakingStepId = breakdownTask.isPending 
-    ? (breakdownTask.variables as any)?.stepId ?? null 
+    ? breakdownTask.variables?.stepId ?? null 
     : null;
 
   const handleToggleComplete = (taskId: string, stepId: string, isCompleted: boolean) => {
