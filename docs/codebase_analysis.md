@@ -2,6 +2,7 @@
 
 ## 1. Performance Improvements
 ### A. IndexedDB Query Inefficiency (`lib/db/shared.ts`)
+**Status:** ⏳ Pending
 Currently, `loadTasksWithSteps` loads **all** tasks and **all** steps from IndexedDB into memory using `.toArray()` before filtering them by `user_id` and `deleted_at`:
 ```typescript
 const [tasks, steps] = await Promise.all([
@@ -9,39 +10,48 @@ const [tasks, steps] = await Promise.all([
   db.steps.toArray(),
 ]);
 ```
-**Improvement:** This is a massive performance bottleneck as the user's task history grows. You should utilize Dexie's indexed queries. First, query tasks by `user_id`, then extract the `task_id`s, and finally query only the steps that belong to those tasks using `db.steps.where('task_id').anyOf(taskIds).toArray()`.
+**Improvement:** Use Dexie's indexed queries. First, query tasks by `user_id`, then extract the `task_id`s, and finally query only the steps that belong to those tasks using `db.steps.where('task_id').anyOf(taskIds).toArray()`.
 
 ### B. Inefficient Purge of Deleted Tasks (`lib/db/bin.ts`)
+**Status:** ⏳ Pending
 `purgeExpiredDeletedTasks` loads the entire `db.tasks` table into memory to find expired tasks. 
-**Improvement:** You can create an index for `deleted_at` (or a compound index) to query only tasks that have a `deleted_at` value.
+**Improvement:** Use an index for `deleted_at` to query only tasks that have a `deleted_at` value.
 
 ### C. Middleware Network Requests (`lib/supabase/middleware.ts`)
-The `updateSession` function called in your `middleware.ts` uses `supabase.auth.getUser()`. While `getUser()` is the most secure method as it queries the Supabase database to ensure the token hasn't been revoked, it adds a network round-trip delay to **every** protected page load.
-**Improvement:** If you want faster page loads, you can use `supabase.auth.getSession()` in the middleware (which only verifies the JWT cookie locally) and reserve `getUser()` for API routes and Server Actions where data mutations occur.
+**Status:** ⏳ Pending
+The `updateSession` function called in your `middleware.ts` uses `supabase.auth.getUser()`. This adds a network round-trip delay to **every** protected page load.
+**Improvement:** Use `supabase.auth.getSession()` in the middleware and reserve `getUser()` for API routes and Server Actions.
 
 ## 2. Security & Privacy Bugs
 ### A. Multi-User Privacy Leak via IndexedDB
-The application uses Supabase for authentication but stores task data locally in IndexedDB using Dexie (`lib/db/db.ts`). The data is partitioned logically by `user_id`, but IndexedDB has no built-in access control.
-**Bug:** If multiple users log into the application on the same browser (e.g., a shared computer), their data is co-mingled in the same IndexedDB database. Because `loadTasksWithSteps` currently fetches all data into memory, a vulnerability like XSS or a simple inspection via browser DevTools allows any user to read the tasks of all other users who have used that device.
+**Status:** ⏳ Pending
+The data is partitioned logically by `user_id`, but IndexedDB has no built-in access control. A user can read another's data via DevTools.
 **Fix:** 
-1. Use an encrypted local database or rely on Supabase for data storage instead of IndexedDB.
+1. Use an encrypted local database or rely on Supabase for data storage.
 2. At the very least, wipe the IndexedDB data upon user sign-out.
 
 ### B. Missing Data Cleanup on Sign Out (`providers/AuthProvider.tsx`)
-When a user signs out, the application calls `supabase.auth.signOut()` but leaves all of the user's personal task data sitting in IndexedDB indefinitely. 
-**Fix:** Update the `signOut` function in `AuthProvider.tsx` to clear the IndexedDB database (or at least delete the specific user's tasks) to ensure their data isn't left behind on a shared device.
+**Status:** ⏳ Pending
+When a user signs out, personal task data remains in IndexedDB indefinitely.
+**Fix:** Update the `signOut` function to clear the IndexedDB database.
 
 ## 3. Duplicated Code Reduction
 ### A. API Route Authentication Checks
-In your `app/api/tasks/breakdown/route.ts` and `app/api/tasks/create/route.ts`, you have identical authentication boilerplate:
-```typescript
-const supabase = await createClient();
-const { data: { user }, error: authError } = await supabase.auth.getUser();
-if (authError || !user) {
-  return Response.json({ error: 'Unauthorized' }, { status: 401 });
-}
-```
-**Improvement:** This code should be extracted into a shared utility function (e.g., `requireAuth` in `lib/supabase/server.ts`) that standardizes the authentication check and error response format across all protected API routes.
+**Status:** ✅ Fixed
+Identical authentication boilerplate was present in AI API routes.
+**Solution:** Extracted into a shared `getAuthUser` utility in `lib/supabase/server.ts`.
 
-### B. Sorting Logic (`lib/db/shared.ts`)
-The sorting logic in `loadTasksWithSteps` uses ternary operators to switch between `created_at` and `deleted_at` depending on the filter mode. This could be simplified or abstracted into a small helper function to reduce cognitive load and avoid type casting (`as Task & { deleted_at: string }`).
+### B. Auth Pages Structure & UI
+**Status:** ✅ Fixed
+Login, Register, and Password Reset pages shared identical layout branding and input patterns.
+**Solution:** Created a shared auth component library (`components/auth/`) including `AuthLayout`, `AuthInput`, `AuthButton`, and `GoogleSignInButton`.
+
+### C. Task Detail Component Bloat
+**Status:** ✅ Fixed
+The `components/task-details` folder had 9 granular files for a single feature.
+**Solution:** Consolidated into 5 focused files (e.g., merging `Metadata`/`Content`/`Actions` into `StepItem.tsx`).
+
+### D. Sorting Logic (`lib/db/shared.ts`)
+**Status:** ⏳ Pending
+The sorting logic in `loadTasksWithSteps` uses complex ternary operators and type casting.
+**Improvement:** Abstract into a small helper function.
