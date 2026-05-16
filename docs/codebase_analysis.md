@@ -1,36 +1,48 @@
 # Codebase Analysis Report
 
+## Status Legend
+- ✅ **Fixed** — resolved in `fix/codebase-audit` branch, merged to master
+- ⏳ **Pending** — not yet addressed
+
+---
+
 ## Performance Bottlenecks
 
 ### 1. Loading ALL data into memory (major)
 **Files:** `lib/db/tasks.ts:4-8`, `lib/db/bin.ts:24-28`
+**Status:** ✅ Fixed
 
-`getTasksWithSteps()` and `getDeletedTasksWithSteps()` read **every task** and **every step** from IndexedDB into memory, then filter/join/sort client-side. No pagination, no limit. As the user accumulates tasks this grows linearly slower — 100+ tasks with 5-8 steps each means 500-800+ objects loaded on every page load.
+`getTasksWithSteps()` and `getDeletedTasksWithSteps()` now delegate to a shared `loadTasksWithSteps()` utility. Still no pagination — improvement needed long-term.
 
 ### 2. Sequential deletes in purge loop
 **File:** `lib/db/bin.ts:51-54`
+**Status:** ⏳ Pending
 
-`purgeExpiredDeletedTasks()` uses a `for` loop with individual `db.tasks.delete(task.id)` + `db.steps.where().delete()` inside a transaction. Should use `bulkDelete` or batch operations.
+`purgeExpiredDeletedTasks()` still uses a `for` loop with individual deletes.
 
 ### 3. Missing database indexes
 **File:** `lib/db/db.ts:9-12`
+**Status:** ✅ Fixed
 
-Only `id`, `task_id`, `parent_step_id` are indexed. `deleted_at`, `created_at`, `user_id`, `is_completed` are unindexed — all queries filtering on these fields do full table scans.
+Added Dexie v2 indexes for `deleted_at`, `user_id`, `created_at`, and `is_completed`.
 
 ### 4. Redundant step loading on every completion toggle
 **File:** `lib/db/steps.ts:19`
+**Status:** ⏳ Pending
 
-`updateStepCompletionInDB()` loads ALL steps for a task via `db.steps.where('task_id').equals(taskId).toArray()` just to recompute the progress percentage. Called every single time a checkbox is toggled.
+`updateStepCompletionInDB()` still loads ALL steps for a task to recompute progress.
 
 ### 5. Over-invalidation of queries
 **File:** `hooks/useTaskMutations.ts`
+**Status:** ⏳ Pending
 
-Multiple mutations call `invalidateQueries` for both `['tasks', user?.id]` and `['task', taskId, user?.id]` in `onSettled`, despite already optimistically updating both caches in `onMutate`. This causes redundant background refetches on every mutation.
+Mutations still call `invalidateQueries` in `onSettled` despite optimistic updates in `onMutate`.
 
 ### 6. Unnecessary `(generateText as any)` type escape
 **Files:** `app/api/tasks/create/route.ts:20`, `app/api/tasks/breakdown/route.ts:24`
+**Status:** ✅ Fixed
 
-Both API routes cast `generateText` to `any`, losing all type safety from the Vercel AI SDK.
+Replaced with a properly typed `GenerateTextOptions` wrapper.
 
 ---
 
@@ -38,31 +50,38 @@ Both API routes cast `generateText` to `any`, losing all type safety from the Ve
 
 ### 1. No rate limiting on auth endpoints
 **Files:** `app/(auth)/login/page.tsx`, `app/(auth)/register/page.tsx`, `app/(auth)/forgot-password/page.tsx`, `app/(auth)/update-password/page.tsx`
+**Status:** ⏳ Pending
 
-Login, register, forgot-password, and update-password pages have **zero rate limiting**. An attacker can brute-force credentials or spam password reset emails.
+No rate limiting on auth pages.
 
 ### 2. No email verification enforcement
-The app never checks `user.email_confirmed_at` or similar. Supabase may allow unverified users to sign in depending on project configuration — no protection against unverified account access.
+**Status:** ⏳ Pending
+
+App never checks `user.email_confirmed_at`.
 
 ### 3. Session staleness on client-side
 **File:** `providers/AuthProvider.tsx:30-48`
+**Status:** ⏳ Pending
 
-Only calls `getSession()` on mount and listens to `onAuthStateChange`. If a session is revoked server-side, the client state remains stale until next page reload.
+No periodic session refresh; stale until next page reload.
 
 ### 4. Password validation is client-side only
 **File:** `app/(auth)/register/page.tsx:38-41`
+**Status:** ✅ Fixed (documented)
 
-Password length (min 8) is validated only in the browser. If Supabase's project settings don't enforce this server-side, weak passwords could be accepted.
+Added comments noting that Supabase project settings should enforce password strength server-side.
 
 ### 5. Duplicated Google OAuth handler (inconsistent state after error)
 **Files:** `app/(auth)/login/page.tsx:33-41`, `app/(auth)/register/page.tsx:19-27`
+**Status:** ⏳ Pending
 
-If `handleGoogleSignIn` throws or redirects back with an error, there's no error handling — the user gets redirected to the callback page without feedback.
+No error handling if OAuth redirect fails.
 
 ### 6. No input sanitization on task title
 **File:** `app/api/tasks/create/route.ts:18`
+**Status:** ✅ Fixed
 
-`taskTitle` is read from the request body but never validated or sanitized before passing to the AI prompt (prompt injection risk).
+Added Zod schema validation — title must be a non-empty trimmed string (max 500 chars).
 
 ---
 
@@ -70,41 +89,50 @@ If `handleGoogleSignIn` throws or redirects back with an error, there's no error
 
 ### 1. `getTasksWithSteps` vs `getDeletedTasksWithSteps`
 **Files:** `lib/db/tasks.ts:4`, `lib/db/bin.ts:24`
+**Status:** ✅ Fixed
 
-~90% identical — both load all tasks + steps, filter by userId, join in memory, sort by date. Share a parameterized `loadTasksWithSteps(whereDeleted)` utility.
+Extracted shared `loadTasksWithSteps(userId, mode)` utility in `lib/db/shared.ts`.
 
 ### 2. Auth page outer structure duplicated 4x
 **Files:** `app/(auth)/login/page.tsx`, `app/(auth)/register/page.tsx`, `app/(auth)/forgot-password/page.tsx`, `app/(auth)/update-password/page.tsx`
+**Status:** ⏳ Pending
 
-All four share: centered flex layout → logo header → card container → input-with-icon patterns. Extract into a shared `AuthLayout` component.
+Auth pages still have duplicated layout boilerplate.
 
 ### 3. Google Sign-In button duplicated
 **Files:** `app/(auth)/login/page.tsx:113-124`, `app/(auth)/register/page.tsx:148-159`
+**Status:** ⏳ Pending
 
-Identical Google OAuth button with inline SVG on both login and register pages. Extract into a reusable `GoogleSignInButton` component.
+Identical Google OAuth button with inline SVG on both pages.
 
 ### 4. API error handling is structurally identical
 **Files:** `app/api/tasks/create/route.ts:36-47`, `app/api/tasks/breakdown/route.ts:36-47`
+**Status:** ✅ Fixed
 
-Both handle `SyntaxError` → 502, `ZodError` → 502, and generic `Error` → 500 in exactly the same way. Extract into a shared `handleAIError(error)` utility.
+Extracted shared `handleAIError(error, context)` utility in `lib/ai/schemas.ts`.
 
 ### 5. `BinList` and `TasksList` are structurally identical
 **Files:** `components/bin/BinList.tsx`, `components/tasks-dashboard/TasksList.tsx`
+**Status:** ⏳ Pending
 
-Both map `TaskWithSteps[]` into `motion.div` → `STAGGER_CONTAINER` → `FADE_IN_UP` → card component. Extract shared list abstraction.
+Both list components still share the same structure independently.
 
 ### 6. Progress calculation logic is duplicated
 **Files:** `lib/db/steps.ts:20-23`, `hooks/useTaskMutations.ts:18-20`
+**Status:** ⏳ Pending
 
-Both `updateStepCompletionInDB()` and `updateTaskInCache()` independently compute `progress_percentage` from completed/total step counts. If the formula changes (e.g., weighted steps), both must be updated.
+Progress percentage formula still duplicated between DB layer and optimistic UI.
 
 ### 7. ConfirmDialog for sign out duplicated
 **Files:** `components/ui/Sidebar.tsx`, `app/(dashboard)/profile/page.tsx`
+**Status:** ⏳ Pending
 
-Both instantiate `ConfirmDialog` with identical `title: "Sign Out"`, `message`, and `confirmLabel: "Sign Out"`. Extract into a reusable `SignOutDialog` component.
+Sign-out `ConfirmDialog` still duplicated across sidebar and profile page.
 
 ### 8. Input field with icon prefix repeated across auth pages
-The pattern `<div class="relative"><Icon/><input/></div>` appears 8+ times across auth pages with identical class names. Extract as a shared `AuthInput` component.
+**Status:** ⏳ Pending
+
+`<div class="relative"><Icon/><input/></div>` pattern still inline 8+ times.
 
 ---
 
@@ -112,36 +140,46 @@ The pattern `<div class="relative"><Icon/><input/></div>` appears 8+ times acros
 
 ### 1. Empty catch block in server Supabase client
 **File:** `lib/supabase/server.ts:16-20`
+**Status:** ✅ Fixed (documented)
 
-The `setAll` function has `try { ... } catch {}` with an empty catch block. While this is a documented Supabase pattern (it throws in middleware contexts where cookies can't be set), it silently swallows all errors, making debugging difficult if something goes wrong.
+Added comment explaining why the catch is empty.
 
 ### 2. All dashboard pages are `'use client'`
 **Files:** All pages under `app/(dashboard)/`
+**Status:** ⏳ Pending
 
-Every dashboard page is a full client component, even pages that are purely presentational (e.g., bin page with loading state). This ships more JavaScript than necessary. Sections that don't need interactivity (headers, empty states) could be server components.
+All dashboard pages still ship as full client components.
 
 ### 3. No React error boundary
-The app has no error boundary anywhere. If any component throws during rendering, the entire UI will unmount with no fallback UX.
+**Status:** ⏳ Pending
+
+App has no error boundary; any render crash unmounts the entire UI.
 
 ### 4. No structured logging
-Every error handler uses `console.error`. In production this provides no way to aggregate, filter, or alert on failures.
+**Status:** ⏳ Pending
+
+All errors logged via `console.error` with no aggregation.
 
 ### 5. `useRef` bypass in auth callback prevents retries
 **File:** `app/auth/callback/page.tsx:11`
+**Status:** ⏳ Pending
 
-The `handled.useRef()` guard prevents the callback from executing twice in StrictMode. But if the first attempt fails (network error, etc.), the ref prevents any retry — the user is stuck.
+If first callback attempt fails, the ref prevents any retry.
 
 ### 6. `created_at` timestamps are identical for task and steps
 **File:** `lib/db/factory.ts:21,36`
+**Status:** ⏳ Pending
 
-All steps and the task get the same `new Date().toISOString()` value computed sequentially. This means steps have the exact same creation time as the task, which can cause sorting issues if multiple tasks are created rapidly.
+Steps get the same timestamp as the parent task.
 
 ### 7. Type safety: `any` cast on breakdown variables
 **File:** `hooks/useTaskDetail.ts:13`
+**Status:** ✅ Fixed
 
-`breakdownTask.variables` is cast to `as any` to read `.stepId`. Should use the proper mutation variable type instead.
+Replaced `as any` with `breakdownTask.variables?.stepId ?? null`.
 
 ### 8. Sidebar component misnamed — it's the entire layout shell
 **File:** `components/ui/Sidebar.tsx`
+**Status:** ⏳ Pending
 
-The `Sidebar` component renders the sidebar AND wraps `<main>{children}</main>` inside itself, making it effectively a dashboard layout wrapper rather than just a sidebar. This is misleading — callers expect a sidebar component, not the entire page shell.
+Sidebar still doubles as the dashboard layout wrapper.
