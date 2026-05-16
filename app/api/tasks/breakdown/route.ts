@@ -2,7 +2,7 @@ import { groq } from '@ai-sdk/groq';
 import { generateText } from 'ai';
 import { STEP_BREAKDOWN_PROMPT } from '@/lib/ai/prompts';
 import { stepBreakdownSchema, sanitizeAIJSON, handleAIError } from '@/lib/ai/schemas';
-import { createClient } from '@/lib/supabase/server';
+import { getAuthUser } from '@/lib/supabase/server';
 
 type GenerateTextOptions = Parameters<typeof generateText>[0] & {
   responseFormat?: { type: 'json_object' | 'json_schema'; schema?: unknown };
@@ -15,11 +15,8 @@ export const maxDuration = 30;
  * Returns the mapped substeps directly, leaving persistence entirely to the client.
  */
 export async function POST(req: Request) {
-  const supabase = await createClient();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-  if (authError || !user) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const { user, errorResponse } = await getAuthUser();
+  if (errorResponse) return errorResponse;
 
   const { stepId, stepTitle, taskId, taskTitle } = await req.json();
 

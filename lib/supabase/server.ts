@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { NextResponse } from 'next/server'
 
 export async function createClient() {
   const cookieStore = await cookies()
@@ -25,4 +26,26 @@ export async function createClient() {
       },
     }
   )
+}
+
+/**
+ * Shared utility to handle authentication in API routes and Server Actions.
+ * Returns the user and supabase client, or an error response if unauthorized.
+ */
+export async function getAuthUser() {
+  const supabase = await createClient();
+  const { data: { user }, error } = await supabase.auth.getUser();
+
+  if (error || !user) {
+    return {
+      user: null,
+      supabase,
+      errorResponse: NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    };
+  }
+
+  return { user, supabase, errorResponse: null };
 }

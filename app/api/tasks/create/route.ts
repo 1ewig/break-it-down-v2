@@ -3,7 +3,7 @@ import { generateText } from 'ai';
 import { TASK_BREAKDOWN_PROMPT } from '@/lib/ai/prompts';
 import { taskBreakdownSchema, sanitizeAIJSON, handleAIError } from '@/lib/ai/schemas';
 import { z, ZodError } from 'zod';
-import { createClient } from '@/lib/supabase/server';
+import { getAuthUser } from '@/lib/supabase/server';
 
 type GenerateTextOptions = Parameters<typeof generateText>[0] & {
   responseFormat?: { type: 'json_object' | 'json_schema'; schema?: unknown };
@@ -16,11 +16,8 @@ const requestSchema = z.object({
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const supabase = await createClient();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-  if (authError || !user) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const { user, errorResponse } = await getAuthUser();
+  if (errorResponse) return errorResponse;
 
   let taskTitle: string;
   try {
