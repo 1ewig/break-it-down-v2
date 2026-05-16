@@ -4,16 +4,29 @@ import db from './db';
 type FilterMode = 'active' | 'deleted';
 
 export async function loadTasksWithSteps(userId?: string, mode: FilterMode = 'active'): Promise<TaskWithSteps[]> {
-  const [tasks, steps] = await Promise.all([
-    db.tasks.toArray(),
-    db.steps.toArray(),
-  ]);
+  // 1. Efficiently query tasks by user_id if provided, then filter by mode
+  const tasksQuery = userId 
+    ? db.tasks.where('user_id').equals(userId) 
+    : db.tasks.toCollection();
 
-  const filtered = tasks
+  const tasks = await tasksQuery
     .filter((t) => mode === 'deleted' ? !!t.deleted_at : !t.deleted_at)
-    .filter((t) => !userId || t.user_id === userId);
+    .toArray();
 
-  return filtered
+  if (tasks.length === 0) return [];
+
+  // 2. Efficiently query only the steps belonging to these tasks
+  const taskIds = tasks.map(t => t.id);
+  const steps = await db.steps
+    .where('task_id')
+    .anyOf(taskIds)
+    .toArray();
+
+  // 3. Group steps by task and apply sorting
+  const getSortDate = (t: Task) => 
+    mode === 'deleted' ? (t.deleted_at || t.created_at) : t.created_at;
+
+  return tasks
     .map((task) => ({
       ...task,
       steps: steps
@@ -21,8 +34,8 @@ export async function loadTasksWithSteps(userId?: string, mode: FilterMode = 'ac
         .sort((a, b) => a.order_index - b.order_index),
     }))
     .sort((a, b) => {
-      const dateA = mode === 'deleted' ? (a as Task & { deleted_at: string }).deleted_at : a.created_at;
-      const dateB = mode === 'deleted' ? (b as Task & { deleted_at: string }).deleted_at : b.created_at;
-      return new Date(dateB).getTime() - new Date(dateA).getTime();
+      const dateA = new Date(getSortDate(a)).getTime();
+      const dateB = new Date(getSortDate(b)).getTime();
+      return dateB - dateA;
     });
 }

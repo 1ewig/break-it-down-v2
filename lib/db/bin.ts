@@ -27,11 +27,16 @@ export async function getDeletedTasksWithSteps(userId?: string): Promise<TaskWit
 }
 
 export async function purgeExpiredDeletedTasks(days: number = 30, userId?: string): Promise<number> {
-  const allTasks = await db.tasks.toArray();
-  const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
-  const expired = allTasks.filter(
-    (t) => t.deleted_at && new Date(t.deleted_at).getTime() < cutoff
-  ).filter((t) => !userId || t.user_id === userId);
+  const cutoffDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+  
+  // Use indexed query for deleted_at to avoid full table scan
+  let collection = db.tasks.where('deleted_at').below(cutoffDate);
+  
+  if (userId) {
+    collection = collection.filter(t => t.user_id === userId);
+  }
+  
+  const expired = await collection.toArray();
 
   if (expired.length === 0) return 0;
 
