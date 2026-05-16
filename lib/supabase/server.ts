@@ -17,7 +17,10 @@ export async function createClient() {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
             )
-          } catch {}
+          } catch {
+            // Cookie mutations throw in certain Next.js contexts (e.g. during static generation).
+            // This is expected and safe to ignore — the middleware handles cookie forwarding.
+          }
         },
       },
     }
