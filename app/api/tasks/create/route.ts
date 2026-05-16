@@ -2,8 +2,12 @@ import { groq } from '@ai-sdk/groq';
 import { generateText } from 'ai';
 import { TASK_BREAKDOWN_PROMPT } from '@/lib/ai/prompts';
 import { taskBreakdownSchema, sanitizeAIJSON } from '@/lib/ai/schemas';
-import { ZodError } from 'zod';
+import { z, ZodError } from 'zod';
 import { createClient } from '@/lib/supabase/server';
+
+const requestSchema = z.object({
+  taskTitle: z.string().min(1).max(500).transform(s => s.trim()),
+});
 
 export const maxDuration = 30;
 
@@ -14,9 +18,18 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  let taskTitle: string;
   try {
-    const { taskTitle } = await req.json();
+    const body = await req.json();
+    taskTitle = requestSchema.parse(body).taskTitle;
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return Response.json({ error: 'Invalid task title', details: error.issues }, { status: 400 });
+    }
+    return Response.json({ error: 'Invalid request body' }, { status: 400 });
+  }
 
+  try {
     const { text } = await (generateText as any)({
       model: groq('llama-3.3-70b-versatile'),
       system: TASK_BREAKDOWN_PROMPT,
