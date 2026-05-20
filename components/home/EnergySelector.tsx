@@ -14,7 +14,7 @@ const levels: { level: EnergyLevel; label: string; icon: typeof BatteryLow }[] =
 
 const activeStyles: Record<EnergyLevel, string> = {
   low: 'bg-amber-400/15 border-amber-400/30 text-amber-400',
-  medium: 'bg-primary/15 border-primary/30 text-primary',
+  medium: 'bg-sky-400/15 border-sky-400/30 text-sky-400',
   high: 'bg-emerald/15 border-emerald/30 text-emerald',
 };
 
