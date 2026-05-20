@@ -1,6 +1,6 @@
 # Break It Down: Architecture & AI Handover
 
-A "Gentle AI" task management system designed to reduce cognitive load through recursive AI-powered task decomposition and minimalist motion design.
+A "Gentle AI" task management system designed to reduce cognitive load through AI-powered task decomposition and minimalist motion design.
 
 ---
 
@@ -52,7 +52,7 @@ A "Gentle AI" task management system designed to reduce cognitive load through r
 
 ### `/lib`
 - `animations.ts`: Centralized variants and physics (`SPRING_GENTLE`).
-- `db/`: Database access layer. All files call Supabase (via `lib/supabase/tables.ts`). Exports through `indexedDB.ts` (legacy barrel -- no IndexedDB used).
+- `db/`: Database access layer. All files call Supabase (via `lib/supabase/tables.ts`). Exports through `barrel.ts`.
     - `tasks.ts`: Task CRUD.
     - `steps.ts`: Step CRUD, completion toggle, notes update, progress recalculation.
     - `shared.ts`: `loadTasksWithSteps()` -- loads tasks + their steps from Supabase.

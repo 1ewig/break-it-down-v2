@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { getTasksWithSteps, getTaskWithSteps } from '@/lib/db/indexedDB';
+import { getTasksWithSteps, getTaskWithSteps } from '@/lib/db/barrel';
 import { TaskWithSteps } from '@/types';
 import { useAuth } from '@/providers/AuthProvider';
 

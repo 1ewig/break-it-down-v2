@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { getDeletedTasksWithSteps, purgeExpiredDeletedTasks } from '@/lib/db/indexedDB';
+import { getDeletedTasksWithSteps, purgeExpiredDeletedTasks } from '@/lib/db/barrel';
 import { useAuth } from '@/providers/AuthProvider';
 
 export function useDeletedTasksQuery() {

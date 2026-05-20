@@ -21,7 +21,7 @@
 
 **Break It Down** is a specialized productivity application that leverages Large Language Models (LLMs) to solve one of the biggest hurdles in task management: **The Barrier to Entry.**
 
-Unlike traditional todo apps that just store your stress, Break It Down acts as a "Gentle Architect," using Groq-powered Llama 3.3 to recursively decompose complex, vague goals into granular, actionable, and non-threatening micro-tasks.
+Unlike traditional todo apps that just store your stress, Break It Down acts as a "Gentle Architect," using Groq-powered Llama 3.3 to gently decompose complex, vague goals into granular, actionable, and non-threatening micro-tasks.
 
 ## Engineering Highlights
 

@@ -8,7 +8,7 @@ import {
   updateStepCompletionInDB,
   createTaskWithStepsFromAI,
   updateStepNoteInDB
-} from '@/lib/db/indexedDB';
+} from '@/lib/db/barrel';
 import { useAuth } from '@/providers/AuthProvider';
 import { useToastStore } from '@/store/useToastStore';
 

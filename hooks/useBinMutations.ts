@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { restoreTask, permanentDeleteTask } from '@/lib/db/indexedDB';
+import { restoreTask, permanentDeleteTask } from '@/lib/db/barrel';
 import { useAuth } from '@/providers/AuthProvider';
 
 export function useBinMutations() {
