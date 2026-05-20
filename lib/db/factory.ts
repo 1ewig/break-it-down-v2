@@ -8,6 +8,10 @@ export async function createTaskWithStepsFromAI(
   aiData: TaskBreakdown,
   userId?: string
 ): Promise<TaskWithSteps> {
+  if (!userId) {
+    throw new Error('User must be logged in to create a task.');
+  }
+
   const taskId = `task-${Date.now()}`;
 
   const stepsData: Step[] = aiData.steps.map((step, idx) => ({

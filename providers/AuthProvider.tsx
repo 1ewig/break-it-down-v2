@@ -50,17 +50,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
-    
-    // Clear local IndexedDB data on sign-out for privacy/security
-    try {
-      const db = (await import('@/lib/db/db')).default;
-      await Promise.all([
-        db.tasks.clear(),
-        db.steps.clear()
-      ]);
-    } catch (err) {
-      console.error('Failed to clear local database on sign out:', err);
-    }
   };
 
   return (

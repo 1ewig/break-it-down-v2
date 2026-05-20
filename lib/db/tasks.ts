@@ -1,5 +1,5 @@
 import { Task, TaskWithSteps } from '@/types';
-import db from './db';
+import { getTasksTable, getStepsTable } from '../supabase/tables';
 import { loadTasksWithSteps } from './shared';
 
 export async function getTasksWithSteps(userId?: string): Promise<TaskWithSteps[]> {
@@ -7,15 +7,24 @@ export async function getTasksWithSteps(userId?: string): Promise<TaskWithSteps[
 }
 
 export async function getTaskWithSteps(taskId: string): Promise<TaskWithSteps | null> {
-  const task = await db.tasks.get(taskId);
-  if (!task) return null;
-  const steps = await db.steps
-    .where('task_id')
-    .equals(taskId)
-    .sortBy('order_index');
-  return { ...task, steps };
+  const { data: task, error: taskError } = await getTasksTable()
+    .select('*')
+    .eq('id', taskId)
+    .single();
+
+  if (taskError || !task) return null;
+
+  const { data: steps, error: stepsError } = await getStepsTable()
+    .select('*')
+    .eq('task_id', taskId)
+    .order('order_index', { ascending: true });
+
+  if (stepsError) throw stepsError;
+
+  return { ...task, steps: steps || [] } as TaskWithSteps;
 }
 
-export function saveTask(task: Task): Promise<void> {
-  return db.tasks.put(task).then(() => {});
+export async function saveTask(task: Task): Promise<void> {
+  const { error } = await getTasksTable().upsert(task);
+  if (error) throw error;
 }

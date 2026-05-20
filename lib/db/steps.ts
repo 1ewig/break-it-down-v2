@@ -1,8 +1,9 @@
 import { Step } from '@/types';
-import db from './db';
+import { getTasksTable, getStepsTable } from '../supabase/tables';
 
 export async function saveSteps(steps: Step[]): Promise<void> {
-  await db.steps.bulkPut(steps);
+  const { error } = await getStepsTable().upsert(steps);
+  if (error) throw error;
 }
 
 export async function updateStepCompletionInDB(
@@ -10,29 +11,36 @@ export async function updateStepCompletionInDB(
   stepId: string,
   isCompleted: boolean
 ): Promise<{ progress_percentage: number; is_completed: boolean }> {
-  return db.transaction('rw', [db.tasks, db.steps], async () => {
-    const step = await db.steps.get(stepId);
-    if (!step) throw new Error(`Step with ID ${stepId} not found`);
+  // 1. Update the step completion status in Supabase
+  const { error: stepUpdateError } = await getStepsTable()
+    .update({ is_completed: isCompleted })
+    .eq('id', stepId);
+  if (stepUpdateError) throw stepUpdateError;
 
-    await db.steps.put({ ...step, is_completed: isCompleted });
+  // 2. Fetch all steps of the task to calculate progress percentage
+  const { data: allSteps, error: stepsError } = await getStepsTable()
+    .select('*')
+    .eq('task_id', taskId);
+  if (stepsError) throw stepsError;
 
-    const allSteps = await db.steps.where('task_id').equals(taskId).toArray();
-    const completedCount = allSteps.filter((s) => s.is_completed).length;
-    const progress = allSteps.length > 0
-      ? Math.round((completedCount / allSteps.length) * 100)
-      : 0;
-    const isCompletedTask = progress === 100;
+  const completedCount = (allSteps || []).filter((s) => s.is_completed).length;
+  const progress = (allSteps || []).length > 0
+    ? Math.round((completedCount / allSteps.length) * 100)
+    : 0;
+  const isCompletedTask = progress === 100;
 
-    const task = await db.tasks.get(taskId);
-    if (!task) throw new Error(`Task with ID ${taskId} not found`);
+  // 3. Update the task with the new progress percentage and completion status
+  const { error: taskUpdateError } = await getTasksTable()
+    .update({ progress_percentage: progress, is_completed: isCompletedTask })
+    .eq('id', taskId);
+  if (taskUpdateError) throw taskUpdateError;
 
-    await db.tasks.put({ ...task, progress_percentage: progress, is_completed: isCompletedTask });
-    return { progress_percentage: progress, is_completed: isCompletedTask };
-  });
+  return { progress_percentage: progress, is_completed: isCompletedTask };
 }
 
 export async function updateStepNoteInDB(stepId: string, detailedNote: string): Promise<void> {
-  const step = await db.steps.get(stepId);
-  if (!step) throw new Error(`Step with ID ${stepId} not found`);
-  await db.steps.put({ ...step, note: detailedNote, is_broken_down: true });
+  const { error } = await getStepsTable()
+    .update({ note: detailedNote, is_broken_down: true })
+    .eq('id', stepId);
+  if (error) throw error;
 }
