@@ -5,7 +5,7 @@ import { useUIStore } from '@/store/useUIStore';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
 import { STAGGER_CONTAINER, FADE_IN_UP } from '@/lib/animations';
-import { User, Mail, Calendar, LogOut, LogOut as LogOutIcon } from 'lucide-react';
+import { Mail, Calendar, LogOutIcon } from 'lucide-react';
 import { NameSetting } from '@/components/settings/NameSetting';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { useState } from 'react';
@@ -28,16 +28,11 @@ export default function ProfilePage() {
       variants={STAGGER_CONTAINER}
       initial="initial"
       animate="animate"
-      className="flex flex-col flex-1 max-w-2xl mx-auto w-full p-6 gap-6"
+      className="flex flex-col h-full max-w-3xl mx-auto w-full p-4 md:p-8 gap-4 md:gap-8"
     >
-      <motion.div variants={FADE_IN_UP} className="flex items-center gap-4 mb-2">
-        <div className="flex items-center justify-center w-12 h-12 bg-primary/15 rounded-full">
-          <User className="h-6 w-6 text-primary" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-text-primary tracking-tight">Profile</h1>
-          <p className="text-sm font-medium text-text-secondary">Your account details</p>
-        </div>
+      <motion.div variants={FADE_IN_UP} className="text-center mb-4">
+        <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-2 tracking-tight">Profile</h1>
+        <p className="text-text-secondary text-base font-medium">Your account details</p>
       </motion.div>
 
       <NameSetting userName={userName} onSave={setUserName} />
