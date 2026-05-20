@@ -30,7 +30,7 @@ export default function ProfilePage() {
       animate="animate"
       className="flex flex-col h-full max-w-3xl mx-auto w-full p-4 md:p-8 gap-4 md:gap-8"
     >
-      <motion.div variants={FADE_IN_UP} className="text-center mb-4">
+      <motion.div variants={FADE_IN_UP} className="text-center">
         <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-2 tracking-tight">Profile</h1>
         <p className="text-text-secondary text-base font-medium">Your account details</p>
       </motion.div>
