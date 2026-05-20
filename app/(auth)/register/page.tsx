@@ -4,6 +4,7 @@ import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import { getURL } from '@/lib/utils';
 import { Mail, Lock, ArrowLeft } from 'lucide-react';
 import { AuthLayout, AuthInput, AuthButton, AuthError, GoogleSignInButton } from '@/components/auth';
 import { useAuthForm } from '@/hooks/useAuthForm';
@@ -33,7 +34,13 @@ export default function RegisterPage() {
     form.begin();
 
     const supabase = createClient();
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${getURL()}/auth/callback?next=/home`,
+      },
+    });
 
     if (error) {
       if (error.code === 'user_already_exists' || error.code === 'email_exists') {
