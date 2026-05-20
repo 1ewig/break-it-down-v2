@@ -1,14 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Home, ListTodo, Settings, Trash2, User, LogOut, LogOut as LogOutIcon } from 'lucide-react';
+import { Menu, X, Home, ListTodo, Settings, Trash2, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TRANSITION_SMOOTH } from '@/lib/animations';
-import { useAuth } from '@/providers/AuthProvider';
-import { ConfirmDialog } from './ConfirmDialog';
-import { useState } from 'react';
 
 const links = [
   { href: '/home', label: 'Home', icon: Home },
@@ -26,15 +22,6 @@ interface SidebarProps {
 }
 
 export function Sidebar({ children, isSidebarOpen, setSidebarOpen, currentPath }: SidebarProps) {
-  const { user, signOut } = useAuth();
-  const router = useRouter();
-  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
-
-  const handleSignOut = async () => {
-    await signOut();
-    router.push('/');
-  };
-
   return (
     <div className="flex min-h-screen w-full flex-col md:flex-row">
       <div className="md:hidden flex items-center p-4 border-b border-text-secondary/5 relative min-h-[64px]">
@@ -100,31 +87,10 @@ export function Sidebar({ children, isSidebarOpen, setSidebarOpen, currentPath }
                   );
                 })}
               </nav>
-              <div className="mt-auto pt-6 border-t border-text-secondary/5 space-y-3">
-                <div className="px-4 text-sm text-text-secondary truncate">
-                  {user?.email}
-                </div>
-                <button
-                  onClick={() => setShowSignOutConfirm(true)}
-                  className="flex items-center gap-3 px-4 py-3 w-full text-left text-text-secondary hover:text-red-400 transition-colors rounded-2xl hover:bg-background"
-                >
-                  <LogOutIcon className="h-5 w-5" />
-                  Sign Out
-                </button>
-              </div>
             </motion.aside>
           </>
         )}
       </AnimatePresence>
-
-      <ConfirmDialog
-        open={showSignOutConfirm}
-        title="Sign Out"
-        message="Are you sure you want to sign out? You'll need to sign back in to access your tasks."
-        confirmLabel="Sign Out"
-        onConfirm={handleSignOut}
-        onCancel={() => setShowSignOutConfirm(false)}
-      />
 
       <aside className="hidden md:flex flex-col w-64 bg-surface p-6 sticky top-0 h-screen border-r border-text-secondary/5">
         <Link href="/home" className="flex items-center gap-2 text-primary mb-10 pl-4 hover:opacity-80 transition-opacity">
@@ -148,18 +114,6 @@ export function Sidebar({ children, isSidebarOpen, setSidebarOpen, currentPath }
             );
           })}
         </nav>
-        <div className="mt-auto pt-6 border-t border-text-secondary/5 space-y-3">
-          <div className="px-4 text-sm text-text-secondary truncate">
-            {user?.email}
-          </div>
-          <button
-            onClick={() => setShowSignOutConfirm(true)}
-            className="flex items-center gap-3 px-4 py-3 w-full text-left text-text-secondary hover:text-red-400 transition-colors rounded-2xl hover:bg-background"
-          >
-            <LogOutIcon className="h-5 w-5" />
-            Sign Out
-          </button>
-        </div>
       </aside>
 
       <main className="flex-1 flex flex-col min-h-0 relative overflow-y-auto">
