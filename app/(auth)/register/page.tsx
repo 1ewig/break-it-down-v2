@@ -5,54 +5,48 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Mail, Lock } from 'lucide-react';
-import { AuthLayout, AuthInput, AuthButton, GoogleSignInButton } from '@/components/auth';
+import { AuthLayout, AuthInput, AuthButton, AuthError, GoogleSignInButton } from '@/components/auth';
+import { useAuthForm } from '@/hooks/useAuthForm';
+import { validatePassword } from '@/lib/auth-validation';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [errorType, setErrorType] = useState<'generic' | 'email_exists'>('generic');
-  const [loading, setLoading] = useState(false);
+  const [errorLink, setErrorLink] = useState<{ href: string; label: string } | null>(null);
+  const form = useAuthForm();
   const router = useRouter();
 
   const isPasswordWeak = password.length > 0 && password.length < 8;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
+    setErrorLink(null);
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+    const validationError = validatePassword(password, confirmPassword);
+    if (validationError) {
+      form.fail(validationError);
       return;
     }
 
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters.');
-      return;
-    }
-
-    setLoading(true);
+    form.begin();
 
     const supabase = createClient();
     const { data, error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
       if (error.code === 'user_already_exists' || error.code === 'email_exists') {
-        setErrorType('email_exists');
-        setError('An account with this email already exists.');
+        setErrorLink({ href: '/login', label: 'Sign in instead →' });
+        form.fail('An account with this email already exists.');
       } else {
-        setErrorType('generic');
-        setError(error.message);
+        form.fail(error.message);
       }
-      setLoading(false);
       return;
     }
 
     if (data?.user?.identities?.length === 0) {
-      setErrorType('email_exists');
-      setError('An account with this email already exists.');
-      setLoading(false);
+      setErrorLink({ href: '/login', label: 'Sign in instead →' });
+      form.fail('An account with this email already exists.');
       return;
     }
 
@@ -104,18 +98,9 @@ export default function RegisterPage() {
           <p className="text-red-400 text-xs mt-2">At least 8 characters needed.</p>
         )}
 
-        {error && errorType === 'email_exists' ? (
-          <p className="text-red-400 text-sm text-center">
-            {error}{' '}
-            <Link href="/login" className="text-primary hover:underline">
-              Sign in instead &rarr;
-            </Link>
-          </p>
-        ) : error ? (
-          <p className="text-red-400 text-sm text-center">{error}</p>
-        ) : null}
+        {form.error && <AuthError message={form.error} link={errorLink ?? undefined} />}
 
-        <AuthButton loading={loading} loadingText="Creating account...">
+        <AuthButton loading={form.loading} loadingText="Creating account...">
           Create Account
         </AuthButton>
       </form>

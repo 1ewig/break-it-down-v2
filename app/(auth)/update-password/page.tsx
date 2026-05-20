@@ -4,39 +4,34 @@ import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Lock } from 'lucide-react';
-import { AuthLayout, AuthInput, AuthButton } from '@/components/auth';
+import { AuthLayout, AuthInput, AuthButton, AuthError } from '@/components/auth';
+import { useAuthForm } from '@/hooks/useAuthForm';
+import { validatePassword } from '@/lib/auth-validation';
 
 export default function UpdatePasswordPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const form = useAuthForm();
   const router = useRouter();
 
   const isPasswordWeak = password.length > 0 && password.length < 8;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+    const validationError = validatePassword(password, confirmPassword);
+    if (validationError) {
+      form.fail(validationError);
       return;
     }
 
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters.');
-      return;
-    }
-
-    setLoading(true);
+    form.begin();
 
     const supabase = createClient();
     const { error } = await supabase.auth.updateUser({ password });
 
     if (error) {
-      setError(error.message);
-      setLoading(false);
+      form.fail(error.message);
       return;
     }
 
@@ -77,11 +72,9 @@ export default function UpdatePasswordPage() {
           <p className="text-red-400 text-xs mt-2">At least 8 characters needed.</p>
         )}
 
-        {error && (
-          <p className="text-red-400 text-sm text-center">{error}</p>
-        )}
+        {form.error && <AuthError message={form.error} />}
 
-        <AuthButton loading={loading} loadingText="Updating...">
+        <AuthButton loading={form.loading} loadingText="Updating...">
           Update Password
         </AuthButton>
       </form>

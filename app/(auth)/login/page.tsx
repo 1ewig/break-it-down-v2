@@ -5,20 +5,20 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Mail, Lock } from 'lucide-react';
-import { AuthLayout, AuthInput, AuthButton, GoogleSignInButton } from '@/components/auth';
+import { AuthLayout, AuthInput, AuthButton, AuthError, GoogleSignInButton } from '@/components/auth';
+import { useAuthForm } from '@/hooks/useAuthForm';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [errorType, setErrorType] = useState<'generic' | 'email_not_found' | 'invalid_password'>('generic');
-  const [loading, setLoading] = useState(false);
+  const [errorLink, setErrorLink] = useState<{ href: string; label: string } | null>(null);
+  const form = useAuthForm();
   const router = useRouter();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setLoading(true);
+    setErrorLink(null);
+    form.begin();
 
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -33,21 +33,17 @@ export default function LoginPage() {
           });
           const data = await res.json();
           if (!data.exists) {
-            setErrorType('email_not_found');
-            setError('No account found with this email.');
+            setErrorLink({ href: '/register', label: 'Create one →' });
+            form.fail('No account found with this email.');
           } else {
-            setErrorType('invalid_password');
-            setError('Invalid password. Please try again.');
+            form.fail('Invalid password. Please try again.');
           }
         } catch {
-          setErrorType('generic');
-          setError('Invalid login credentials.');
+          form.fail('Invalid login credentials.');
         }
       } else {
-        setErrorType('generic');
-        setError(error.message);
+        form.fail(error.message);
       }
-      setLoading(false);
       return;
     }
 
@@ -82,18 +78,9 @@ export default function LoginPage() {
           required
         />
 
-        {error && errorType === 'email_not_found' ? (
-          <p className="text-red-400 text-sm text-center">
-            {error}{' '}
-            <Link href="/register" className="text-primary hover:underline">
-              Create one &rarr;
-            </Link>
-          </p>
-        ) : error ? (
-          <p className="text-red-400 text-sm text-center">{error}</p>
-        ) : null}
+        {form.error && <AuthError message={form.error} link={errorLink ?? undefined} />}
 
-        <AuthButton loading={loading} loadingText="Signing in...">
+        <AuthButton loading={form.loading} loadingText="Signing in...">
           Sign In
         </AuthButton>
       </form>

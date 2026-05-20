@@ -4,19 +4,18 @@ import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Mail, ArrowLeft } from 'lucide-react';
-import { AuthLayout, AuthInput, AuthButton } from '@/components/auth';
+import { AuthLayout, AuthInput, AuthButton, AuthError } from '@/components/auth';
+import { useAuthForm } from '@/hooks/useAuthForm';
 import { getURL } from '@/lib/utils';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const form = useAuthForm();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setLoading(true);
+    form.begin();
 
     const supabase = createClient();
     const redirectTo = `${getURL()}/auth/callback?next=/update-password`;
@@ -25,13 +24,12 @@ export default function ForgotPasswordPage() {
     });
 
     if (error) {
-      setError(error.message);
-      setLoading(false);
+      form.fail(error.message);
       return;
     }
 
+    form.succeed();
     setSent(true);
-    setLoading(false);
   };
 
   return (
@@ -65,11 +63,9 @@ export default function ForgotPasswordPage() {
             required
           />
 
-          {error && (
-            <p className="text-red-400 text-sm text-center">{error}</p>
-          )}
+          {form.error && <AuthError message={form.error} />}
 
-          <AuthButton loading={loading} loadingText="Sending..." showIcon={false}>
+          <AuthButton loading={form.loading} loadingText="Sending..." showIcon={false}>
             Send Reset Link
           </AuthButton>
 
