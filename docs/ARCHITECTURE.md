@@ -9,7 +9,7 @@ A "Gentle AI" task management system designed to reduce cognitive load through r
 - **The Goal**: Turn a "big scary task" into tiny, non-threatening steps.
 - **The Vibe**: Calming, low-pressure, and visually soft.
 - **AI Orchestration**: AI SDK (Groq/Llama 3.3) for all task and step breakdowns.
-- **The Interaction**: Infinite breakdown. Any step can be broken down into further steps.
+- **The Interaction**: Single-level breakdown. Any step can be broken down into sub-steps exactly once.
 
 ## Technical Stack
 - **Frontend**: Next.js 15 (App Router), TypeScript, Tailwind CSS.
@@ -101,7 +101,7 @@ We use a tiered approach to balance reasoning depth and speed:
   id: string;
   task_id: string;        // FK to tasks with CASCADE delete
   user_id: string;
-  parent_step_id: string | null; // Infinite nesting support
+  parent_step_id: string | null; // Single-level nesting support (breakdown once)
   title: string;
   subtitle?: string;
   note?: string;          // User's personal note on a step

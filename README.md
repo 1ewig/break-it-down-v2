@@ -26,7 +26,7 @@ Unlike traditional todo apps that just store your stress, Break It Down acts as 
 ## Engineering Highlights
 
 ### Recursive AI Decomposition
-- **Deep Nesting**: Implemented a recursive logic that allows any task step to be further broken down into "tinier" steps indefinitely.
+- **Single-Level Breakdown**: Any task step can be broken down into smaller sub-steps exactly once.
 - **Tone Orchestration**: Engineered prompt systems that ensure the AI maintains a "Gentle" personality -- reframing scary tasks into encouraging, low-pressure actions.
 
 ### Optimistic UI with Server Persistence
