@@ -1,65 +1,74 @@
 <div align="center">
   <img src="./public/assets/banner.png" alt="Break It Down Banner" width="100%" />
 
-  # Break It Down 🌿
+  # Break It Down
   ### *The Gentle AI Task Architect*
 
   [![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)](https://nextjs.org/)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
-  [![IndexedDB](https://img.shields.io/badge/IndexedDB-Persistence-blue?style=flat-square)](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
+  [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=flat-square&logo=supabase)](https://supabase.com/)
+  [![TanStack Query](https://img.shields.io/badge/TanStack_Query-5.x-FF4154?style=flat-square&logo=reactquery)](https://tanstack.com/query)
   [![Zustand](https://img.shields.io/badge/Zustand-State-orange?style=flat-square)](https://zustand-demo.pmnd.rs/)
   [![Tailwind CSS](https://img.shields.io/badge/Tailwind-Styling-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
-  [![Groq](https://img.shields.io/badge/AI-Groq%20%2F%20Llama%203.3-red?style=flat-square)](https://groq.com/)
+  [![Groq](https://img.shields.io/badge/AI-Groq_%2F_Llama_3.3-red?style=flat-square)](https://groq.com/)
 
   **Turn overwhelming goals into tiny, non-threatening steps.** Built for high-achievers with executive dysfunction, burnout, or ADHD.
 </div>
 
 ---
 
-## 📖 Overview
+## Overview
 
-**Break It Down** is a specialized productivity application that leverages Large Language Models (LLMs) to solve one of the biggest hurdles in task management: **The Barrier to Entry.** 
+**Break It Down** is a specialized productivity application that leverages Large Language Models (LLMs) to solve one of the biggest hurdles in task management: **The Barrier to Entry.**
 
 Unlike traditional todo apps that just store your stress, Break It Down acts as a "Gentle Architect," using Groq-powered Llama 3.3 to recursively decompose complex, vague goals into granular, actionable, and non-threatening micro-tasks.
 
-## 🛠 Engineering Highlights
+## Engineering Highlights
 
-This project serves as a showcase for modern full-stack engineering patterns and complex UI/UX orchestration:
-
-### 🧠 Recursive AI Decomposition
+### Recursive AI Decomposition
 - **Deep Nesting**: Implemented a recursive logic that allows any task step to be further broken down into "tinier" steps indefinitely.
-- **Tone Orchestration**: Engineered prompt systems that ensure the AI maintains a "Gentle" personality—reframing scary tasks into encouraging, low-pressure actions.
+- **Tone Orchestration**: Engineered prompt systems that ensure the AI maintains a "Gentle" personality -- reframing scary tasks into encouraging, low-pressure actions.
 
-### ⚡ Advanced State Management
-- **Dual-Layer Sync**: Orchestrated a robust state system using **Zustand** for transient UI state and **TanStack Query** for server state.
-- **Optimistic UI**: All task interactions (completion, creation, deletion) update the UI instantly via optimistic cache mutations, providing a zero-latency feel while persisting asynchronously to IndexedDB in the background.
+### Optimistic UI with Server Persistence
+- **Instant Feedback**: All task interactions (completion, creation, deletion) update the UI instantly via TanStack Query optimistic cache mutations before persisting to Supabase.
+- **Server-Side Storage**: Data lives in Supabase PostgreSQL with Row Level Security -- user isolation enforced at the database level, not just the application layer.
 
-### 🍃 Custom Motion System
-- **Centralized Animation Physics**: Developed a custom animation library built on top of **Framer Motion**, utilizing specialized spring physics (`SPRING_GENTLE`) to maintain a "weighted" and "organic" feel across the entire app.
-- **Layout Projection**: Leveraging Framer Motion's layout projection to handle complex list reordering and expansion without layout thrashing.
+### Custom Motion System
+- **Centralized Animation Physics**: Developed a custom animation library built on top of **Motion**, utilizing specialized spring physics (`SPRING_GENTLE`) to maintain a "weighted" and "organic" feel across the entire app.
+- **Layout Projection**: Leveraging Motion's layout projection to handle complex list reordering and expansion without layout thrashing.
 
-### 💾 Persistent Architecture
-- **Offline-First Storage**: Implemented via a low-level, high-performance **IndexedDB** database layout (defined in `lib/db/indexedDB.ts`), securing data directly inside the browser.
-- **Robust Schema**: Strict object stores for both parent-level tasks and multi-level recursively nested sub-steps.
+### Auth UX
+- **Contextual Errors**: Login distinguishes "no account with this email" from "wrong password" via a server endpoint using Supabase Admin API.
+- **Duplicate Detection**: Signup detects existing accounts and offers a "Sign in instead" link with a single click.
+- **Email Verification**: Confirmation emails sent via Brevo SMTP; users land on the dashboard after clicking the link.
+- **Password Visibility**: Toggle (Eye/EyeOff) on all password fields.
 
-## 📂 Architecture at a Glance
+## Architecture at a Glance
 
 ```text
 ├── app/                  # Next.js 15 App Router (Route Groups & Server Components)
-├── components/           # Atomic UI Design System
-├── docs/                 # Technical documentation & Architecture
-├── store/                # Zustand global state (UI preferences & local persistence)
-├── hooks/                # Specialized TanStack Query hooks for server state
-├── lib/                  # Core utilities (AI prompts, Animation system, DB config)
-└── types/                # Strict TypeScript interface definitions
+│   ├── (auth)/           # Login, Register, Forgot/Update Password
+│   ├── (dashboard)/      # Home, Tasks, Bin, Settings, Profile
+│   ├── api/              # AI task creation/breakdown, auth email checks
+│   └── auth/callback     # OAuth + email confirmation handler
+├── components/           # Domain-organized UI components
+│   ├── auth/             # Auth form primitives (Input, Button, Error, Layout)
+│   ├── task-details/     # Step breakdown view (StepItem, metadata, content)
+│   ├── tasks-dashboard/  # Task grid (TaskCard, TasksList, floating bin)
+│   └── ui/               # Sidebar, Toast, ConfirmDialog, GentleCheckbox
+├── hooks/                # TanStack Query hooks + UI logic hooks
+├── lib/                  # Core utilities
+│   ├── ai/               # AI prompts & Zod schemas
+│   ├── db/               # Supabase query layer (tasks, steps, bin, factory)
+│   └── supabase/         # Client factories (browser, server, admin, tables)
+├── providers/            # QueryProvider + AuthProvider (session context)
+├── store/                # Zustand global state (UI preferences & toasts)
+├── supabase/             # Schema migrations & RLS policies
+├── types/                # TypeScript interface definitions
+└── middleware.ts         # Auth-guard middleware (cookie-based session)
 ```
 
-## 📖 Documentation
-For a deep dive into the engineering patterns, AI prompts, and design philosophy:
-- **[Architecture & AI Handover](./docs/ARCHITECTURE.md)**
-- **[Implementation Plan](./docs/IMPLEMENTATION_PLAN.md)**
-
-## 🚀 Getting Started
+## Getting Started
 
 1. **Clone & Install**
    ```bash
@@ -69,15 +78,30 @@ For a deep dive into the engineering patterns, AI prompts, and design philosophy
 2. **Environment Configuration**
    Create a `.env.local` file with the following:
    ```env
+   # AI (Groq)
    GROQ_API_KEY=your_key_here
+
+   # Supabase (from Project Settings > API)
+   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+
+   # Supabase Admin (from Project Settings > API > service_role)
+   # WARNING: Keep secret. Never expose to the browser.
+   SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
    ```
 
-3. **Launch**
+3. **Run Database Migrations**
+   ```bash
+   npx supabase migration up
+   ```
+
+4. **Launch**
    ```bash
    npm run dev
    ```
 
 ---
+
 <div align="center">
   Built with care to make the impossible feel manageable.
 </div>
