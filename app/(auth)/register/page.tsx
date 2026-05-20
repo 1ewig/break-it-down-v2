@@ -12,6 +12,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [errorType, setErrorType] = useState<'generic' | 'email_exists'>('generic');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -34,10 +35,23 @@ export default function RegisterPage() {
     setLoading(true);
 
     const supabase = createClient();
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
-      setError(error.message);
+      if (error.code === 'user_already_exists' || error.code === 'email_exists') {
+        setErrorType('email_exists');
+        setError('An account with this email already exists.');
+      } else {
+        setErrorType('generic');
+        setError(error.message);
+      }
+      setLoading(false);
+      return;
+    }
+
+    if (data?.user?.identities?.length === 0) {
+      setErrorType('email_exists');
+      setError('An account with this email already exists.');
       setLoading(false);
       return;
     }
@@ -90,9 +104,16 @@ export default function RegisterPage() {
           <p className="text-red-400 text-xs mt-2">At least 8 characters needed.</p>
         )}
 
-        {error && (
+        {error && errorType === 'email_exists' ? (
+          <p className="text-red-400 text-sm text-center">
+            {error}{' '}
+            <Link href="/login" className="text-primary hover:underline">
+              Sign in instead &rarr;
+            </Link>
+          </p>
+        ) : error ? (
           <p className="text-red-400 text-sm text-center">{error}</p>
-        )}
+        ) : null}
 
         <AuthButton loading={loading} loadingText="Creating account...">
           Create Account
