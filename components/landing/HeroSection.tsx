@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from 'motion/react';
 import { Sparkles, ChevronDown, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { FADE_UP, STAGGER_CONTAINER } from '@/lib/motion';
+import { useAuth } from '@/providers/AuthProvider';
 
 const TYPING_PHRASES = [
   'Clean my entire apartment...',
@@ -18,6 +19,7 @@ const TYPING_PHRASES = [
 ];
 
 export default function HeroSection() {
+  const { user } = useAuth();
   const { scrollY } = useScroll();
   const opacity = useTransform(scrollY, [0, 100], [1, 0]);
 
@@ -136,7 +138,7 @@ export default function HeroSection() {
               <span className="inline-block w-px h-5 bg-white/50 animate-pulse ml-0.5 align-middle" />
             </p>
           </div>
-          <Link href="/home">
+          <Link href={user ? '/home' : '/register'}>
             <motion.button
               whileHover={{ scale: 1.06 }}
               whileTap={{ scale: 0.94 }}
