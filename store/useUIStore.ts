@@ -1,21 +1,22 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import type { EnergyLevel } from '@/types';
 
 interface UIState {
-  // Sidebar state (Mobile Drawer)
   isSidebarOpen: boolean;
   setSidebarOpen: (isOpen: boolean) => void;
   toggleSidebar: () => void;
 
-  // User Preferences
   userName: string;
   setUserName: (name: string) => void;
 
-  // Notifications
   notificationsEnabled: boolean;
   setNotificationsEnabled: (enabled: boolean) => void;
   notificationPermission: NotificationPermission;
   setNotificationPermission: (permission: NotificationPermission) => void;
+
+  energyLevel: EnergyLevel;
+  setEnergyLevel: (level: EnergyLevel) => void;
 }
 
 export const useUIStore = create<UIState>()(
@@ -32,12 +33,16 @@ export const useUIStore = create<UIState>()(
       setNotificationsEnabled: (enabled) => set({ notificationsEnabled: enabled }),
       notificationPermission: 'default',
       setNotificationPermission: (permission) => set({ notificationPermission: permission }),
+
+      energyLevel: 'medium',
+      setEnergyLevel: (level) => set({ energyLevel: level }),
     }),
     {
       name: 'break-it-down-ui-preferences',
       partialize: (state) => ({
         userName: state.userName,
         notificationsEnabled: state.notificationsEnabled,
+        energyLevel: state.energyLevel,
       }),
     }
   )

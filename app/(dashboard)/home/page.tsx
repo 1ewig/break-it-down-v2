@@ -6,6 +6,7 @@ import { useTaskMutations } from '@/hooks/useTaskMutations';
 import { HomeHeader } from '@/components/home/HomeHeader';
 import { HomeForm } from '@/components/home/HomeForm';
 import { HomeFooter } from '@/components/home/HomeFooter';
+import { EnergySelector } from '@/components/home/EnergySelector';
 import { AlertDialog } from '@/components/ui/AlertDialog';
 import { motion } from 'motion/react';
 import { STAGGER_CONTAINER } from '@/lib/animations';
@@ -21,7 +22,7 @@ export default function Home() {
     if (!taskTitle.trim() || createTask.isPending) return;
 
     try {
-      const newTask = await createTask.mutateAsync(taskTitle);
+      const newTask = await createTask.mutateAsync({ taskTitle });
       router.push(`/tasks/${newTask.id}`);
     } catch (error) {
       const msg = error instanceof Error ? error.message : "Something went wrong. Let's try again gently.";
@@ -37,6 +38,7 @@ export default function Home() {
       className="flex flex-col items-center justify-center flex-1 max-w-2xl mx-auto w-full p-6 gap-4"
     >
       <HomeHeader />
+      <EnergySelector />
       <HomeForm 
         taskTitle={taskTitle}
         onTitleChange={setTaskTitle}

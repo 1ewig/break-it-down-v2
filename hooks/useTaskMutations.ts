@@ -11,6 +11,7 @@ import {
 } from '@/lib/db/barrel';
 import { useAuth } from '@/providers/AuthProvider';
 import { useToastStore } from '@/store/useToastStore';
+import { useUIStore } from '@/store/useUIStore';
 
 function updateTaskInCache(task: TaskWithSteps, stepId: string, isCompleted: boolean): TaskWithSteps {
   const updatedSteps = task.steps.map((step) =>
@@ -30,6 +31,7 @@ export function useTaskMutations() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { showToast } = useToastStore();
+  const energyLevel = useUIStore((s) => s.energyLevel);
 
   const updateStepCompletion = useMutation({
     mutationFn: async ({ taskId, stepId, isCompleted }: { taskId: string, stepId: string, isCompleted: boolean }) => {
@@ -78,7 +80,7 @@ export function useTaskMutations() {
       const res = await fetch('/api/tasks/breakdown', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ stepId, stepTitle, taskId, taskTitle })
+        body: JSON.stringify({ stepId, stepTitle, taskId, taskTitle, energy_level: energyLevel })
       });
 
       if (!res.ok) {
@@ -110,11 +112,11 @@ export function useTaskMutations() {
   });
 
   const createTask = useMutation({
-    mutationFn: async (taskTitle: string) => {
+    mutationFn: async ({ taskTitle, energy_level }: { taskTitle: string; energy_level?: string }) => {
       const response = await fetch('/api/tasks/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ taskTitle }),
+        body: JSON.stringify({ taskTitle, energy_level: energy_level || energyLevel }),
       });
 
       const data = await response.json();

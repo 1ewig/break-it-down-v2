@@ -26,5 +26,7 @@ export type Step = {
   is_broken_down?: boolean;
 };
 
+export type EnergyLevel = 'low' | 'medium' | 'high';
+
 // Joined types for UI
 export type TaskWithSteps = Task & { steps: Step[] };
