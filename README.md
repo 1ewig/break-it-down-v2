@@ -26,7 +26,7 @@ Unlike traditional todo apps that just store your stress, Break It Down acts as 
 ## Engineering Highlights
 
 ### Recursive AI Decomposition
-- **Single-Level Breakdown**: Any task step can be broken down into smaller sub-steps exactly once.
+- **Gentle Decomposition**: Any task step can be gently broken down into smaller sub-steps when you need a little more guidance.
 - **Tone Orchestration**: Engineered prompt systems that ensure the AI maintains a "Gentle" personality -- reframing scary tasks into encouraging, low-pressure actions.
 
 ### Optimistic UI with Server Persistence
