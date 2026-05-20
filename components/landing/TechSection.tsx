@@ -66,8 +66,8 @@ export default function TechSection() {
               },
               {
                 icon: <Shield size={20} className="text-emerald" />,
-                title: "Privacy First",
-                desc: "Tasks are processed but never stored on external servers. Your overwhelm stays yours."
+                title: "Encrypted at Rest",
+                desc: "Your data is stored securely in the cloud with Row Level Security — only you can access your tasks."
               }
             ].map((item, i) => (
               <motion.div
