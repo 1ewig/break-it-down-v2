@@ -9,9 +9,9 @@ import { FADE_IN_UP, SCALE_IN } from '@/lib/animations';
  */
 export function HomeHeader() {
   return (
-    <motion.div 
+    <motion.div
       variants={FADE_IN_UP}
-      className="text-center flex flex-col items-center gap-6 mb-8"
+      className="text-center flex flex-col items-center gap-6"
     >
       <motion.div
         variants={SCALE_IN}
@@ -23,7 +23,7 @@ export function HomeHeader() {
       <h1 className="text-text-primary font-bold tracking-tight text-[clamp(2rem,8vw,4rem)] leading-[1.1]">
         What&apos;s on <br className="md:hidden" /> your mind?
       </h1>
-      
+
       <p className="text-text-secondary font-medium text-[clamp(1rem,3vw,1.25rem)] leading-relaxed max-w-[480px]">
         Type that big, overwhelming task. <br />
         We&apos;ll break it into tiny, gentle steps for you.
