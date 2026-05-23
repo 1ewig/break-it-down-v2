@@ -5,12 +5,13 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { getURL } from '@/lib/utils';
-import { Mail, Lock, ArrowLeft } from 'lucide-react';
+import { User, Mail, Lock, ArrowLeft } from 'lucide-react';
 import { AuthLayout, AuthInput, AuthButton, AuthError, GoogleSignInButton } from '@/components/auth';
 import { useAuthForm } from '@/hooks/useAuthForm';
 import { validatePassword } from '@/lib/auth-validation';
 
 export default function RegisterPage() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -38,6 +39,7 @@ export default function RegisterPage() {
       email,
       password,
       options: {
+        data: { name },
         emailRedirectTo: `${getURL()}/auth/callback?next=/home`,
       },
     });
@@ -99,6 +101,16 @@ export default function RegisterPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+            />
+
+            <AuthInput
+              id="name"
+              type="text"
+              label="Your Name"
+              placeholder="Your Name"
+              icon={User}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
 
             <AuthInput

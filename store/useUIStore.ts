@@ -7,9 +7,6 @@ interface UIState {
   setSidebarOpen: (isOpen: boolean) => void;
   toggleSidebar: () => void;
 
-  userName: string;
-  setUserName: (name: string) => void;
-
   notificationsEnabled: boolean;
   setNotificationsEnabled: (enabled: boolean) => void;
   notificationPermission: NotificationPermission;
@@ -26,9 +23,6 @@ export const useUIStore = create<UIState>()(
       setSidebarOpen: (isOpen) => set({ isSidebarOpen: isOpen }),
       toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
 
-      userName: '',
-      setUserName: (name) => set({ userName: name }),
-
       notificationsEnabled: false,
       setNotificationsEnabled: (enabled) => set({ notificationsEnabled: enabled }),
       notificationPermission: 'default',
@@ -40,7 +34,6 @@ export const useUIStore = create<UIState>()(
     {
       name: 'break-it-down-ui-preferences',
       partialize: (state) => ({
-        userName: state.userName,
         notificationsEnabled: state.notificationsEnabled,
         energyLevel: state.energyLevel,
       }),

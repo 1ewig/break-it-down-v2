@@ -1,20 +1,28 @@
 'use client';
 
+import { useState } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
-import { useUIStore } from '@/store/useUIStore';
+import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
 import { STAGGER_CONTAINER, FADE_IN_UP } from '@/lib/animations';
 import { Mail, Calendar, LogOutIcon } from 'lucide-react';
 import { NameSetting } from '@/components/settings/NameSetting';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
-import { useState } from 'react';
 
 export default function ProfilePage() {
   const { user, signOut } = useAuth();
-  const { userName, setUserName } = useUIStore();
   const router = useRouter();
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
+  const [userName, setUserName] = useState(user?.user_metadata?.name || '');
+
+  const handleSaveName = async (name: string) => {
+    const supabase = createClient();
+    const { error } = await supabase.auth.updateUser({ data: { name } });
+    if (!error) {
+      setUserName(name);
+    }
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -35,7 +43,7 @@ export default function ProfilePage() {
         <p className="text-text-secondary text-base font-medium">Your account details</p>
       </motion.div>
 
-      <NameSetting userName={userName} onSave={setUserName} />
+      <NameSetting userName={userName} onSave={handleSaveName} />
 
       <motion.div variants={FADE_IN_UP} className="bg-surface border border-text-secondary/5 rounded-3xl p-6 space-y-5">
         <div className="flex items-center gap-4">
