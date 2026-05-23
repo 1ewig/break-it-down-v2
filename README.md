@@ -25,7 +25,7 @@ Unlike traditional todo apps that just store your stress, Break It Down acts as 
 
 ## Engineering Highlights
 
-### Recursive AI Decomposition
+### Gentle AI Decomposition
 - **Gentle Decomposition**: Any task step can be gently broken down into smaller sub-steps when you need a little more guidance.
 - **Tone Orchestration**: Engineered prompt systems that ensure the AI maintains a "Gentle" personality -- reframing scary tasks into encouraging, low-pressure actions.
 
@@ -35,7 +35,11 @@ Unlike traditional todo apps that just store your stress, Break It Down acts as 
 
 ### Custom Motion System
 - **Centralized Animation Physics**: Developed a custom animation library built on top of **Motion**, utilizing specialized spring physics (`SPRING_GENTLE`) to maintain a "weighted" and "organic" feel across the entire app.
-- **Layout Projection**: Leveraging Motion's layout projection to handle complex list reordering and expansion without layout thrashing.
+- **CSS-First Accordions**: Step card expansions use CSS `grid-template-rows` transitions instead of JS-driven height animations — GPU-composited, zero main-thread layout work, smooth 60fps on mobile.
+
+### Energy-Aware AI
+- **Adaptive Tone**: Users select their energy level (Low / Medium / High) before creating a task. The AI adjusts its persona, step granularity, and language accordingly — gentle and tiny for low-energy days, direct and action-oriented for high-energy moments.
+- **Persisted Preference**: The selected level is saved in local storage and sent with every AI request, including step breakdowns.
 
 ### Auth UX
 - **Contextual Errors**: Login distinguishes "no account with this email" from "wrong password" via a server endpoint using Supabase Admin API.
@@ -49,20 +53,24 @@ Unlike traditional todo apps that just store your stress, Break It Down acts as 
 ├── app/                  # Next.js 15 App Router (Route Groups & Server Components)
 │   ├── (auth)/           # Login, Register, Forgot/Update Password
 │   ├── (dashboard)/      # Home, Tasks, Bin, Settings, Profile
-│   ├── api/              # AI task creation/breakdown, auth email checks
+│   ├── api/              # AI task creation/breakdown, auth email checks, billing
 │   └── auth/callback     # OAuth + email confirmation handler
 ├── components/           # Domain-organized UI components
 │   ├── auth/             # Auth form primitives (Input, Button, Error, Layout)
-│   ├── task-details/     # Step breakdown view (StepItem, metadata, content)
+│   ├── home/             # HomeHeader, EnergySelector, TaskLoadingOverlay
+│   ├── task-details/     # Step breakdown view (StepItem with internal sub-components)
 │   ├── tasks-dashboard/  # Task grid (TaskCard, TasksList, floating bin)
-│   └── ui/               # Sidebar, Toast, ConfirmDialog, GentleCheckbox
+│   ├── bin/              # Bin display (BinHeader, BinCard, BinList, BinEmpty)
+│   ├── settings/         # Settings page (NameSetting, NotificationsToggle)
+│   ├── landing/          # Public landing page (HeroSection, FeaturesSection, etc.)
+│   └── ui/               # Sidebar, Toast, ConfirmDialog, ProgressBar, GentleCheckbox
 ├── hooks/                # TanStack Query hooks + UI logic hooks
 ├── lib/                  # Core utilities
-│   ├── ai/               # AI prompts & Zod schemas
-│   ├── db/               # Supabase query layer (tasks, steps, bin, factory)
+│   ├── ai/               # AI prompts (energy-aware builders) & Zod schemas
+│   ├── db/               # Supabase query layer (tasks, steps, bin, factory, barrel)
 │   └── supabase/         # Client factories (browser, server, admin, tables)
 ├── providers/            # QueryProvider + AuthProvider (session context)
-├── store/                # Zustand global state (UI preferences & toasts)
+├── store/                # Zustand state (useUIStore + useToastStore)
 ├── supabase/             # Schema migrations & RLS policies
 ├── types/                # TypeScript interface definitions
 └── middleware.ts         # Auth-guard middleware (cookie-based session)
@@ -80,6 +88,9 @@ Unlike traditional todo apps that just store your stress, Break It Down acts as 
    ```env
    # AI (Groq)
    GROQ_API_KEY=your_key_here
+
+   # Application URL
+   APP_URL=http://localhost:3000
 
    # Supabase (from Project Settings > API)
    NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co

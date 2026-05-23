@@ -28,19 +28,22 @@ A "Gentle AI" task management system designed to reduce cognitive load through A
 - `/(auth)`: Login, Register (with confirmation email screen), Forgot Password, and Update Password flows.
 - `/(dashboard)/home`: Entry point. Bold, focused AI input.
 - `/(dashboard)/tasks`: Dashboard view showing all tasks.
-- `/(dashboard)/tasks/[id]`: Recursive breakdown view. Core interaction layer.
+- `/(dashboard)/tasks/[id]`: Breakdown view. Core interaction layer.
 - `/auth/callback`: Handles OAuth callback and email confirmation verification. Redirects to `/home` on success.
 - `/api/auth/check-email`: Server endpoint using service_role key to distinguish "no account" vs "wrong password" on login.
 - `/api/tasks/create`: AI-powered task creation endpoint.
-- `/api/tasks/breakdown`: AI-powered step expansion endpoint.
+- `/api/tasks/breakdown`: AI-powered step expansion endpoint (energy-aware).
 
 ### `/components` (Modular & Reusable)
 - `/auth/`: AuthInput (with password visibility toggle), AuthButton, AuthError (contextual error with action links), AuthLayout, GoogleSignInButton.
+- `/home/`: HomeHeader, HomeForm, HomeFooter, EnergySelector (Low/Medium/High), TaskLoadingOverlay (3s minimum loading screen during AI breakdown).
 - `/(tasks-dashboard)`: Components for the task list grid.
 - `/(task-details)`:
-    - `StepItem.tsx`: High-level step orchestration.
-    - `StepMetadata.tsx`, `StepContent.tsx`, `StepActions.tsx`: Modularized UI components.
-- `/ui/`: Atomic components like `Sidebar.tsx`, `Toast.tsx`, `ProgressBar.tsx`, `ConfirmDialog.tsx`, `GentleCheckbox.tsx`.
+    - `StepItem.tsx`: High-level step orchestration (`StepMetadata`, `StepContent`, `StepActions` are internal sub-components).
+- `/bin/`: BinHeader, BinCard, BinList, BinEmpty.
+- `/settings/`: SettingsHeader, SettingsFooter, NameSetting, NotificationsToggle.
+- `/landing/`: Public landing page sections (Navbar, Hero, Features, etc.).
+- `/ui/`: Atomic components like Sidebar, Toast, ProgressBar, ConfirmDialog, GentleCheckbox.
 
 ### `/hooks` (Logic & Data)
 - `useTasksQuery.ts`: TanStack Query fetching (All tasks / Single task with steps).
@@ -67,16 +70,25 @@ A "Gentle AI" task management system designed to reduce cognitive load through A
     - `tables.ts`: Typed `getTasksTable()` and `getStepsTable()` wrappers.
 
 ### `/store`
-- `ui-store.ts`: Zustand store for UI preferences and toast notifications.
+- `useUIStore.ts`: Zustand store for UI preferences (sidebar, notifications, energy level). Persisted to localStorage.
+- `useToastStore.ts`: Zustand store for toast notifications (auto-hides after 4 seconds).
 
-### `/suppliers`
+### `/providers`
 - `AuthProvider`: Subscribes to `onAuthStateChange`, exposes `user`, `session`, `loading`, `signOut()`.
 - `QueryProvider`: TanStack React Query client with gentle defaults (5min stale time, no refetch on window focus).
 
-## AI Strategy (Dual-Model)
+## AI Strategy (Dual-Model + Energy-Aware Prompts)
 We use a tiered approach to balance reasoning depth and speed:
 1. **Initial Task Breakdown**: `Llama-3.3-70b-versatile` via Groq. Used for high-reasoning decomposition and tone setting.
 2. **Step Expansion (Substeps)**: `Llama-3.1-8b-instant` via Groq. Used for rapid, concise point-by-point instructions.
+
+### Energy-Aware Prompting
+The system prompt is dynamically built based on the user's selected energy level:
+- **Low**: Warm, deeply patient tone. Steps are "ridiculously small." Generous validation.
+- **Medium** (default): Warm, practical tone. Balanced step sizes. Brief validation.
+- **High**: Direct, action-oriented tone. More substantial steps. Minimal validation.
+
+Each level uses `buildTaskBreakdownPrompt(energy)` and `buildStepBreakdownPrompt(energy)` from `lib/ai/prompts.ts` — the static prompt strings were refactored into builder functions that inject the appropriate persona, language rules, and step-size guidance.
 
 ## Data Architecture
 
@@ -115,6 +127,12 @@ We use a tiered approach to balance reasoning depth and speed:
 }
 ```
 
+### User Name (Auth Metadata)
+User names are stored in `auth.users.raw_user_meta_data.name` — no separate table needed.
+- **Registration**: Submitted via `signUp({ ..., options: { data: { name } } })`.
+- **Edit**: Updated via `supabase.auth.updateUser({ data: { name } })` on the profile page.
+- **Retrieval**: Read from `user.user_metadata.name` after login. Syncs across devices automatically.
+
 ### Database Layer
 - **Tables**: `public.tasks` and `public.steps` in Supabase PostgreSQL.
 - **RLS Policies**: Both tables have Row Level Security enabled. Policies enforce `auth.uid() = user_id` for tasks and a subquery on tasks for steps.
@@ -131,9 +149,11 @@ We use a tiered approach to balance reasoning depth and speed:
 ## Design Principles
 1. **Bold Typography**: High-contrast headings (`font-bold`, `tracking-tight`) to ground the user.
 2. **Safety First**: Destructive or sensitive actions (Delete, Sign Out) always require a `ConfirmDialog`.
-3. **Motion Design**: Always use `SPRING_GENTLE` (stiffness: 150, damping: 25) for a calm feeling.
-4. **Instant UI**: TanStack Query optimistic updates ensure zero-latency feedback while supabase persists asynchronously.
+3. **Motion Design**: Always use `SPRING_GENTLE` (stiffness: 150, damping: 25) for a calm feeling. For mobile performance, step accordions use pure CSS `grid-template-rows` transitions (GPU-composited, no main-thread layout).
+4. **Instant UI**: TanStack Query optimistic updates ensure zero-latency feedback while Supabase persists asynchronously.
 5. **Contextual Errors**: Auth pages show specific, actionable error messages (e.g., "No account with this email" vs "Wrong password").
+6. **Energy-Aware AI**: The AI tone, step granularity, and validation depth adapt to the user's selected energy level (Low/Medium/High).
+7. **Mobile-First Performance**: No Framer Motion `layout` prop on step items. Accordion animations use CSS transitions to maintain 60fps on mobile devices.
 
 ## Future Roadmap
 1. **Supabase Realtime**: Cross-device sync via Supabase Realtime subscriptions.
