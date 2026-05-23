@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'motion/react';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -23,16 +22,10 @@ export function GentleCheckbox({ checked, onChange, className }: GentleCheckboxP
         className
       )}
     >
-      <motion.div
-        initial={false}
-        animate={{
-          scale: checked ? [1.2, 1] : 1,
-          opacity: checked ? 1 : 0
-        }}
-        transition={{ duration: 0.3 }}
-      >
-        <Check className="h-4 w-4" strokeWidth={3} />
-      </motion.div>
+      <Check
+        className={`h-4 w-4 transition-all duration-300 ${checked ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}
+        strokeWidth={3}
+      />
     </button>
   );
 }

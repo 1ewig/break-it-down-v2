@@ -1,10 +1,10 @@
 'use client';
 
 import { GentleCheckbox } from '@/components/ui/GentleCheckbox';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { ChevronDown, Clock, Package, Sparkles, Info, Heart, Loader2, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { FADE_IN_UP, ACCORDION_ANIMATION, SPRING_GENTLE } from '@/lib/animations';
+import { FADE_IN_UP, SPRING_GENTLE } from '@/lib/animations';
 import { Step } from '@/types';
 import { useStepItemLogic } from '@/hooks/useStepItemLogic';
 
@@ -31,7 +31,6 @@ export function StepItem({
 
   return (
     <motion.div
-      layout
       variants={FADE_IN_UP}
       initial="initial"
       animate="animate"
@@ -77,29 +76,23 @@ export function StepItem({
           )}
         </div>
 
-        <AnimatePresence>
-          {isOpen && !step.is_completed && (
-            <motion.div
-              variants={ACCORDION_ANIMATION}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              className="overflow-hidden"
-            >
-              <div className="px-5 pb-6 flex flex-col gap-4 border-t border-text-secondary/10 pt-5">
-                <StepMetadata step={step} />
-                <StepContent step={step} />
+        <div
+          className={`grid transition-[grid-template-rows] duration-[350ms] ease-out ${isOpen && !step.is_completed ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
+        >
+          <div className="overflow-hidden min-h-0">
+            <div className="px-5 pb-6 flex flex-col gap-4 border-t border-text-secondary/10 pt-5">
+              <StepMetadata step={step} />
+              <StepContent step={step} />
 
-                <StepActions 
-                  isBreakingDown={isBreakingDown}
-                  hasChildren={step.is_broken_down}
-                  onBreakdown={handleBreakdownClick}
-                  onToggleComplete={handleMarkDoneClick}
-                />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              <StepActions 
+                isBreakingDown={isBreakingDown}
+                hasChildren={step.is_broken_down}
+                onBreakdown={handleBreakdownClick}
+                onToggleComplete={handleMarkDoneClick}
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </motion.div>
   );
