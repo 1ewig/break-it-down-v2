@@ -14,12 +14,15 @@ A "Gentle AI" task management system designed to reduce cognitive load through A
 ## Technical Stack
 - **Frontend**: Next.js 15 (App Router), TypeScript, Tailwind CSS.
 - **Authentication**: **Supabase Auth** (Email/Password & Google OAuth) with Brevo SMTP for transactional emails.
-- **Animations**: Motion (`motion/react`) using a centralized spring physics system.
+- **AI Orchestration**: Vercel AI SDK (`ai`) + `@ai-sdk/groq` with Llama 3.3 70B (task creation) and Llama 3.1 8B (step breakdown). Prompts are energy-aware builder functions.
+- **Animations**: Motion (`motion/react`) using a centralized spring physics system, plus CSS `grid-template-rows` transitions for mobile accordions.
 - **Typography**: Bold, high-contrast system aligned with the "Gentle Architect" brand.
 - **State Management**:
     - **TanStack React Query**: Server-state synchronization with optimistic UI.
     - **Zustand**: Client-side UI state and persistence.
 - **Storage**: **Supabase PostgreSQL** with Row Level Security (RLS). Task and step tables are server-side with user-level isolation.
+- **Validation**: Zod for API request parsing and AI response schema validation.
+- **Icons**: Lucide React.
 - **Deployment**: Vercel.
 
 ## Project Structure
