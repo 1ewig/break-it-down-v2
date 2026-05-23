@@ -93,6 +93,16 @@ export default function RegisterPage() {
         <>
           <form onSubmit={handleSubmit} className="space-y-5">
             <AuthInput
+              id="name"
+              type="text"
+              label="Your Name"
+              placeholder="Your Name"
+              icon={User}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+
+            <AuthInput
               id="email"
               type="email"
               label="Email"
@@ -101,16 +111,6 @@ export default function RegisterPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-            />
-
-            <AuthInput
-              id="name"
-              type="text"
-              label="Your Name"
-              placeholder="Your Name"
-              icon={User}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
             />
 
             <AuthInput
