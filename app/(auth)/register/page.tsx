@@ -1,78 +1,24 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
-import { getURL } from '@/lib/utils';
 import { User, Mail, Lock, ArrowLeft } from 'lucide-react';
 import { AuthLayout, AuthInput, AuthButton, AuthError, GoogleSignInButton } from '@/components/auth';
-import { useAuthForm } from '@/hooks/useAuthForm';
-import { validatePassword } from '@/lib/auth-validation';
+import { useRegisterFlow } from '@/hooks/useRegisterFlow';
 
 export default function RegisterPage() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [registered, setRegistered] = useState(false);
-  const [errorLink, setErrorLink] = useState<{ href: string; label: string } | null>(null);
-  const form = useAuthForm();
-  const router = useRouter();
-
-  const isPasswordWeak = password.length > 0 && password.length < 8;
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setErrorLink(null);
-
-    const validationError = validatePassword(password, confirmPassword);
-    if (validationError) {
-      form.fail(validationError);
-      return;
-    }
-
-    form.begin();
-
-    const supabase = createClient();
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { name },
-        emailRedirectTo: `${getURL()}/auth/callback?next=/home`,
-      },
-    });
-
-    if (error) {
-      if (error.code === 'user_already_exists' || error.code === 'email_exists') {
-        setErrorLink({ href: '/login', label: 'Sign in instead →' });
-        form.fail('An account with this email already exists.');
-      } else {
-        form.fail(error.message);
-      }
-      return;
-    }
-
-    if (data?.user?.identities?.length === 0) {
-      setErrorLink({ href: '/login', label: 'Sign in instead →' });
-      form.fail('An account with this email already exists.');
-      return;
-    }
-
-    if (!data.session) {
-      setRegistered(true);
-      form.succeed();
-      return;
-    }
-
-    router.push('/home');
-  };
+  const {
+    name, setName,
+    email, setEmail,
+    password, setPassword,
+    confirmPassword, setConfirmPassword,
+    isPasswordWeak, registered, error, errorLink,
+    loading, handleSubmit,
+  } = useRegisterFlow();
 
   return (
-    <AuthLayout 
-      title={registered ? "Check Your Email" : "Start Fresh"} 
-      description={registered ? "" : "Join us for a calmer way to get things done."}
+    <AuthLayout
+      title={registered ? 'Check Your Email' : 'Start Fresh'}
+      description={registered ? '' : 'Join us for a calmer way to get things done.'}
     >
       {registered ? (
         <div className="space-y-8">
@@ -136,14 +82,14 @@ export default function RegisterPage() {
               required
               minLength={8}
             />
-            
+
             {isPasswordWeak && (
               <p className="text-red-400 text-xs mt-2">At least 8 characters needed.</p>
             )}
 
-            {form.error && <AuthError message={form.error} link={errorLink ?? undefined} />}
+            {error && <AuthError message={error} link={errorLink ?? undefined} />}
 
-            <AuthButton loading={form.loading} loadingText="Creating account...">
+            <AuthButton loading={loading} loadingText="Creating account...">
               Create Account
             </AuthButton>
           </form>

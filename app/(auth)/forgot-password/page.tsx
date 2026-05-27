@@ -1,41 +1,20 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
 import { Mail, ArrowLeft } from 'lucide-react';
 import { AuthLayout, AuthInput, AuthButton, AuthError } from '@/components/auth';
-import { useAuthForm } from '@/hooks/useAuthForm';
-import { getURL } from '@/lib/utils';
+import { useForgotPasswordFlow } from '@/hooks/useForgotPasswordFlow';
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState('');
-  const [sent, setSent] = useState(false);
-  const form = useAuthForm();
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    form.begin();
-
-    const supabase = createClient();
-    const redirectTo = `${getURL()}/auth/callback?next=/update-password`;
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo,
-    });
-
-    if (error) {
-      form.fail(error.message);
-      return;
-    }
-
-    form.succeed();
-    setSent(true);
-  };
+  const {
+    email, setEmail,
+    sent, error, loading, handleSubmit,
+  } = useForgotPasswordFlow();
 
   return (
-    <AuthLayout 
-      title={sent ? "Check Your Email" : "Reset Password"} 
-      description={sent ? "" : "Enter your email and we'll send you a reset link."}
+    <AuthLayout
+      title={sent ? 'Check Your Email' : 'Reset Password'}
+      description={sent ? '' : "Enter your email and we'll send you a reset link."}
     >
       {sent ? (
         <div className="space-y-8">
@@ -63,9 +42,9 @@ export default function ForgotPasswordPage() {
             required
           />
 
-          {form.error && <AuthError message={form.error} />}
+          {error && <AuthError message={error} />}
 
-          <AuthButton loading={form.loading} loadingText="Sending..." showIcon={false}>
+          <AuthButton loading={loading} loadingText="Sending..." showIcon={false}>
             Send Reset Link
           </AuthButton>
 

@@ -1,46 +1,19 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
 import { Lock } from 'lucide-react';
 import { AuthLayout, AuthInput, AuthButton, AuthError } from '@/components/auth';
-import { useAuthForm } from '@/hooks/useAuthForm';
-import { validatePassword } from '@/lib/auth-validation';
+import { useUpdatePasswordFlow } from '@/hooks/useUpdatePasswordFlow';
 
 export default function UpdatePasswordPage() {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const form = useAuthForm();
-  const router = useRouter();
-
-  const isPasswordWeak = password.length > 0 && password.length < 8;
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-
-    const validationError = validatePassword(password, confirmPassword);
-    if (validationError) {
-      form.fail(validationError);
-      return;
-    }
-
-    form.begin();
-
-    const supabase = createClient();
-    const { error } = await supabase.auth.updateUser({ password });
-
-    if (error) {
-      form.fail(error.message);
-      return;
-    }
-
-    router.push('/home');
-  };
+  const {
+    password, setPassword,
+    confirmPassword, setConfirmPassword,
+    isPasswordWeak, error, loading, handleSubmit,
+  } = useUpdatePasswordFlow();
 
   return (
-    <AuthLayout 
-      title="Set New Password" 
+    <AuthLayout
+      title="Set New Password"
       description="Choose a new password for your account."
     >
       <form onSubmit={handleSubmit} className="space-y-5">
@@ -72,9 +45,9 @@ export default function UpdatePasswordPage() {
           <p className="text-red-400 text-xs mt-2">At least 8 characters needed.</p>
         )}
 
-        {form.error && <AuthError message={form.error} />}
+        {error && <AuthError message={error} />}
 
-        <AuthButton loading={form.loading} loadingText="Updating...">
+        <AuthButton loading={loading} loadingText="Updating...">
           Update Password
         </AuthButton>
       </form>

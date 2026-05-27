@@ -1,58 +1,21 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
 import { Mail, Lock } from 'lucide-react';
 import { AuthLayout, AuthInput, AuthButton, AuthError, GoogleSignInButton } from '@/components/auth';
-import { useAuthForm } from '@/hooks/useAuthForm';
+import { useLoginFlow } from '@/hooks/useLoginFlow';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorLink, setErrorLink] = useState<{ href: string; label: string } | null>(null);
-  const form = useAuthForm();
-  const router = useRouter();
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setErrorLink(null);
-    form.begin();
-
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      if (error.code === 'invalid_credentials') {
-        try {
-          const res = await fetch('/api/auth/check-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email }),
-          });
-          const data = await res.json();
-          if (!data.exists) {
-            setErrorLink({ href: '/register', label: 'Create one →' });
-            form.fail('No account found with this email.');
-          } else {
-            form.fail('Invalid password. Please try again.');
-          }
-        } catch {
-          form.fail('Invalid login credentials.');
-        }
-      } else {
-        form.fail(error.message);
-      }
-      return;
-    }
-
-    router.push('/home');
-  };
+  const {
+    email, setEmail,
+    password, setPassword,
+    error, errorLink,
+    loading, handleSubmit,
+  } = useLoginFlow();
 
   return (
-    <AuthLayout 
-      title="Welcome Back" 
+    <AuthLayout
+      title="Welcome Back"
       description="Sign in to continue your gentle journey."
     >
       <form onSubmit={handleSubmit} className="space-y-5">
@@ -78,9 +41,9 @@ export default function LoginPage() {
           required
         />
 
-        {form.error && <AuthError message={form.error} link={errorLink ?? undefined} />}
+        {error && <AuthError message={error} link={errorLink ?? undefined} />}
 
-        <AuthButton loading={form.loading} loadingText="Signing in...">
+        <AuthButton loading={loading} loadingText="Signing in...">
           Sign In
         </AuthButton>
       </form>
