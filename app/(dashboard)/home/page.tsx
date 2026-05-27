@@ -47,11 +47,10 @@ export default function Home() {
       {submittedTask ? (
         <TaskAcknowledged taskTitle={submittedTask} />
       ) : (
-        <>
-          <HomeHeader />
-          <EnergySelector />
-        </>
+        <HomeHeader />
       )}
+
+      <EnergySelector />
 
       <HomeForm 
         taskTitle={taskTitle}
