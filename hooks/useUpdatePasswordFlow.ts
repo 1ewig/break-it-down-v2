@@ -4,34 +4,32 @@ import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { validatePassword } from '@/lib/auth-validation';
+import { useAuthForm } from '@/hooks/useAuthForm';
 
 export function useUpdatePasswordFlow() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const form = useAuthForm();
   const router = useRouter();
 
   const isPasswordWeak = password.length > 0 && password.length < 8;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
 
     const validationError = validatePassword(password, confirmPassword);
     if (validationError) {
-      setError(validationError);
+      form.fail(validationError);
       return;
     }
 
-    setLoading(true);
+    form.begin();
 
     const supabase = createClient();
     const { error: updateError } = await supabase.auth.updateUser({ password });
 
     if (updateError) {
-      setError(updateError.message);
-      setLoading(false);
+      form.fail(updateError.message);
       return;
     }
 
@@ -44,8 +42,8 @@ export function useUpdatePasswordFlow() {
     confirmPassword,
     setConfirmPassword,
     isPasswordWeak,
-    error,
-    loading,
+    error: form.error,
+    loading: form.loading,
     handleSubmit,
   };
 }

@@ -5,16 +5,16 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { getURL } from '@/lib/utils';
 import { validatePassword } from '@/lib/auth-validation';
+import { useAuthForm } from '@/hooks/useAuthForm';
 
 export function useRegisterFlow() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
   const [errorLink, setErrorLink] = useState<{ href: string; label: string } | null>(null);
-  const [loading, setLoading] = useState(false);
   const [registered, setRegistered] = useState(false);
+  const form = useAuthForm();
   const router = useRouter();
 
   const isPasswordWeak = password.length > 0 && password.length < 8;
@@ -22,15 +22,14 @@ export function useRegisterFlow() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setErrorLink(null);
-    setError(null);
 
     const validationError = validatePassword(password, confirmPassword);
     if (validationError) {
-      setError(validationError);
+      form.fail(validationError);
       return;
     }
 
-    setLoading(true);
+    form.begin();
 
     const supabase = createClient();
     const { data, error: signUpError } = await supabase.auth.signUp({
@@ -45,24 +44,22 @@ export function useRegisterFlow() {
     if (signUpError) {
       if (signUpError.code === 'user_already_exists' || signUpError.code === 'email_exists') {
         setErrorLink({ href: '/login', label: 'Sign in instead →' });
-        setError('An account with this email already exists.');
+        form.fail('An account with this email already exists.');
       } else {
-        setError(signUpError.message);
+        form.fail(signUpError.message);
       }
-      setLoading(false);
       return;
     }
 
     if (data?.user?.identities?.length === 0) {
       setErrorLink({ href: '/login', label: 'Sign in instead →' });
-      setError('An account with this email already exists.');
-      setLoading(false);
+      form.fail('An account with this email already exists.');
       return;
     }
 
     if (!data.session) {
       setRegistered(true);
-      setLoading(false);
+      form.succeed();
       return;
     }
 
@@ -80,9 +77,9 @@ export function useRegisterFlow() {
     setConfirmPassword,
     isPasswordWeak,
     registered,
-    error,
+    error: form.error,
     errorLink,
-    loading,
+    loading: form.loading,
     handleSubmit,
   };
 }

@@ -3,20 +3,19 @@
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { useAuthForm } from '@/hooks/useAuthForm';
 
 export function useLoginFlow() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
   const [errorLink, setErrorLink] = useState<{ href: string; label: string } | null>(null);
-  const [loading, setLoading] = useState(false);
+  const form = useAuthForm();
   const router = useRouter();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setErrorLink(null);
-    setError(null);
-    setLoading(true);
+    form.begin();
 
     const supabase = createClient();
     const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
@@ -32,17 +31,16 @@ export function useLoginFlow() {
           const data = await res.json();
           if (!data.exists) {
             setErrorLink({ href: '/register', label: 'Create one →' });
-            setError('No account found with this email.');
+            form.fail('No account found with this email.');
           } else {
-            setError('Invalid password. Please try again.');
+            form.fail('Invalid password. Please try again.');
           }
         } catch {
-          setError('Invalid login credentials.');
+          form.fail('Invalid login credentials.');
         }
       } else {
-        setError(signInError.message);
+        form.fail(signInError.message);
       }
-      setLoading(false);
       return;
     }
 
@@ -54,9 +52,9 @@ export function useLoginFlow() {
     setEmail,
     password,
     setPassword,
-    error,
+    error: form.error,
     errorLink,
-    loading,
+    loading: form.loading,
     handleSubmit,
   };
 }

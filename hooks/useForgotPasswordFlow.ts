@@ -3,17 +3,16 @@
 import { useState, type FormEvent } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { getURL } from '@/lib/utils';
+import { useAuthForm } from '@/hooks/useAuthForm';
 
 export function useForgotPasswordFlow() {
   const [email, setEmail] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const form = useAuthForm();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setLoading(true);
+    form.begin();
 
     const supabase = createClient();
     const redirectTo = `${getURL()}/auth/callback?next=/update-password`;
@@ -22,12 +21,11 @@ export function useForgotPasswordFlow() {
     });
 
     if (resetError) {
-      setError(resetError.message);
-      setLoading(false);
+      form.fail(resetError.message);
       return;
     }
 
-    setLoading(false);
+    form.succeed();
     setSent(true);
   };
 
@@ -35,8 +33,8 @@ export function useForgotPasswordFlow() {
     email,
     setEmail,
     sent,
-    error,
-    loading,
+    error: form.error,
+    loading: form.loading,
     handleSubmit,
   };
 }
