@@ -31,8 +31,10 @@ export function HomeForm({
         onChange={(e) => onTitleChange(e.target.value)}
         placeholder="e.g., Clean the entire house..."
         disabled={isPending}
+        maxLength={250}
         className="w-full h-[72px] bg-surface border border-text-secondary/10 rounded-[2rem] px-8 text-lg md:text-xl outline-none transition-all shadow-sm focus:shadow-[0_0_40px_rgba(74,160,115,0.1)] focus:border-primary/30 placeholder:text-text-secondary/30 pr-20 font-medium"
       />
+
       
       <button
         type="submit"
