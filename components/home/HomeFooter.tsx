@@ -14,10 +14,10 @@ export function HomeFooter({ taskTitle }: HomeFooterProps) {
   return (
     <motion.div
       variants={FADE_IN_UP}
-      className="flex items-center gap-4 text-text-secondary/40 text-sm"
+      className="flex items-center gap-1 text-text-secondary/40 text-sm"
     >
-      <span className="font-medium">{taskTitle.length}/250</span>
-      <span className="italic">&middot; Powered by Groq & Llama 3.3 &middot; Gentle AI</span>
+      <span className="italic">Powered by Groq & Llama 3.3 &middot; Gentle AI</span>
+      <span className="font-medium">&middot; {taskTitle.length}/250</span>
     </motion.div>
   );
 }
