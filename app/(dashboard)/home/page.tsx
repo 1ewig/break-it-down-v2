@@ -59,7 +59,7 @@ export default function Home() {
         isPending={!!submittedTask}
         canSubmit={taskTitle.trim().length > 0}
       />
-      <HomeFooter />
+      <HomeFooter taskTitle={taskTitle} />
 
       <AlertDialog
         open={!!errorMessage}
