@@ -86,7 +86,7 @@ export function useTaskMutations() {
       }
 
       const data = await res.json();
-      if (!data.detailed_note) throw new Error('No explanation returned');
+      if (!data.detailedNote) throw new Error('No explanation returned');
 
       return { taskId, stepId, detailedNote: data.detailedNote };
     },
