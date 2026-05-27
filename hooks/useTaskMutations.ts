@@ -3,11 +3,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { TaskWithSteps } from '@/types';
 import { 
-  saveSteps, 
   deleteTask, 
   updateStepCompletionInDB,
-  createTaskWithStepsFromAI,
-  updateStepNoteInDB
 } from '@/lib/db/barrel';
 import { useAuth } from '@/providers/AuthProvider';
 import { useToastStore } from '@/store/useToastStore';
@@ -91,13 +88,7 @@ export function useTaskMutations() {
       const data = await res.json();
       if (!data.detailed_note) throw new Error('No explanation returned');
 
-      const combinedNote = data.reassurance 
-        ? `${data.detailed_note}\n\n---\n${data.reassurance}`
-        : data.detailed_note;
-
-      await updateStepNoteInDB(stepId, combinedNote);
-
-      return { taskId, stepId, detailedNote: combinedNote };
+      return { taskId, stepId, detailedNote: data.detailedNote };
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['tasks', user?.id] });
@@ -125,7 +116,7 @@ export function useTaskMutations() {
         throw new Error(data.error || 'Failed to create task');
       }
 
-      return createTaskWithStepsFromAI(taskTitle, data, user?.id);
+      return data as TaskWithSteps;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks', user?.id] });

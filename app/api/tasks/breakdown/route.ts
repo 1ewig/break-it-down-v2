@@ -12,7 +12,7 @@ type GenerateTextOptions = Parameters<typeof generateText>[0] & {
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const { user, errorResponse } = await getAuthUser();
+  const { user, supabase, errorResponse } = await getAuthUser();
   if (errorResponse) return errorResponse;
 
   const { stepId, stepTitle, taskId, taskTitle, energy_level = 'medium' } = await req.json() as {
@@ -35,7 +35,18 @@ export async function POST(req: Request) {
     const object = JSON.parse(sanitized);
     const validated = stepBreakdownSchema.parse(object);
 
-    return Response.json({ detailed_note: validated.detailed_note, reassurance: validated.reassurance });
+    const combinedNote = validated.reassurance
+      ? `${validated.detailed_note}\n\n---\n${validated.reassurance}`
+      : validated.detailed_note;
+
+    const { error: updateError } = await supabase
+      .from('steps')
+      .update({ note: combinedNote, is_broken_down: true })
+      .eq('id', stepId);
+
+    if (updateError) throw updateError;
+
+    return Response.json({ taskId, stepId, detailedNote: combinedNote });
   } catch (error) {
     return handleAIError(error, 'Error explaining step');
   }
