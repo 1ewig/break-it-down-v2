@@ -5,11 +5,14 @@ import { TaskWithSteps } from '@/types';
 import { motion } from 'motion/react';
 import { Trash2, RotateCcw, Clock } from 'lucide-react';
 import { SPRING_GENTLE } from '@/lib/animations';
-import { useBinMutations } from '@/hooks/useBinMutations';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 
 interface BinCardProps {
   task: TaskWithSteps;
+  onRestore: (taskId: string) => void;
+  onPermanentDelete: (taskId: string) => void;
+  isRestoring: boolean;
+  isDeleting: boolean;
 }
 
 function getDaysLeft(deletedAt: string): number {
@@ -18,15 +21,9 @@ function getDaysLeft(deletedAt: string): number {
   return Math.max(0, 30 - daysElapsed);
 }
 
-export function BinCard({ task }: BinCardProps) {
+export function BinCard({ task, onRestore, onPermanentDelete, isRestoring, isDeleting }: BinCardProps) {
   const [showConfirm, setShowConfirm] = useState(false);
-  const { restore, permanentDelete } = useBinMutations();
   const daysLeft = task.deleted_at ? getDaysLeft(task.deleted_at) : 30;
-
-  const handleDelete = () => {
-    permanentDelete.mutate(task.id);
-    setShowConfirm(false);
-  };
 
   return (
     <>
@@ -52,8 +49,8 @@ export function BinCard({ task }: BinCardProps) {
 
           <div className="flex gap-2 shrink-0">
             <button
-              onClick={() => restore.mutate(task.id)}
-              disabled={restore.isPending}
+              onClick={() => onRestore(task.id)}
+              disabled={isRestoring}
               className="flex items-center gap-1.5 px-3 py-2 bg-primary/10 text-primary rounded-2xl text-xs font-medium hover:bg-primary/20 transition-colors disabled:opacity-50"
             >
               <RotateCcw className="w-3.5 h-3.5" />
@@ -61,7 +58,7 @@ export function BinCard({ task }: BinCardProps) {
             </button>
             <button
               onClick={() => setShowConfirm(true)}
-              disabled={permanentDelete.isPending}
+              disabled={isDeleting}
               className="flex items-center gap-1.5 px-3 py-2 bg-red-500/10 text-red-400 rounded-2xl text-xs font-medium hover:bg-red-500/20 transition-colors disabled:opacity-50"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -76,7 +73,7 @@ export function BinCard({ task }: BinCardProps) {
         title="Delete Permanently?"
         message="This will remove the task and all its sub-steps forever. You cannot undo this action."
         confirmLabel="Delete Forever"
-        onConfirm={handleDelete}
+        onConfirm={() => { onPermanentDelete(task.id); setShowConfirm(false); }}
         onCancel={() => setShowConfirm(false)}
       />
     </>

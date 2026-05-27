@@ -1,6 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import { useTasksQuery } from '@/hooks/useTasksQuery';
+import { useTaskMutations } from '@/hooks/useTaskMutations';
+import { useToastStore } from '@/store/useToastStore';
 import { TasksHeader } from '@/components/tasks-dashboard/TasksHeader';
 import { TasksList } from '@/components/tasks-dashboard/TasksList';
 import { TasksLoading } from '@/components/tasks-dashboard/TasksLoading';
@@ -10,6 +13,15 @@ import { STAGGER_CONTAINER } from '@/lib/animations';
 
 export default function TasksPage() {
   const { data: tasks = [], isLoading } = useTasksQuery();
+  const { deleteTask } = useTaskMutations();
+  const { showToast } = useToastStore();
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+
+  const handleDeleteTask = (id: string) => {
+    deleteTask.mutate(id);
+    setPendingDeleteId(null);
+    showToast('Task moved to bin. You can find it in the sidebar.');
+  };
 
   return (
     <motion.div 
@@ -24,7 +36,7 @@ export default function TasksPage() {
       ) : tasks.length === 0 ? (
         <TasksEmpty />
       ) : (
-        <TasksList tasks={tasks} />
+        <TasksList tasks={tasks} onDeleteTask={handleDeleteTask} pendingDeleteId={pendingDeleteId} onPendingDeleteChange={setPendingDeleteId} />
       )}
     </motion.div>
   );

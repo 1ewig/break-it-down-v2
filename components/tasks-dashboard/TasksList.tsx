@@ -1,28 +1,23 @@
 'use client';
 
-import { useState } from 'react';
 import { TaskWithSteps } from '@/types';
 import { TaskCard } from './TaskCard';
 import { motion } from 'motion/react';
 import { STAGGER_CONTAINER, FADE_IN_UP } from '@/lib/animations';
-import { useTaskMutations } from '@/hooks/useTaskMutations';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
-import { useToastStore } from '@/store/useToastStore';
 
 interface TasksListProps {
   tasks: TaskWithSteps[];
+  onDeleteTask: (taskId: string) => void;
+  pendingDeleteId: string | null;
+  onPendingDeleteChange: (id: string | null) => void;
 }
 
-export function TasksList({ tasks }: TasksListProps) {
-  const { deleteTask } = useTaskMutations();
-  const { showToast } = useToastStore();
-  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
-
+export function TasksList({ tasks, onDeleteTask, pendingDeleteId, onPendingDeleteChange }: TasksListProps) {
   const handleConfirmDelete = () => {
     if (!pendingDeleteId) return;
-    deleteTask.mutate(pendingDeleteId);
-    setPendingDeleteId(null);
-    showToast('Task moved to bin. You can find it in the sidebar.');
+    onDeleteTask(pendingDeleteId);
+    onPendingDeleteChange(null);
   };
 
   return (
@@ -35,7 +30,7 @@ export function TasksList({ tasks }: TasksListProps) {
           <motion.div key={task.id} variants={FADE_IN_UP}>
             <TaskCard 
               task={task} 
-              onDelete={(id) => setPendingDeleteId(id)} 
+              onDelete={(id) => onPendingDeleteChange(id)} 
             />
           </motion.div>
         ))}
@@ -47,7 +42,7 @@ export function TasksList({ tasks }: TasksListProps) {
         message="This task will be moved to the bin and automatically deleted after 30 days."
         confirmLabel="Move to bin"
         onConfirm={handleConfirmDelete}
-        onCancel={() => setPendingDeleteId(null)}
+        onCancel={() => onPendingDeleteChange(null)}
       />
     </>
   );

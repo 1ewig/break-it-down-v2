@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { FADE_IN_UP, SPRING_GENTLE } from '@/lib/animations';
 import { Step } from '@/types';
 import { useStepItemLogic } from '@/hooks/useStepItemLogic';
+import { parseStepNote } from '@/lib/step-notes';
 
 interface StepItemProps {
   step: Step;
@@ -126,13 +127,7 @@ function StepMetadata({ step }: { step: Step }) {
 }
 
 function StepContent({ step }: { step: Step }) {
-  const parts = step.note ? step.note.split('---') : [];
-  const noteLines = parts[0] 
-    ? parts[0].includes('\n')
-      ? parts[0].split('\n').map(l => l.trim()).filter(Boolean)
-      : parts[0].split(/(?=\d+\.\s)/).map(l => l.trim()).filter(Boolean)
-    : [];
-  const reassurance = parts[1] ? parts[1].trim() : null;
+  const { noteLines, reassurance } = parseStepNote(step.note);
 
   return (
     <>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useDeletedTasksQuery } from '@/hooks/useBinQuery';
+import { useBinMutations } from '@/hooks/useBinMutations';
 import { BinHeader } from '@/components/bin/BinHeader';
 import { BinList } from '@/components/bin/BinList';
 import { BinEmpty } from '@/components/bin/BinEmpty';
@@ -9,6 +10,7 @@ import { STAGGER_CONTAINER } from '@/lib/animations';
 
 export default function BinPage() {
   const { data: tasks = [], isLoading } = useDeletedTasksQuery();
+  const { restore, permanentDelete } = useBinMutations();
 
   return (
     <motion.div
@@ -25,7 +27,13 @@ export default function BinPage() {
       ) : tasks.length === 0 ? (
         <BinEmpty />
       ) : (
-        <BinList tasks={tasks} />
+        <BinList
+          tasks={tasks}
+          onRestore={(id) => restore.mutate(id)}
+          onPermanentDelete={(id) => permanentDelete.mutate(id)}
+          isRestoring={restore.isPending}
+          isDeleting={permanentDelete.isPending}
+        />
       )}
     </motion.div>
   );
