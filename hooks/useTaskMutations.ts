@@ -35,7 +35,7 @@ export function useTaskMutations() {
 
   const updateStepCompletion = useMutation({
     mutationFn: async ({ taskId, stepId, isCompleted }: { taskId: string, stepId: string, isCompleted: boolean }) => {
-      return updateStepCompletionInDB(taskId, stepId, isCompleted);
+      return updateStepCompletionInDB(stepId, isCompleted);
     },
     onMutate: async ({ taskId, stepId, isCompleted }) => {
       await queryClient.cancelQueries({ queryKey: ['tasks', user?.id] });

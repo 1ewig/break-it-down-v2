@@ -1,5 +1,6 @@
 import { Step } from '@/types';
-import { getTasksTable, getStepsTable } from '../supabase/tables';
+import { getStepsTable } from '../supabase/tables';
+import { createClient } from '../supabase/client';
 
 export async function saveSteps(steps: Step[]): Promise<void> {
   const { error } = await getStepsTable().upsert(steps);
@@ -7,35 +8,20 @@ export async function saveSteps(steps: Step[]): Promise<void> {
 }
 
 export async function updateStepCompletionInDB(
-  taskId: string,
   stepId: string,
   isCompleted: boolean
 ): Promise<{ progress_percentage: number; is_completed: boolean }> {
-  // 1. Update the step completion status in Supabase
-  const { error: stepUpdateError } = await getStepsTable()
-    .update({ is_completed: isCompleted })
-    .eq('id', stepId);
-  if (stepUpdateError) throw stepUpdateError;
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .rpc('set_step_completion', {
+      p_step_id: stepId,
+      p_is_completed: isCompleted,
+    });
 
-  // 2. Fetch all steps of the task to calculate progress percentage
-  const { data: allSteps, error: stepsError } = await getStepsTable()
-    .select('*')
-    .eq('task_id', taskId);
-  if (stepsError) throw stepsError;
+  if (error) throw error;
 
-  const completedCount = (allSteps || []).filter((s) => s.is_completed).length;
-  const progress = (allSteps || []).length > 0
-    ? Math.round((completedCount / allSteps.length) * 100)
-    : 0;
-  const isCompletedTask = progress === 100;
-
-  // 3. Update the task with the new progress percentage and completion status
-  const { error: taskUpdateError } = await getTasksTable()
-    .update({ progress_percentage: progress, is_completed: isCompletedTask })
-    .eq('id', taskId);
-  if (taskUpdateError) throw taskUpdateError;
-
-  return { progress_percentage: progress, is_completed: isCompletedTask };
+  const result = data as unknown as { progress_percentage: number; is_completed: boolean };
+  return result;
 }
 
 export async function updateStepNoteInDB(stepId: string, detailedNote: string): Promise<void> {
